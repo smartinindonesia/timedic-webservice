@@ -27,7 +27,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 
-@EnableJpaRepositories(basePackages = "com.techforumist.jwt.repository",
+@EnableJpaRepositories(basePackages = "com.servicetimedic.jwt.repository",
 		entityManagerFactoryRef = "entityManagerFactory",
 		transactionManagerRef = "transactionManager")
 ///fff
@@ -78,7 +78,7 @@ public class JpaConfiguration
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setDataSource(dataSource());
-		factoryBean.setPackagesToScan(new String[] { "com.techforumist.jwt.domain.posgresql" });
+		factoryBean.setPackagesToScan(new String[] { "com.servicetimedic.jwt.domain.posgresql" });
 		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
 		factoryBean.setJpaProperties(jpaProperties());
 		return factoryBean;
