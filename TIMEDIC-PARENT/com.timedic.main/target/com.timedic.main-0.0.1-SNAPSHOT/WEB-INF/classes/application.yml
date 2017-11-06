@@ -36,7 +36,7 @@ datasource:
 
 spring:
   profiles: prod
-
+  
 
 #logging:
   #config: classpath:logback.xml
@@ -48,21 +48,22 @@ spring:
 
 datasource:
   sampleapp:
-    url: jdbc:mysql://localhost:3306/test
-    #url: jdbc:postgresql://localhost:5432/coba
-    #username: postgres
-    #password: adminadmin
-    username: root
-    password: 
-    driverClassName: com.mysql.jdbc.Driver
-    #driverClassName: org.postgresql.Driver
+    #url: jdbc:mysql://localhost:3306/test
+    url: jdbc:postgresql://localhost:5432/coba
+    username: postgres
+    password: adminadmin
+    #username: root
+    #password: 
+    #driverClassName: com.mysql.jdbc.Driver
+    driverClassName: org.postgresql.Driver
     defaultSchema:
     maxPoolSize: 20
     hibernate:
       hbm2ddl.method: update
       show_sql: false
       format_sql: true
-      #dialect: org.hibernate.dialect.PostgreSQLDialect
-      dialect: org.hibernate.dialect.MySQLDialect
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      #dialect: org.hibernate.dialect.MySQLDialect
+      
       
 
