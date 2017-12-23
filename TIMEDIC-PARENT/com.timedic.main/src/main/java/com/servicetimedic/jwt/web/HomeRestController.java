@@ -56,7 +56,7 @@ public class HomeRestController {
 		}
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_ADMIN");
-		appUser.setRoles(roles);
+		//appUser.setRoles(roles);
 		return new ResponseEntity<AppUser>(appUserRepository.save(appUser), HttpStatus.CREATED);
 	}
 
@@ -96,7 +96,7 @@ public class HomeRestController {
 			token = Jwts.builder()
 					.setSubject(username)
 					.setExpiration(exp)
-					.claim("roles", appUser.getRoles())
+					.claim("roles", "ROLE_ADMIN"/*appUser.getRoles()*/)
 					.setIssuedAt(new Date())
 					.signWith(SignatureAlgorithm.HS256, "secretkey")
 					.compact();
