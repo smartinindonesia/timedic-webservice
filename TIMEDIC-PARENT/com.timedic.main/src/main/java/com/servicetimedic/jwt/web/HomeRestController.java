@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.servicetimedic.jwt.domain.posgresql.AppUser;
+//import com.servicetimedic.jwt.domain.posgresql.AppUser;
+import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
 
 import io.jsonwebtoken.Jwts;
@@ -47,13 +49,13 @@ public class HomeRestController {
 	 * @param appUser
 	 * @return
 	 */
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@RequestMapping(value = "/register", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
 	public ResponseEntity<AppUser> createUser(@RequestBody AppUser appUser) {
 		if (appUserRepository.findByUsername(appUser.getUsername()) != null) {
 			throw new RuntimeException("Username already exist");
 		}
 		List<String> roles = new ArrayList<>();
-		roles.add("USER");
+		roles.add("ROLE_ADMIN");
 		appUser.setRoles(roles);
 		return new ResponseEntity<AppUser>(appUserRepository.save(appUser), HttpStatus.CREATED);
 	}

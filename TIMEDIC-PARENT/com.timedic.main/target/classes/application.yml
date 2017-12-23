@@ -49,7 +49,7 @@ spring:
 datasource:
   sampleapp:
     #url: jdbc:mysql://localhost:3306/test
-    url: jdbc:postgresql://localhost:5432/coba
+    url: jdbc:postgresql://localhost:5432/strapi
     username: postgres
     password: adminadmin
     #username: root

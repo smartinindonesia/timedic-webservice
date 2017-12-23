@@ -78,7 +78,7 @@ public class JpaConfiguration
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setDataSource(dataSource());
-		factoryBean.setPackagesToScan(new String[] { "com.servicetimedic.jwt.domain.posgresql" });
+		factoryBean.setPackagesToScan(new String[] { "com.servicetimedic.jwt.domain.december" });
 		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
 		factoryBean.setJpaProperties(jpaProperties());
 		return factoryBean;

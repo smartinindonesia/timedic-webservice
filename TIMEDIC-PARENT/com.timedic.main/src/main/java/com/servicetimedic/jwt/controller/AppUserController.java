@@ -26,6 +26,7 @@ public class AppUserController {
 	
 	public static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
 	
+	/*
 	@Autowired
 	private UserDbRepository userRepository;
 	
@@ -37,7 +38,7 @@ public class AppUserController {
 		return userRepository.findAll();
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
 	public ResponseEntity<AppUser> getUserById(@PathVariable Long id)
 	{
@@ -76,7 +77,7 @@ public class AppUserController {
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT /*,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE*/)
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateUser(@PathVariable(value = "id") Long id,@RequestBody AppUser appUser) 
 	{
 		if (userRepository.findByUsername(appUser.getUsername()) != null && userRepository.findByUsername(appUser.getUsername()).getId() != appUser.getId()) 
@@ -119,6 +120,6 @@ public class AppUserController {
 		return new ResponseEntity<AppUser>(process, HttpStatus.CREATED);
 	}
 	
-	
+	*/
 
 }
