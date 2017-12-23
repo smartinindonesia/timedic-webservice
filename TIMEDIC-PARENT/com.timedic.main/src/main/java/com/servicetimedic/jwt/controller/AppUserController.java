@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.servicetimedic.jwt.domain.posgresql.AppUser;
+import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
 
 @RestController
@@ -26,7 +26,7 @@ public class AppUserController {
 	
 	public static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
 	
-	/*
+	
 	@Autowired
 	private UserDbRepository userRepository;
 	
@@ -120,6 +120,6 @@ public class AppUserController {
 		return new ResponseEntity<AppUser>(process, HttpStatus.CREATED);
 	}
 	
-	*/
+	
 
 }

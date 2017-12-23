@@ -5,23 +5,16 @@
  */
 package com.servicetimedic.jwt.domain.december;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -47,7 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByPhoneNumber", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.phoneNumber = :phoneNumber"),
     @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByFirstRegistrationDate", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.firstRegistrationDate = :firstRegistrationDate"),
     @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByIdNumber", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.idNumber = :idNumber")})
-public class LaboratoryLaboratoryClinicAdmin implements Serializable {
+public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,8 +84,18 @@ public class LaboratoryLaboratoryClinicAdmin implements Serializable {
     @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
-    @OneToMany(mappedBy = "laboratoryLaboratoryClinicAdminId")
-    private List<LaboratoryLaboratoryClinicAdminRoles> laboratoryLaboratoryClinicAdminRolesList;
+
+    @ElementCollection
+    //@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<String> roles = new ArrayList<>();
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public LaboratoryLaboratoryClinicAdmin() {
     }
@@ -115,6 +118,16 @@ public class LaboratoryLaboratoryClinicAdmin implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : roles)
+        {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
     }
 
     public String getPassword() {
@@ -205,15 +218,6 @@ public class LaboratoryLaboratoryClinicAdmin implements Serializable {
         this.idLaboratoryClinic = idLaboratoryClinic;
     }
 
-    @XmlTransient
-    public List<LaboratoryLaboratoryClinicAdminRoles> getLaboratoryLaboratoryClinicAdminRolesList() {
-        return laboratoryLaboratoryClinicAdminRolesList;
-    }
-
-    public void setLaboratoryLaboratoryClinicAdminRolesList(List<LaboratoryLaboratoryClinicAdminRoles> laboratoryLaboratoryClinicAdminRolesList) {
-        this.laboratoryLaboratoryClinicAdminRolesList = laboratoryLaboratoryClinicAdminRolesList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -231,6 +235,26 @@ public class LaboratoryLaboratoryClinicAdmin implements Serializable {
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
         return true;
     }
 

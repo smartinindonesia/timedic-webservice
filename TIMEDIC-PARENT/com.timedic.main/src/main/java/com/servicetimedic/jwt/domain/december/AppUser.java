@@ -5,21 +5,16 @@
  */
 package com.servicetimedic.jwt.domain.december;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -47,7 +42,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AppUser.findByFirstRegistrationDate", query = "SELECT a FROM AppUser a WHERE a.firstRegistrationDate = :firstRegistrationDate"),
     @NamedQuery(name = "AppUser.findByLatitude", query = "SELECT a FROM AppUser a WHERE a.latitude = :latitude"),
     @NamedQuery(name = "AppUser.findByLongitude", query = "SELECT a FROM AppUser a WHERE a.longitude = :longitude")})
-public class AppUser implements Serializable {
+public class AppUser implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,11 +92,21 @@ public class AppUser implements Serializable {
     @OneToMany(mappedBy = "idAppUser")
     private List<HomecarePatient> homecarePatientList;
     @OneToMany(mappedBy = "appUserId")
-    private List<AppUserRoles> appUserRolesList;
-    @OneToMany(mappedBy = "appUserId")
     private List<AppUserSocialAuth> appUserSocialAuthList;
     @OneToMany(mappedBy = "idAppUser")
     private List<GlobalIdNumber> globalIdNumberList;
+
+    @ElementCollection
+    //@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<String> roles = new ArrayList<>();
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public AppUser() {
     }
@@ -166,6 +171,16 @@ public class AppUser implements Serializable {
         this.middleName = middleName;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : roles)
+        {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -192,6 +207,26 @@ public class AppUser implements Serializable {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setUsername(String username) {
@@ -238,15 +273,6 @@ public class AppUser implements Serializable {
 
     public void setHomecarePatientList(List<HomecarePatient> homecarePatientList) {
         this.homecarePatientList = homecarePatientList;
-    }
-
-    @XmlTransient
-    public List<AppUserRoles> getAppUserRolesList() {
-        return appUserRolesList;
-    }
-
-    public void setAppUserRolesList(List<AppUserRoles> appUserRolesList) {
-        this.appUserRolesList = appUserRolesList;
     }
 
     @XmlTransient
