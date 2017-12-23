@@ -5,23 +5,16 @@
  */
 package com.servicetimedic.jwt.domain.december;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -50,7 +43,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "HomecareCaregiver.findByUsername", query = "SELECT h FROM HomecareCaregiver h WHERE h.username = :username"),
     @NamedQuery(name = "HomecareCaregiver.findByFirstRegistrationDate", query = "SELECT h FROM HomecareCaregiver h WHERE h.firstRegistrationDate = :firstRegistrationDate"),
     @NamedQuery(name = "HomecareCaregiver.findByEmployeeIdNumber", query = "SELECT h FROM HomecareCaregiver h WHERE h.employeeIdNumber = :employeeIdNumber")})
-public class HomecareCaregiver implements Serializable {
+public class HomecareCaregiver implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,8 +97,6 @@ public class HomecareCaregiver implements Serializable {
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
     @OneToMany(mappedBy = "idHomecareCaregiver")
     private List<HomecareCaregiverSchedule> homecareCaregiverScheduleList;
-    @OneToMany(mappedBy = "homecareCaregiverId")
-    private List<HomecareCaregiverRoles> homecareCaregiverRolesList;
     @JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
     @ManyToOne
     private HomecareHomecareClinic idHomecareClinic;
@@ -117,6 +108,48 @@ public class HomecareCaregiver implements Serializable {
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
     @OneToMany(mappedBy = "idCaregiver")
     private List<GlobalIdNumber> globalIdNumberList;
+
+    @ElementCollection
+    //@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<String> roles = new ArrayList<>();
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : roles)
+        {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     public HomecareCaregiver() {
     }
@@ -261,15 +294,6 @@ public class HomecareCaregiver implements Serializable {
 
     public void setHomecareCaregiverScheduleList(List<HomecareCaregiverSchedule> homecareCaregiverScheduleList) {
         this.homecareCaregiverScheduleList = homecareCaregiverScheduleList;
-    }
-
-    @XmlTransient
-    public List<HomecareCaregiverRoles> getHomecareCaregiverRolesList() {
-        return homecareCaregiverRolesList;
-    }
-
-    public void setHomecareCaregiverRolesList(List<HomecareCaregiverRoles> homecareCaregiverRolesList) {
-        this.homecareCaregiverRolesList = homecareCaregiverRolesList;
     }
 
     public HomecareHomecareClinic getIdHomecareClinic() {
