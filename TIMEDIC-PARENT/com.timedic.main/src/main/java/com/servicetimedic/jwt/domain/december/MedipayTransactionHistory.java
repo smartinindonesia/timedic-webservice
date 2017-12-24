@@ -7,7 +7,7 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,34 +15,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "medipay_transaction_history")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "MedipayTransactionHistory.findAll", query = "SELECT m FROM MedipayTransactionHistory m"),
-    @NamedQuery(name = "MedipayTransactionHistory.findById", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.id = :id"),
-    @NamedQuery(name = "MedipayTransactionHistory.findByTransactionDate", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.transactionDate = :transactionDate"),
-    @NamedQuery(name = "MedipayTransactionHistory.findByHcTransactionCode", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.hcTransactionCode = :hcTransactionCode"),
-    @NamedQuery(name = "MedipayTransactionHistory.findByDebit", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.debit = :debit"),
-    @NamedQuery(name = "MedipayTransactionHistory.findByCredit", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.credit = :credit"),
-    @NamedQuery(name = "MedipayTransactionHistory.findByBalance", query = "SELECT m FROM MedipayTransactionHistory m WHERE m.balance = :balance")})
+
 public class MedipayTransactionHistory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Column(name = "transaction_date")

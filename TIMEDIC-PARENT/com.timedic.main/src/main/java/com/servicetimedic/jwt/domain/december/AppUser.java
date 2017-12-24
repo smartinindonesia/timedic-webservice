@@ -9,44 +9,27 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
+
 @Entity
 @Table(name = "app_user")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AppUser.findAll", query = "SELECT a FROM AppUser a"),
-    @NamedQuery(name = "AppUser.findById", query = "SELECT a FROM AppUser a WHERE a.id = :id"),
-    @NamedQuery(name = "AppUser.findByAddress", query = "SELECT a FROM AppUser a WHERE a.address = :address"),
-    @NamedQuery(name = "AppUser.findByDateBirth", query = "SELECT a FROM AppUser a WHERE a.dateBirth = :dateBirth"),
-    @NamedQuery(name = "AppUser.findByEmail", query = "SELECT a FROM AppUser a WHERE a.email = :email"),
-    @NamedQuery(name = "AppUser.findByFrontName", query = "SELECT a FROM AppUser a WHERE a.frontName = :frontName"),
-    @NamedQuery(name = "AppUser.findByLastName", query = "SELECT a FROM AppUser a WHERE a.lastName = :lastName"),
-    @NamedQuery(name = "AppUser.findByMiddleName", query = "SELECT a FROM AppUser a WHERE a.middleName = :middleName"),
-    @NamedQuery(name = "AppUser.findByPassword", query = "SELECT a FROM AppUser a WHERE a.password = :password"),
-    @NamedQuery(name = "AppUser.findByPhoneNumber", query = "SELECT a FROM AppUser a WHERE a.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "AppUser.findByPhotoPath", query = "SELECT a FROM AppUser a WHERE a.photoPath = :photoPath"),
-    @NamedQuery(name = "AppUser.findByUsername", query = "SELECT a FROM AppUser a WHERE a.username = :username"),
-    @NamedQuery(name = "AppUser.findByFirstRegistrationDate", query = "SELECT a FROM AppUser a WHERE a.firstRegistrationDate = :firstRegistrationDate"),
-    @NamedQuery(name = "AppUser.findByLatitude", query = "SELECT a FROM AppUser a WHERE a.latitude = :latitude"),
-    @NamedQuery(name = "AppUser.findByLongitude", query = "SELECT a FROM AppUser a WHERE a.longitude = :longitude")})
+
 public class AppUser implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)
@@ -171,6 +154,7 @@ public class AppUser implements UserDetails, Serializable {
         this.middleName = middleName;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();

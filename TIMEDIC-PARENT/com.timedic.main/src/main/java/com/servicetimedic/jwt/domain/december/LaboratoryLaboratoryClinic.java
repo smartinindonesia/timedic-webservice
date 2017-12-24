@@ -7,40 +7,25 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
+
 @Entity
 @Table(name = "laboratory_laboratory_clinic")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findAll", query = "SELECT l FROM LaboratoryLaboratoryClinic l"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findById", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.id = :id"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findByAddress", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.address = :address"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findByCertificate", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.certificate = :certificate"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findByName", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.name = :name"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findByDetail", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.detail = :detail"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinic.findByUriLogo", query = "SELECT l FROM LaboratoryLaboratoryClinic l WHERE l.uriLogo = :uriLogo")})
+
 public class LaboratoryLaboratoryClinic implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

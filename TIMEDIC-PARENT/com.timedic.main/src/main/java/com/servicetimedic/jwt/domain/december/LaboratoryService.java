@@ -7,40 +7,23 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "laboratory_service")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LaboratoryService.findAll", query = "SELECT l FROM LaboratoryService l"),
-    @NamedQuery(name = "LaboratoryService.findById", query = "SELECT l FROM LaboratoryService l WHERE l.id = :id"),
-    @NamedQuery(name = "LaboratoryService.findByServiceName", query = "SELECT l FROM LaboratoryService l WHERE l.serviceName = :serviceName"),
-    @NamedQuery(name = "LaboratoryService.findByServiceCode", query = "SELECT l FROM LaboratoryService l WHERE l.serviceCode = :serviceCode"),
-    @NamedQuery(name = "LaboratoryService.findByDescription", query = "SELECT l FROM LaboratoryService l WHERE l.description = :description"),
-    @NamedQuery(name = "LaboratoryService.findByPrice", query = "SELECT l FROM LaboratoryService l WHERE l.price = :price"),
-    @NamedQuery(name = "LaboratoryService.findByUriServiceIcon", query = "SELECT l FROM LaboratoryService l WHERE l.uriServiceIcon = :uriServiceIcon")})
 public class LaboratoryService implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

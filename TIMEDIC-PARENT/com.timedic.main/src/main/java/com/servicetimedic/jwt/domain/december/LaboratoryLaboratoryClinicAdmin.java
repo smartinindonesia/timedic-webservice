@@ -5,47 +5,38 @@
  */
 package com.servicetimedic.jwt.domain.december;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "laboratory_laboratory_clinic_admin")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findAll", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findById", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.id = :id"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByUsername", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.username = :username"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByPassword", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.password = :password"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByAddress", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.address = :address"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByDateOfBirth", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.dateOfBirth = :dateOfBirth"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByEmail", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.email = :email"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByFirstName", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.firstName = :firstName"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByMiddleName", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.middleName = :middleName"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByLastName", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.lastName = :lastName"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByPhoneNumber", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByFirstRegistrationDate", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.firstRegistrationDate = :firstRegistrationDate"),
-    @NamedQuery(name = "LaboratoryLaboratoryClinicAdmin.findByIdNumber", query = "SELECT l FROM LaboratoryLaboratoryClinicAdmin l WHERE l.idNumber = :idNumber")})
+
 public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
-    @Column(name = "id")
+    //@Column(name = "id")
     private Long id;
     @Size(max = 255)
     @Column(name = "username")

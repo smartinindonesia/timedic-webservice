@@ -7,39 +7,25 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
+
 @Entity
 @Table(name = "laboratory_package")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LaboratoryPackage.findAll", query = "SELECT l FROM LaboratoryPackage l"),
-    @NamedQuery(name = "LaboratoryPackage.findById", query = "SELECT l FROM LaboratoryPackage l WHERE l.id = :id"),
-    @NamedQuery(name = "LaboratoryPackage.findByPackageName", query = "SELECT l FROM LaboratoryPackage l WHERE l.packageName = :packageName"),
-    @NamedQuery(name = "LaboratoryPackage.findByPackageCode", query = "SELECT l FROM LaboratoryPackage l WHERE l.packageCode = :packageCode"),
-    @NamedQuery(name = "LaboratoryPackage.findByPackageDescription", query = "SELECT l FROM LaboratoryPackage l WHERE l.packageDescription = :packageDescription"),
-    @NamedQuery(name = "LaboratoryPackage.findByUriPackageIcon", query = "SELECT l FROM LaboratoryPackage l WHERE l.uriPackageIcon = :uriPackageIcon")})
 public class LaboratoryPackage implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

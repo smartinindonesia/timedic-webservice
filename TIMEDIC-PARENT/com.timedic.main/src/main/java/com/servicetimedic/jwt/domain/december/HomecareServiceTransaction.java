@@ -8,7 +8,6 @@ package com.servicetimedic.jwt.domain.december;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,40 +15,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "homecare_service_transaction")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareServiceTransaction.findAll", query = "SELECT h FROM HomecareServiceTransaction h"),
-    @NamedQuery(name = "HomecareServiceTransaction.findById", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByDate", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.date = :date"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByFixedPrice", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.fixedPrice = :fixedPrice"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByPredictionPrice", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.predictionPrice = :predictionPrice"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByPrepaidPrice", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.prepaidPrice = :prepaidPrice"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByExpiredTransactionTime", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.expiredTransactionTime = :expiredTransactionTime"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByReceiptPath", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.receiptPath = :receiptPath"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByLocationLatitude", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.locationLatitude = :locationLatitude"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByLocationLongitude", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.locationLongitude = :locationLongitude"),
-    @NamedQuery(name = "HomecareServiceTransaction.findByTransactionDescription", query = "SELECT h FROM HomecareServiceTransaction h WHERE h.transactionDescription = :transactionDescription")})
+
 public class HomecareServiceTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Column(name = "date")

@@ -6,7 +6,6 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,30 +13,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "app_user_social_auth")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AppUserSocialAuth.findAll", query = "SELECT a FROM AppUserSocialAuth a"),
-    @NamedQuery(name = "AppUserSocialAuth.findById", query = "SELECT a FROM AppUserSocialAuth a WHERE a.id = :id"),
-    @NamedQuery(name = "AppUserSocialAuth.findByNetworkId", query = "SELECT a FROM AppUserSocialAuth a WHERE a.networkId = :networkId"),
-    @NamedQuery(name = "AppUserSocialAuth.findByNetwork", query = "SELECT a FROM AppUserSocialAuth a WHERE a.network = :network"),
-    @NamedQuery(name = "AppUserSocialAuth.findByEmail", query = "SELECT a FROM AppUserSocialAuth a WHERE a.email = :email")})
+
 public class AppUserSocialAuth implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 25)

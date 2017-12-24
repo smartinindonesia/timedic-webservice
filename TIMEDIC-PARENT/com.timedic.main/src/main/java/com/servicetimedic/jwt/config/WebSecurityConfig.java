@@ -3,8 +3,6 @@ package com.servicetimedic.jwt.config;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,20 +11,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Spring Web security configuration class
- * 
- * @author Sarath Muraleedharan
- *
+ 
  */
 //@Configurable
 @Configuration
@@ -54,10 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 
-		web.ignoring()
-				// ignoring the "/", "/index.html", "/app/**", "/register",
-				// "/favicon.ico"
-				.antMatchers("/", "/index.html", "/app/**", "/register", "/authenticate", "/favicon.ico");
+		//web.ignoring().antMatchers("/", "/index.html", "/app/**", "/register/**", "/authenticate/**", "/favicon.ico");
+		web.ignoring().antMatchers("/register/**", "/authenticate/**", "/logged/user");
 	}
 
 	// This method is used for override HttpSecurity of the web Application.
@@ -72,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
         .and()
         */
+		
 		.sessionManagement()
         	//.invalidSessionUrl("/login?invalid=1")
         	.maximumSessions(1)
@@ -80,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             //.expiredUrl("/login?time=1")
             .and()
         .and()
-				// starts authorizing configurations
+			//.antMatcher("/api/**")	// starts authorizing configurations
 		.authorizeRequests()//.antMatchers("/api/users","/api/users/").hasRole("USER")	
 				// authenticate all remaining URLS
 				.anyRequest().authenticated().and().logout().logoutSuccessHandler(logoutSuccess).deleteCookies("JSESSIONID").invalidateHttpSession(false).permitAll()

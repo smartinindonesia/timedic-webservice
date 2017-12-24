@@ -7,7 +7,6 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,32 +14,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "medipay_verification")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "MedipayVerification.findAll", query = "SELECT m FROM MedipayVerification m"),
-    @NamedQuery(name = "MedipayVerification.findById", query = "SELECT m FROM MedipayVerification m WHERE m.id = :id"),
-    @NamedQuery(name = "MedipayVerification.findByReceiptFilePath", query = "SELECT m FROM MedipayVerification m WHERE m.receiptFilePath = :receiptFilePath"),
-    @NamedQuery(name = "MedipayVerification.findByVerifiedDate", query = "SELECT m FROM MedipayVerification m WHERE m.verifiedDate = :verifiedDate"),
-    @NamedQuery(name = "MedipayVerification.findByVerifiedBy", query = "SELECT m FROM MedipayVerification m WHERE m.verifiedBy = :verifiedBy")})
+
 public class MedipayVerification implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

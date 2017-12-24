@@ -5,49 +5,39 @@
  */
 package com.servicetimedic.jwt.domain.december;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "homecare_caregiver")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareCaregiver.findAll", query = "SELECT h FROM HomecareCaregiver h"),
-    @NamedQuery(name = "HomecareCaregiver.findById", query = "SELECT h FROM HomecareCaregiver h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareCaregiver.findByAddress", query = "SELECT h FROM HomecareCaregiver h WHERE h.address = :address"),
-    @NamedQuery(name = "HomecareCaregiver.findByDateOfBirth", query = "SELECT h FROM HomecareCaregiver h WHERE h.dateOfBirth = :dateOfBirth"),
-    @NamedQuery(name = "HomecareCaregiver.findByEmail", query = "SELECT h FROM HomecareCaregiver h WHERE h.email = :email"),
-    @NamedQuery(name = "HomecareCaregiver.findByFrontName", query = "SELECT h FROM HomecareCaregiver h WHERE h.frontName = :frontName"),
-    @NamedQuery(name = "HomecareCaregiver.findByMiddleName", query = "SELECT h FROM HomecareCaregiver h WHERE h.middleName = :middleName"),
-    @NamedQuery(name = "HomecareCaregiver.findByLastName", query = "SELECT h FROM HomecareCaregiver h WHERE h.lastName = :lastName"),
-    @NamedQuery(name = "HomecareCaregiver.findByPassword", query = "SELECT h FROM HomecareCaregiver h WHERE h.password = :password"),
-    @NamedQuery(name = "HomecareCaregiver.findByPhoneNumber", query = "SELECT h FROM HomecareCaregiver h WHERE h.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "HomecareCaregiver.findByPhotoPath", query = "SELECT h FROM HomecareCaregiver h WHERE h.photoPath = :photoPath"),
-    @NamedQuery(name = "HomecareCaregiver.findBySipp", query = "SELECT h FROM HomecareCaregiver h WHERE h.sipp = :sipp"),
-    @NamedQuery(name = "HomecareCaregiver.findByRegisterNurseNumber", query = "SELECT h FROM HomecareCaregiver h WHERE h.registerNurseNumber = :registerNurseNumber"),
-    @NamedQuery(name = "HomecareCaregiver.findByUsername", query = "SELECT h FROM HomecareCaregiver h WHERE h.username = :username"),
-    @NamedQuery(name = "HomecareCaregiver.findByFirstRegistrationDate", query = "SELECT h FROM HomecareCaregiver h WHERE h.firstRegistrationDate = :firstRegistrationDate"),
-    @NamedQuery(name = "HomecareCaregiver.findByEmployeeIdNumber", query = "SELECT h FROM HomecareCaregiver h WHERE h.employeeIdNumber = :employeeIdNumber")})
+
 public class HomecareCaregiver implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

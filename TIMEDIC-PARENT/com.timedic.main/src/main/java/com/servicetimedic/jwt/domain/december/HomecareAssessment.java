@@ -7,7 +7,6 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,31 +14,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "homecare_assessment")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareAssessment.findAll", query = "SELECT h FROM HomecareAssessment h"),
-    @NamedQuery(name = "HomecareAssessment.findById", query = "SELECT h FROM HomecareAssessment h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareAssessment.findByQuestion", query = "SELECT h FROM HomecareAssessment h WHERE h.question = :question"),
-    @NamedQuery(name = "HomecareAssessment.findByStatusActive", query = "SELECT h FROM HomecareAssessment h WHERE h.statusActive = :statusActive")})
+
 public class HomecareAssessment implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

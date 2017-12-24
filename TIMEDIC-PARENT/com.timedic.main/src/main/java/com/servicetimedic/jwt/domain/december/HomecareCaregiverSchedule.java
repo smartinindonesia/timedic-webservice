@@ -15,29 +15,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
+
 @Entity
 @Table(name = "homecare_caregiver_schedule")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareCaregiverSchedule.findAll", query = "SELECT h FROM HomecareCaregiverSchedule h"),
-    @NamedQuery(name = "HomecareCaregiverSchedule.findById", query = "SELECT h FROM HomecareCaregiverSchedule h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareCaregiverSchedule.findByDate", query = "SELECT h FROM HomecareCaregiverSchedule h WHERE h.date = :date"),
-    @NamedQuery(name = "HomecareCaregiverSchedule.findByTime", query = "SELECT h FROM HomecareCaregiverSchedule h WHERE h.time = :time")})
+
 public class HomecareCaregiverSchedule implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;

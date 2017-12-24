@@ -6,7 +6,7 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,29 +14,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "homecare_transaction_caregiverlist")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareTransactionCaregiverlist.findAll", query = "SELECT h FROM HomecareTransactionCaregiverlist h"),
-    @NamedQuery(name = "HomecareTransactionCaregiverlist.findById", query = "SELECT h FROM HomecareTransactionCaregiverlist h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareTransactionCaregiverlist.findByCaregiverName", query = "SELECT h FROM HomecareTransactionCaregiverlist h WHERE h.caregiverName = :caregiverName"),
-    @NamedQuery(name = "HomecareTransactionCaregiverlist.findByRegisterNurseNumber", query = "SELECT h FROM HomecareTransactionCaregiverlist h WHERE h.registerNurseNumber = :registerNurseNumber")})
+
 public class HomecareTransactionCaregiverlist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

@@ -6,7 +6,6 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,26 +13,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "laboratory_service_package")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LaboratoryServicePackage.findAll", query = "SELECT l FROM LaboratoryServicePackage l"),
-    @NamedQuery(name = "LaboratoryServicePackage.findById", query = "SELECT l FROM LaboratoryServicePackage l WHERE l.id = :id")})
+
 public class LaboratoryServicePackage implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")

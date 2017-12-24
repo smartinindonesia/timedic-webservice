@@ -8,7 +8,6 @@ package com.servicetimedic.jwt.domain.december;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,37 +15,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "homecare_patient")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecarePatient.findAll", query = "SELECT h FROM HomecarePatient h"),
-    @NamedQuery(name = "HomecarePatient.findById", query = "SELECT h FROM HomecarePatient h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecarePatient.findByName", query = "SELECT h FROM HomecarePatient h WHERE h.name = :name"),
-    @NamedQuery(name = "HomecarePatient.findByReligion", query = "SELECT h FROM HomecarePatient h WHERE h.religion = :religion"),
-    @NamedQuery(name = "HomecarePatient.findByDateOfBirth", query = "SELECT h FROM HomecarePatient h WHERE h.dateOfBirth = :dateOfBirth"),
-    @NamedQuery(name = "HomecarePatient.findByPlaceOfBirth", query = "SELECT h FROM HomecarePatient h WHERE h.placeOfBirth = :placeOfBirth"),
-    @NamedQuery(name = "HomecarePatient.findByHeight", query = "SELECT h FROM HomecarePatient h WHERE h.height = :height"),
-    @NamedQuery(name = "HomecarePatient.findByWeight", query = "SELECT h FROM HomecarePatient h WHERE h.weight = :weight")})
+
 public class HomecarePatient implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)

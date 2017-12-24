@@ -30,7 +30,8 @@ public class AppUserController {
 	@Autowired
 	private UserDbRepository userRepository;
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<AppUser> getAllUsers() 
 	{
@@ -38,7 +39,7 @@ public class AppUserController {
 		return userRepository.findAll();
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
 	public ResponseEntity<AppUser> getUserById(@PathVariable Long id)
 	{
@@ -55,7 +56,8 @@ public class AppUserController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<AppUser> deleteUser(@PathVariable Long id) {
 		AppUser appUser = userRepository.findOne(id);
@@ -76,7 +78,8 @@ public class AppUserController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateUser(@PathVariable(value = "id") Long id,@RequestBody AppUser appUser) 
 	{
@@ -99,7 +102,8 @@ public class AppUserController {
 	}
 	
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public ResponseEntity<AppUser> createUser(@RequestBody AppUser appUser) 
 	{

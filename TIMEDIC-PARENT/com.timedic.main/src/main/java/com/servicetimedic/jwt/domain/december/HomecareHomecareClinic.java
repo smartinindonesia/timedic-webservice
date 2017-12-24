@@ -7,40 +7,24 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Hafid
- */
 @Entity
 @Table(name = "homecare_homecare_clinic")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "HomecareHomecareClinic.findAll", query = "SELECT h FROM HomecareHomecareClinic h"),
-    @NamedQuery(name = "HomecareHomecareClinic.findById", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.id = :id"),
-    @NamedQuery(name = "HomecareHomecareClinic.findByAddress", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.address = :address"),
-    @NamedQuery(name = "HomecareHomecareClinic.findByCertificate", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.certificate = :certificate"),
-    @NamedQuery(name = "HomecareHomecareClinic.findByName", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.name = :name"),
-    @NamedQuery(name = "HomecareHomecareClinic.findBySipp", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.sipp = :sipp"),
-    @NamedQuery(name = "HomecareHomecareClinic.findByUrlLogo", query = "SELECT h FROM HomecareHomecareClinic h WHERE h.urlLogo = :urlLogo")})
+
 public class HomecareHomecareClinic implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Size(max = 255)
