@@ -25,9 +25,6 @@ import io.jsonwebtoken.SignatureException;
 
 /**
  * A generic filter for security. I will check token present in the header.
- * 
- * @author Sarath Muraleedharan
- *
  */
 public class JWTFilter extends GenericFilterBean {
 	private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -39,16 +36,18 @@ public class JWTFilter extends GenericFilterBean {
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 		
 		//System.out.println("Token : "+token);
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) 
+		if (authHeader == null || !authHeader.startsWith("")) 
 		{
 			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header.");
 		}
 		else 
 		{
-			String token = authHeader.substring(7);
+			//String token = authHeader.substring(7);
+			String token = authHeader; //.substring(7);
 			if (isTokenExpired(token))
 			{
-				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Your API's session is time out.");
+				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid nauthorization.");
+				//((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Your API's session is time out.");
 			}
 			else
 			{

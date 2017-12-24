@@ -6,8 +6,6 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "homecare_assessment_option")
@@ -26,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class HomecareAssessmentOption implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
@@ -36,11 +32,9 @@ public class HomecareAssessmentOption implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "price_added")
     private Float priceAdded;
-    @OneToMany(mappedBy = "idAssessment")
-    private List<HomecareAssessmentOption> homecareAssessmentOptionList;
     @JoinColumn(name = "id_assessment", referencedColumnName = "id")
     @ManyToOne
-    private HomecareAssessmentOption idAssessment;
+    private HomecareAssessment idAssessment;
 
     public HomecareAssessmentOption() {
     }
@@ -73,20 +67,11 @@ public class HomecareAssessmentOption implements Serializable {
         this.priceAdded = priceAdded;
     }
 
-    @XmlTransient
-    public List<HomecareAssessmentOption> getHomecareAssessmentOptionList() {
-        return homecareAssessmentOptionList;
-    }
-
-    public void setHomecareAssessmentOptionList(List<HomecareAssessmentOption> homecareAssessmentOptionList) {
-        this.homecareAssessmentOptionList = homecareAssessmentOptionList;
-    }
-
-    public HomecareAssessmentOption getIdAssessment() {
+    public HomecareAssessment getIdAssessment() {
         return idAssessment;
     }
 
-    public void setIdAssessment(HomecareAssessmentOption idAssessment) {
+    public void setIdAssessment(HomecareAssessment idAssessment) {
         this.idAssessment = idAssessment;
     }
 

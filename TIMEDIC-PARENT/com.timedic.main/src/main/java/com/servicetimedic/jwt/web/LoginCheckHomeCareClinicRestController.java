@@ -46,7 +46,7 @@ public class LoginCheckHomeCareClinicRestController {
 			throw new RuntimeException("Username already exist");
 		}
 		List<String> roles = new ArrayList<>();
-		roles.add("ROLE_CAREGIVER");
+		roles.add("ROLE_CLINIC");
 		homecareClinicAdmin.setRoles(roles);
 		return new ResponseEntity<HomecareHomecareClinicAdmin>(homeCareClinicDbRepository.save(homecareClinicAdmin), HttpStatus.CREATED);
 	}

@@ -6,7 +6,7 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class HomecareAssessment implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
@@ -35,14 +35,16 @@ public class HomecareAssessment implements Serializable {
     @Column(name = "status_active")
     private Integer statusActive;
     @OneToMany(mappedBy = "idAssessment")
-    private List<HomecareServiceAssessment> homecareServiceAssessmentList;
+    private Collection<HomecareServiceAssessment> homecareServiceAssessmentCollection;
     @OneToMany(mappedBy = "rootId")
-    private List<HomecareAssessment> homecareAssessmentList;
+    private Collection<HomecareAssessment> homecareAssessmentCollection;
     @JoinColumn(name = "root_id", referencedColumnName = "id")
     @ManyToOne
     private HomecareAssessment rootId;
     @OneToMany(mappedBy = "idAssessment")
-    private List<HomecareAssessmentRecord> homecareAssessmentRecordList;
+    private Collection<HomecareAssessmentOption> homecareAssessmentOptionCollection;
+    @OneToMany(mappedBy = "idAssessment")
+    private Collection<HomecareAssessmentRecord> homecareAssessmentRecordCollection;
 
     public HomecareAssessment() {
     }
@@ -76,21 +78,21 @@ public class HomecareAssessment implements Serializable {
     }
 
     @XmlTransient
-    public List<HomecareServiceAssessment> getHomecareServiceAssessmentList() {
-        return homecareServiceAssessmentList;
+    public Collection<HomecareServiceAssessment> getHomecareServiceAssessmentCollection() {
+        return homecareServiceAssessmentCollection;
     }
 
-    public void setHomecareServiceAssessmentList(List<HomecareServiceAssessment> homecareServiceAssessmentList) {
-        this.homecareServiceAssessmentList = homecareServiceAssessmentList;
+    public void setHomecareServiceAssessmentCollection(Collection<HomecareServiceAssessment> homecareServiceAssessmentCollection) {
+        this.homecareServiceAssessmentCollection = homecareServiceAssessmentCollection;
     }
 
     @XmlTransient
-    public List<HomecareAssessment> getHomecareAssessmentList() {
-        return homecareAssessmentList;
+    public Collection<HomecareAssessment> getHomecareAssessmentCollection() {
+        return homecareAssessmentCollection;
     }
 
-    public void setHomecareAssessmentList(List<HomecareAssessment> homecareAssessmentList) {
-        this.homecareAssessmentList = homecareAssessmentList;
+    public void setHomecareAssessmentCollection(Collection<HomecareAssessment> homecareAssessmentCollection) {
+        this.homecareAssessmentCollection = homecareAssessmentCollection;
     }
 
     public HomecareAssessment getRootId() {
@@ -102,12 +104,21 @@ public class HomecareAssessment implements Serializable {
     }
 
     @XmlTransient
-    public List<HomecareAssessmentRecord> getHomecareAssessmentRecordList() {
-        return homecareAssessmentRecordList;
+    public Collection<HomecareAssessmentOption> getHomecareAssessmentOptionCollection() {
+        return homecareAssessmentOptionCollection;
     }
 
-    public void setHomecareAssessmentRecordList(List<HomecareAssessmentRecord> homecareAssessmentRecordList) {
-        this.homecareAssessmentRecordList = homecareAssessmentRecordList;
+    public void setHomecareAssessmentOptionCollection(Collection<HomecareAssessmentOption> homecareAssessmentOptionCollection) {
+        this.homecareAssessmentOptionCollection = homecareAssessmentOptionCollection;
+    }
+
+    @XmlTransient
+    public Collection<HomecareAssessmentRecord> getHomecareAssessmentRecordCollection() {
+        return homecareAssessmentRecordCollection;
+    }
+
+    public void setHomecareAssessmentRecordCollection(Collection<HomecareAssessmentRecord> homecareAssessmentRecordCollection) {
+        this.homecareAssessmentRecordCollection = homecareAssessmentRecordCollection;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class AppUserController {
 	private UserDbRepository userRepository;
 	
 	//@PreAuthorize("hasRole('ADMIN')")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<AppUser> getAllUsers() 
 	{
