@@ -8,6 +8,7 @@ package com.servicetimedic.jwt.domain.december;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +23,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "homecare_patient")
 
@@ -29,31 +32,38 @@ public class HomecarePatient implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "name")
     private String name;
+    
     @Size(max = 255)
     @Column(name = "religion")
     private String religion;
+    
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfBirth;
+    
     @Size(max = 255)
     @Column(name = "place_of_birth")
     private String placeOfBirth;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Column(name = "height")
     private Float height;
+    
     @Column(name = "weight")
     private Float weight;
+    
     @JoinColumn(name = "id_app_user", referencedColumnName = "id")
     @ManyToOne
     private AppUser idAppUser;
+    
     @OneToMany(mappedBy = "homecarePatientId")
     private List<HomecareServiceTransaction> homecareServiceTransactionList;
+    
     @OneToMany(mappedBy = "idPatient")
     private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
 
@@ -120,6 +130,7 @@ public class HomecarePatient implements Serializable {
         this.weight = weight;
     }
 
+    @JsonIgnore
     public AppUser getIdAppUser() {
         return idAppUser;
     }
@@ -128,20 +139,24 @@ public class HomecarePatient implements Serializable {
         this.idAppUser = idAppUser;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<HomecareServiceTransaction> getHomecareServiceTransactionList() {
         return homecareServiceTransactionList;
     }
 
+    //@JsonIgnore
     public void setHomecareServiceTransactionList(List<HomecareServiceTransaction> homecareServiceTransactionList) {
         this.homecareServiceTransactionList = homecareServiceTransactionList;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<LaboratoryServiceTransaction> getLaboratoryServiceTransactionList() {
         return laboratoryServiceTransactionList;
     }
 
+    @JsonIgnore
     public void setLaboratoryServiceTransactionList(List<LaboratoryServiceTransaction> laboratoryServiceTransactionList) {
         this.laboratoryServiceTransactionList = laboratoryServiceTransactionList;
     }

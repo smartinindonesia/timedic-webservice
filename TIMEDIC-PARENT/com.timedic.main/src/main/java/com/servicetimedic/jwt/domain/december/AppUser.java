@@ -26,56 +26,71 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "app_user")
 
 public class AppUser implements UserDetails, Serializable {
-    private static final long serialVersionUID = 1L;
+    
+	private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "address")
     private String address;
+    
     @Column(name = "date_birth")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateBirth;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    
     @Size(max = 255)
     @Column(name = "email")
     private String email;
+    
     @Size(max = 255)
     @Column(name = "front_name")
     private String frontName;
+    
     @Size(max = 255)
     @Column(name = "last_name")
     private String lastName;
+    
     @Size(max = 255)
     @Column(name = "middle_name")
     private String middleName;
+    
     @Size(max = 255)
     @Column(name = "password")
     private String password;
+    
     @Column(name = "phone_number")
     private Integer phoneNumber;
+    
     @Size(max = 255)
     @Column(name = "photo_path")
     private String photoPath;
+    
     @Size(max = 255)
     @Column(name = "username")
     private String username;
+    
     @Column(name = "first_registration_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstRegistrationDate;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+   
     @Column(name = "latitude")
     private Float latitude;
+    
     @Column(name = "longitude")
     private Float longitude;
+    
     @OneToMany(mappedBy = "idAppUser")
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
+    
     @OneToMany(mappedBy = "idAppUser")
     private List<HomecarePatient> homecarePatientList;
+    
     @OneToMany(mappedBy = "appUserId")
     private List<AppUserSocialAuth> appUserSocialAuthList;
+    
     @OneToMany(mappedBy = "idAppUser")
     private List<GlobalIdNumber> globalIdNumberList;
 
@@ -241,38 +256,46 @@ public class AppUser implements UserDetails, Serializable {
         this.longitude = longitude;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<HomecareCaregiverRate> getHomecareCaregiverRateList() {
         return homecareCaregiverRateList;
     }
-
+    
+    @JsonIgnore
     public void setHomecareCaregiverRateList(List<HomecareCaregiverRate> homecareCaregiverRateList) {
         this.homecareCaregiverRateList = homecareCaregiverRateList;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<HomecarePatient> getHomecarePatientList() {
         return homecarePatientList;
     }
 
+    @JsonIgnore
     public void setHomecarePatientList(List<HomecarePatient> homecarePatientList) {
         this.homecarePatientList = homecarePatientList;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<AppUserSocialAuth> getAppUserSocialAuthList() {
         return appUserSocialAuthList;
     }
 
+    @JsonIgnore
     public void setAppUserSocialAuthList(List<AppUserSocialAuth> appUserSocialAuthList) {
         this.appUserSocialAuthList = appUserSocialAuthList;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<GlobalIdNumber> getGlobalIdNumberList() {
         return globalIdNumberList;
     }
 
+    @JsonIgnore
     public void setGlobalIdNumberList(List<GlobalIdNumber> globalIdNumberList) {
         this.globalIdNumberList = globalIdNumberList;
     }

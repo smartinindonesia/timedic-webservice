@@ -21,19 +21,23 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "timedic_payment_method")
 
 public class TimedicPaymentMethod implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "payment_method")
     private String paymentMethod;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "description")
     private String description;
-    @OneToMany(mappedBy = "paymentMethodId")
+    
+	@OneToMany(mappedBy = "paymentMethodId")
     private List<HomecareServiceTransaction> homecareServiceTransactionList;
 
     public TimedicPaymentMethod() {

@@ -7,6 +7,8 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "homecare_service")
@@ -39,7 +43,8 @@ public class HomecareService implements Serializable {
     @Size(max = 255)
     @Column(name = "service_url_icon")
     private String serviceUrlIcon;
-    @OneToMany(mappedBy = "idService")
+    
+    @OneToMany(mappedBy = "idService", cascade= CascadeType.REMOVE)
     private List<HomecareServiceAssessment> homecareServiceAssessmentList;
 
     public HomecareService() {
@@ -89,11 +94,13 @@ public class HomecareService implements Serializable {
         this.serviceUrlIcon = serviceUrlIcon;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<HomecareServiceAssessment> getHomecareServiceAssessmentList() {
         return homecareServiceAssessmentList;
     }
-
+    
+    @JsonIgnore
     public void setHomecareServiceAssessmentList(List<HomecareServiceAssessment> homecareServiceAssessmentList) {
         this.homecareServiceAssessmentList = homecareServiceAssessmentList;
     }

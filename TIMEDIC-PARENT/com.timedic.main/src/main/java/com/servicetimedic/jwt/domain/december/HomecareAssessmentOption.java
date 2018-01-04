@@ -6,6 +6,7 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "homecare_assessment_option")
@@ -26,12 +29,15 @@ public class HomecareAssessmentOption implements Serializable {
     //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "option")
     private String option;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Column(name = "price_added")
     private Float priceAdded;
+    
     @JoinColumn(name = "id_assessment", referencedColumnName = "id")
     @ManyToOne
     private HomecareAssessment idAssessment;
@@ -59,6 +65,7 @@ public class HomecareAssessmentOption implements Serializable {
         this.option = option;
     }
 
+    @JsonIgnore
     public Float getPriceAdded() {
         return priceAdded;
     }
@@ -67,6 +74,7 @@ public class HomecareAssessmentOption implements Serializable {
         this.priceAdded = priceAdded;
     }
 
+    @JsonIgnore
     public HomecareAssessment getIdAssessment() {
         return idAssessment;
     }

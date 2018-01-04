@@ -26,46 +26,60 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "homecare_service_transaction")
 
 public class HomecareServiceTransaction implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Column(name = "date")
+    
+	@Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "fixed_price")
+    
+	@Column(name = "fixed_price")
     private Float fixedPrice;
-    @Column(name = "prediction_price")
+    
+	@Column(name = "prediction_price")
     private Float predictionPrice;
-    @Column(name = "prepaid_price")
+    
+	@Column(name = "prepaid_price")
     private Float prepaidPrice;
-    @Column(name = "expired_transaction_time")
+    
+	@Column(name = "expired_transaction_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiredTransactionTime;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "receipt_path")
     private String receiptPath;
-    @Column(name = "location_latitude")
+    
+	@Column(name = "location_latitude")
     private Float locationLatitude;
-    @Column(name = "location_longitude")
+    
+	@Column(name = "location_longitude")
     private Float locationLongitude;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "transaction_description")
     private String transactionDescription;
-    @OneToMany(mappedBy = "idServiceTransaction")
+    
+	@OneToMany(mappedBy = "idServiceTransaction")
     private List<HomecareTransactionCaregiverlist> homecareTransactionCaregiverlistList;
-    @OneToMany(mappedBy = "idServiceTransaction")
+    
+	@OneToMany(mappedBy = "idServiceTransaction")
     private List<HomecareAssessmentRecord> homecareAssessmentRecordList;
-    @JoinColumn(name = "transaction_status_id", referencedColumnName = "id")
+    
+	@JoinColumn(name = "transaction_status_id", referencedColumnName = "id")
     @ManyToOne
     private SystemTransactionStatus transactionStatusId;
-    @JoinColumn(name = "homecare_patient_id", referencedColumnName = "id")
+    
+	@JoinColumn(name = "homecare_patient_id", referencedColumnName = "id")
     @ManyToOne
     private HomecarePatient homecarePatientId;
-    @JoinColumn(name = "payment_method_id", referencedColumnName = "id")
+    
+	@JoinColumn(name = "payment_method_id", referencedColumnName = "id")
     @ManyToOne
     private TimedicPaymentMethod paymentMethodId;
 

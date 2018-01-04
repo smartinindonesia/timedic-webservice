@@ -7,6 +7,7 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +20,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "homecare_assessment")
 
@@ -29,20 +32,27 @@ public class HomecareAssessment implements Serializable {
     //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "question")
     private String question;
+    
     @Column(name = "status_active")
     private Integer statusActive;
+    
     @OneToMany(mappedBy = "idAssessment")
     private Collection<HomecareServiceAssessment> homecareServiceAssessmentCollection;
+    
     @OneToMany(mappedBy = "rootId")
     private Collection<HomecareAssessment> homecareAssessmentCollection;
+    
     @JoinColumn(name = "root_id", referencedColumnName = "id")
     @ManyToOne
     private HomecareAssessment rootId;
+    
     @OneToMany(mappedBy = "idAssessment")
     private Collection<HomecareAssessmentOption> homecareAssessmentOptionCollection;
+    
     @OneToMany(mappedBy = "idAssessment")
     private Collection<HomecareAssessmentRecord> homecareAssessmentRecordCollection;
 
@@ -77,7 +87,8 @@ public class HomecareAssessment implements Serializable {
         this.statusActive = statusActive;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<HomecareServiceAssessment> getHomecareServiceAssessmentCollection() {
         return homecareServiceAssessmentCollection;
     }
@@ -86,7 +97,8 @@ public class HomecareAssessment implements Serializable {
         this.homecareServiceAssessmentCollection = homecareServiceAssessmentCollection;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<HomecareAssessment> getHomecareAssessmentCollection() {
         return homecareAssessmentCollection;
     }
@@ -104,6 +116,7 @@ public class HomecareAssessment implements Serializable {
     }
 
     @XmlTransient
+    //@JsonIgnore
     public Collection<HomecareAssessmentOption> getHomecareAssessmentOptionCollection() {
         return homecareAssessmentOptionCollection;
     }
@@ -112,7 +125,8 @@ public class HomecareAssessment implements Serializable {
         this.homecareAssessmentOptionCollection = homecareAssessmentOptionCollection;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<HomecareAssessmentRecord> getHomecareAssessmentRecordCollection() {
         return homecareAssessmentRecordCollection;
     }

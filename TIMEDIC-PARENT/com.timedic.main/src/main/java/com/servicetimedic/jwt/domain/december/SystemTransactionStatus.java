@@ -21,18 +21,22 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "system_transaction_status")
 
 public class SystemTransactionStatus implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "status")
     private String status;
-    @OneToMany(mappedBy = "transactionStatusId")
+    
+	@OneToMany(mappedBy = "transactionStatusId")
     private List<HomecareServiceTransaction> homecareServiceTransactionList;
-    @OneToMany(mappedBy = "transactionStatus")
+    
+	@OneToMany(mappedBy = "transactionStatus")
     private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
 
     public SystemTransactionStatus() {

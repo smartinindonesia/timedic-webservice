@@ -21,22 +21,27 @@ import javax.validation.constraints.Size;
 @Table(name = "homecare_assessment_record")
 
 public class HomecareAssessmentRecord implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "assessment_answer")
     private String assessmentAnswer;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "file_path")
     private String filePath;
-    @JoinColumn(name = "id_assessment", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_assessment", referencedColumnName = "id")
     @ManyToOne
     private HomecareAssessment idAssessment;
-    @JoinColumn(name = "id_service_transaction", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_service_transaction", referencedColumnName = "id")
     @ManyToOne
     private HomecareServiceTransaction idServiceTransaction;
 

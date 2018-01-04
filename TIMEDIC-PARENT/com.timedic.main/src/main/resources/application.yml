@@ -50,6 +50,8 @@ datasource:
   sampleapp:
     #url: jdbc:mysql://localhost:3306/test
     url: jdbc:postgresql://localhost:5432/strapi
+    #url: jdbc:postgresql://timedic.id:49401/timedic
+    #url: jdbc:postgresql://localhost:5432/timedic
     username: postgres
     password: adminadmin
     #username: root
@@ -64,6 +66,9 @@ datasource:
       format_sql: true
       dialect: org.hibernate.dialect.PostgreSQLDialect
       #dialect: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  expires_in: 1800 # second
       
       
 

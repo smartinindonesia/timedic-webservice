@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
 
+
+
 //import org.springframework.security.core.userdetails.User; 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,8 +38,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 public class LoginCheckUsersRestController {
+	
 	@Autowired
 	private UserDbRepository appUserRepository;
+	
+	@Value("${jwt.expires_in}")
+    private int EXPIRES_IN;
 
 	/**
 	 * This method is used for user registration. Note: user registration is not
@@ -99,8 +106,10 @@ public class LoginCheckUsersRestController {
 		
 		if (appUser != null && appUser.getPassword().equals(password)) 
 		{
+			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
 			//Date expiration = Date.from(LocalDateTime.now().plusMinutes(1).toInstant(UTC));
-			Date exp = new Date(System.currentTimeMillis() + 600000);
+			//Date exp = new Date(System.currentTimeMillis() + 600000);
+			//Date exp = new Date(System.currentTimeMillis() + 18000000);
 			//System.out.println("Date "+exp);
 			token = Jwts.builder()
 					.setSubject(username)

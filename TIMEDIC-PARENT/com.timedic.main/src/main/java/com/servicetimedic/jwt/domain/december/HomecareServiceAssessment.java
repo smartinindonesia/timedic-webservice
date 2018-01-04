@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "homecare_service_assessment")
 
@@ -56,6 +58,7 @@ public class HomecareServiceAssessment implements Serializable {
         this.idAssessment = idAssessment;
     }
 
+    @JsonIgnore
     public HomecareService getIdService() {
         return idService;
     }
