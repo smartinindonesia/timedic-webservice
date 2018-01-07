@@ -130,7 +130,7 @@ public class HomecarePatient implements Serializable {
         this.weight = weight;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public AppUser getIdAppUser() {
         return idAppUser;
     }

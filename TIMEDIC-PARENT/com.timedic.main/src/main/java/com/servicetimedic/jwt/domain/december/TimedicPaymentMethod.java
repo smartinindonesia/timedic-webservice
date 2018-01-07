@@ -7,6 +7,7 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "timedic_payment_method")
@@ -71,7 +74,8 @@ public class TimedicPaymentMethod implements Serializable {
         this.description = description;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public List<HomecareServiceTransaction> getHomecareServiceTransactionList() {
         return homecareServiceTransactionList;
     }

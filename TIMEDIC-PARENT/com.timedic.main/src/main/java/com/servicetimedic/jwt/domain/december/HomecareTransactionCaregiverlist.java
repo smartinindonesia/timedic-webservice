@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "homecare_transaction_caregiverlist")
 
@@ -32,9 +34,11 @@ public class HomecareTransactionCaregiverlist implements Serializable {
     private String caregiverName;
     @Column(name = "register_nurse_number")
     private Integer registerNurseNumber;
+    
     @JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
     @ManyToOne
     private HomecareHomecareClinic idHomecareClinic;
+    
     @JoinColumn(name = "id_service_transaction", referencedColumnName = "id")
     @ManyToOne
     private HomecareServiceTransaction idServiceTransaction;
@@ -70,6 +74,7 @@ public class HomecareTransactionCaregiverlist implements Serializable {
         this.registerNurseNumber = registerNurseNumber;
     }
 
+    @JsonIgnore
     public HomecareHomecareClinic getIdHomecareClinic() {
         return idHomecareClinic;
     }
@@ -78,6 +83,7 @@ public class HomecareTransactionCaregiverlist implements Serializable {
         this.idHomecareClinic = idHomecareClinic;
     }
 
+    @JsonIgnore
     public HomecareServiceTransaction getIdServiceTransaction() {
         return idServiceTransaction;
     }
