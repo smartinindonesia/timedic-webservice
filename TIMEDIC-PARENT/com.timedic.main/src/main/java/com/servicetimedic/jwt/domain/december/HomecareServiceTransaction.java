@@ -8,6 +8,8 @@ package com.servicetimedic.jwt.domain.december;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -65,10 +67,10 @@ public class HomecareServiceTransaction implements Serializable {
     @Column(name = "transaction_description")
     private String transactionDescription;
     
-	@OneToMany(mappedBy = "idServiceTransaction")
+	@OneToMany(mappedBy = "idServiceTransaction", cascade= CascadeType.REMOVE)
     private List<HomecareTransactionCaregiverlist> homecareTransactionCaregiverlistList;
     
-	@OneToMany(mappedBy = "idServiceTransaction")
+	@OneToMany(mappedBy = "idServiceTransaction", cascade= CascadeType.REMOVE)
     private List<HomecareAssessmentRecord> homecareAssessmentRecordList;
     
 	@JoinColumn(name = "transaction_status_id", referencedColumnName = "id")

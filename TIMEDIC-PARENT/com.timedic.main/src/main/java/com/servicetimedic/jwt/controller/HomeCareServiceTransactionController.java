@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
-import com.servicetimedic.jwt.repository.HomecareSeriveTransactionsDbRepository;
+import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
+import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -23,7 +26,10 @@ public class HomeCareServiceTransactionController {
 	public static final Logger logger = LoggerFactory.getLogger(HomeCareServiceTransactionController.class);
 	
 	@Autowired
-	private HomecareSeriveTransactionsDbRepository homecareSeriveTransactionsDbRepository;
+	private HomeCareSeriveTransactionsDbRepository homecareSeriveTransactionsDbRepository;
+	
+	@Autowired
+	private HomeCareAssessmentRecordDbRepository homeCareAssessmentRecordDbRepository;
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/transactions/homecare", method = RequestMethod.GET)
@@ -50,7 +56,7 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteTransactionsHomecare(@PathVariable Long id) {
 		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findOne(id);
@@ -66,10 +72,23 @@ public class HomeCareServiceTransactionController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/transactions/homecare/", method = RequestMethod.POST)
-	public ResponseEntity<HomecareServiceTransaction> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
+	public ResponseEntity<String> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
 	{
-		HomecareServiceTransaction process = homecareSeriveTransactionsDbRepository.save(homecareService);		
-		return new ResponseEntity<HomecareServiceTransaction>(process, HttpStatus.CREATED);
+		HomecareServiceTransaction process = homecareSeriveTransactionsDbRepository.save(homecareService);
+		HomecareServiceTransaction newID = new HomecareServiceTransaction();
+		newID.setId(process.getId());
+		List<HomecareAssessmentRecord> assessment = homecareService.getHomecareAssessmentRecordList();
+		for(HomecareAssessmentRecord data : assessment)
+		{
+			data.setIdServiceTransaction(newID);
+		}
+		
+		homeCareAssessmentRecordDbRepository.save(homecareService.getHomecareAssessmentRecordList());
+		
+		//process.setHomecareAssessmentRecordList(assessment);
+		
+		//return new ResponseEntity<HomecareServiceTransaction>(process, HttpStatus.CREATED);
+		return new ResponseEntity<String>("Thank You, Your order has been recorded in our system", HttpStatus.CREATED);
 	}
 	
 
