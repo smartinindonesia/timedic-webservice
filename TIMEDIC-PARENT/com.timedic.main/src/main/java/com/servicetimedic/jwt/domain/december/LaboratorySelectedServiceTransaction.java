@@ -19,15 +19,18 @@ import javax.persistence.Table;
 @Table(name = "laboratory_selected_service_transaction")
 
 public class LaboratorySelectedServiceTransaction implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @JoinColumn(name = "id_laboratory_service_transaction", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryServiceTransaction idLaboratoryServiceTransaction;
+    
     @JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryService idLaboratoryService;

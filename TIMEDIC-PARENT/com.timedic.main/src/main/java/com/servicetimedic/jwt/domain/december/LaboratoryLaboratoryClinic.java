@@ -22,32 +22,41 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "laboratory_laboratory_clinic")
 
 public class LaboratoryLaboratoryClinic implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "address")
     private String address;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "certificate")
     private String certificate;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "name")
     private String name;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "detail")
     private String detail;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "uri_logo")
     private String uriLogo;
-    @OneToMany(mappedBy = "idLaboratoryClinic")
+    
+	@OneToMany(mappedBy = "idLaboratoryClinic")
     private List<HomecareCaregiver> homecareCaregiverList;
-    @OneToMany(mappedBy = "idLaboratoryClinic")
+    
+	@OneToMany(mappedBy = "idLaboratoryClinic")
     private List<LaboratoryLaboratoryClinicAdmin> laboratoryLaboratoryClinicAdminList;
-    @OneToMany(mappedBy = "idLaboratoryClinic")
+    
+	@OneToMany(mappedBy = "idLaboratoryClinic")
     private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
 
     public LaboratoryLaboratoryClinic() {

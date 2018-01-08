@@ -22,27 +22,34 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "laboratory_package")
 public class LaboratoryPackage implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "package_name")
     private String packageName;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "package_code")
     private String packageCode;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "package_description")
     private String packageDescription;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "uri_package_icon")
     private String uriPackageIcon;
-    @OneToMany(mappedBy = "idLaboratoryPackage")
+    
+	@OneToMany(mappedBy = "idLaboratoryPackage")
     private List<LaboratoryServicePackage> laboratoryServicePackageList;
-    @OneToMany(mappedBy = "idServicePackage")
+    
+	@OneToMany(mappedBy = "idServicePackage")
     private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
 
     public LaboratoryPackage() {

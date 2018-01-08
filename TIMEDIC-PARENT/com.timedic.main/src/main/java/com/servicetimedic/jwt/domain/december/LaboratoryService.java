@@ -20,29 +20,35 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "laboratory_service")
 public class LaboratoryService implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
+	private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "service_name")
     private String serviceName;
+    
     @Size(max = 255)
     @Column(name = "service_code")
     private String serviceCode;
+    
     @Size(max = 255)
     @Column(name = "description")
     private String description;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Column(name = "price")
     private Float price;
+    
     @Size(max = 255)
     @Column(name = "uri_service_icon")
     private String uriServiceIcon;
+    
     @OneToMany(mappedBy = "idLaboratoryService")
     private List<LaboratoryServicePackage> laboratoryServicePackageList;
+    
     @OneToMany(mappedBy = "idLaboratoryService")
     private List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList;
 

@@ -32,52 +32,63 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "laboratory_laboratory_clinic_admin")
 
 public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
-    //@Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "username")
     private String username;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "password")
     private String password;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "address")
     private String address;
-    @Column(name = "date_of_birth")
+    
+	@Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "email")
     private String email;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "first_name")
     private String firstName;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "middle_name")
     private String middleName;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "last_name")
     private String lastName;
-    @Size(max = 30)
+    
+	@Size(max = 30)
     @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "first_registration_date")
+    
+	@Column(name = "first_registration_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstRegistrationDate;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "id_number")
     private String idNumber;
-    @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
 
     @ElementCollection
-    //@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<String> roles = new ArrayList<>();
 
     public List<String> getRoles() {

@@ -27,40 +27,51 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "laboratory_service_transaction")
 
 public class LaboratoryServiceTransaction implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Column(name = "date")
+    
+	@Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "total_price")
+    
+	@Column(name = "total_price")
     private Float totalPrice;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "transaction_description")
     private String transactionDescription;
-    @Column(name = "location_latitude")
+    
+	@Column(name = "location_latitude")
     private Float locationLatitude;
-    @Column(name = "location_longitude")
+    
+	@Column(name = "location_longitude")
     private Float locationLongitude;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "employee_id_number")
     private String employeeIdNumber;
-    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    
+	@OneToMany(mappedBy = "idLaboratoryServiceTransaction")
     private List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList;
-    @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
-    @JoinColumn(name = "id_patient", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_patient", referencedColumnName = "id")
     @ManyToOne
     private HomecarePatient idPatient;
-    @JoinColumn(name = "transaction_status", referencedColumnName = "id")
+    
+	@JoinColumn(name = "transaction_status", referencedColumnName = "id")
     @ManyToOne
     private SystemTransactionStatus transactionStatus;
-    @JoinColumn(name = "id_service_package", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_service_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryPackage idServicePackage;
 

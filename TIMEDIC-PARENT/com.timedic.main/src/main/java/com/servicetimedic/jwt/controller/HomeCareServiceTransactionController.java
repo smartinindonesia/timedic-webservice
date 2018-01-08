@@ -91,5 +91,26 @@ public class HomeCareServiceTransactionController {
 		return new ResponseEntity<String>("Thank You, Your order has been recorded in our system", HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/orderactive/homecare/{id}", method = RequestMethod.GET)
+	public ResponseEntity<List<HomecareServiceTransaction>> getOrderactiveHomecareById(@PathVariable Long id)
+	{
+		
+		List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findOrderActiveHomecareByIdUser(id);
+		//List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findByHomecareByIdUserForAndroid(id);
+		if (homecareServiceTransaction == null)
+		{
+			logger.info("orderactive Homecare is null");
+			return new ResponseEntity<List<HomecareServiceTransaction>>(HttpStatus.NO_CONTENT);
+		}
+		else
+		{
+			logger.info("fetching orderactive Homecare by id "+id);
+			return new ResponseEntity<List<HomecareServiceTransaction>>(homecareServiceTransaction, HttpStatus.OK);
+		}
+	}
+	
+	
+	
 
 }
