@@ -26,7 +26,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "homecare_assessment")
 
 public class HomecareAssessment implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
+	private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Basic(optional = false)
@@ -39,6 +40,9 @@ public class HomecareAssessment implements Serializable {
     
     @Column(name = "status_active")
     private Integer statusActive;
+    
+    @Column(name = "assessment_type")
+    private Integer assessmentType;
     
     @OneToMany(mappedBy = "idAssessment")
     private Collection<HomecareServiceAssessment> homecareServiceAssessmentCollection;
@@ -158,6 +162,14 @@ public class HomecareAssessment implements Serializable {
     @Override
     public String toString() {
         return "trial.entity.HomecareAssessment[ id=" + id + " ]";
+    }
+    
+    public Integer getAssessmentType() {
+        return assessmentType;
+    }
+
+    public void setAssessmentType(Integer assessmentType) {
+        this.assessmentType = assessmentType;
     }
     
 }

@@ -77,11 +77,11 @@ public class HomeCarePatientController {
 	@RequestMapping(value = "/patients", method = RequestMethod.POST)
 	public ResponseEntity<HomecarePatient> createPatients(@RequestBody HomecarePatient homePatient) 
 	{
-		AppUser data = new AppUser();
-		Long no = (long) 3;
-		data.setId(no);
+		//AppUser data = new AppUser();
+		//Long no = (long) 3;
+		//data.setId(no);
 		
-		homePatient.setIdAppUser(data);
+		//homePatient.setIdAppUser(data);
 		
 		HomecarePatient homecarePatient = homeCarePatientDbRepository.save(homePatient);
 		

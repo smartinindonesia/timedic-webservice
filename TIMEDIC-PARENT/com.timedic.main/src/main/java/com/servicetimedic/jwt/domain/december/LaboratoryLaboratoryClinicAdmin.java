@@ -6,98 +6,71 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "laboratory_laboratory_clinic_admin")
-
-public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializable {
-    
-	private static final long serialVersionUID = 1L;
-    
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class LaboratoryLaboratoryClinicAdmin implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Long id;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "username")
     private String username;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "password")
     private String password;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "address")
     private String address;
-    
-	@Column(name = "date_of_birth")
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "email")
     private String email;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "first_name")
     private String firstName;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "middle_name")
     private String middleName;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "last_name")
     private String lastName;
-    
-	@Size(max = 30)
+    @Size(max = 30)
     @Column(name = "phone_number")
     private String phoneNumber;
-    
-	@Column(name = "first_registration_date")
+    @Column(name = "first_registration_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstRegistrationDate;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "id_number")
     private String idNumber;
-    
-	@JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
+    @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
-
-    @ElementCollection
-    private List<String> roles = new ArrayList<>();
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
+    @OneToMany(mappedBy = "laboratoryLaboratoryClinicAdminId")
+    private Collection<LaboratoryLaboratoryClinicAdminRoles> laboratoryLaboratoryClinicAdminRolesCollection;
 
     public LaboratoryLaboratoryClinicAdmin() {
     }
@@ -120,16 +93,6 @@ public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializabl
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : roles)
-        {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
-        return authorities;
     }
 
     public String getPassword() {
@@ -220,6 +183,15 @@ public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializabl
         this.idLaboratoryClinic = idLaboratoryClinic;
     }
 
+    @XmlTransient
+    public Collection<LaboratoryLaboratoryClinicAdminRoles> getLaboratoryLaboratoryClinicAdminRolesCollection() {
+        return laboratoryLaboratoryClinicAdminRolesCollection;
+    }
+
+    public void setLaboratoryLaboratoryClinicAdminRolesCollection(Collection<LaboratoryLaboratoryClinicAdminRoles> laboratoryLaboratoryClinicAdminRolesCollection) {
+        this.laboratoryLaboratoryClinicAdminRolesCollection = laboratoryLaboratoryClinicAdminRolesCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -237,26 +209,6 @@ public class LaboratoryLaboratoryClinicAdmin implements UserDetails, Serializabl
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 

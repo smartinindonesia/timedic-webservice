@@ -16,28 +16,37 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "laboratory_selected_service_transaction")
-public class LaboratorySelectedServiceTransaction implements Serializable {
+@Table(name = "laboratory_laboratory_clinic_admin_roles")
+public class LaboratoryLaboratoryClinicAdminRoles implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Size(max = 255)
+    @Column(name = "roles")
+    private String roles;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @JoinColumn(name = "id_laboratory_service_transaction", referencedColumnName = "id")
+    @JoinColumn(name = "laboratory_laboratory_clinic_admin_id", referencedColumnName = "id")
     @ManyToOne
-    private LaboratoryServiceTransaction idLaboratoryServiceTransaction;
-    @JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
-    @ManyToOne
-    private LaboratoryService idLaboratoryService;
+    private LaboratoryLaboratoryClinicAdmin laboratoryLaboratoryClinicAdminId;
 
-    public LaboratorySelectedServiceTransaction() {
+    public LaboratoryLaboratoryClinicAdminRoles() {
     }
 
-    public LaboratorySelectedServiceTransaction(Long id) {
+    public LaboratoryLaboratoryClinicAdminRoles(Long id) {
         this.id = id;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -48,20 +57,12 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
         this.id = id;
     }
 
-    public LaboratoryServiceTransaction getIdLaboratoryServiceTransaction() {
-        return idLaboratoryServiceTransaction;
+    public LaboratoryLaboratoryClinicAdmin getLaboratoryLaboratoryClinicAdminId() {
+        return laboratoryLaboratoryClinicAdminId;
     }
 
-    public void setIdLaboratoryServiceTransaction(LaboratoryServiceTransaction idLaboratoryServiceTransaction) {
-        this.idLaboratoryServiceTransaction = idLaboratoryServiceTransaction;
-    }
-
-    public LaboratoryService getIdLaboratoryService() {
-        return idLaboratoryService;
-    }
-
-    public void setIdLaboratoryService(LaboratoryService idLaboratoryService) {
-        this.idLaboratoryService = idLaboratoryService;
+    public void setLaboratoryLaboratoryClinicAdminId(LaboratoryLaboratoryClinicAdmin laboratoryLaboratoryClinicAdminId) {
+        this.laboratoryLaboratoryClinicAdminId = laboratoryLaboratoryClinicAdminId;
     }
 
     @Override
@@ -74,10 +75,10 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof LaboratorySelectedServiceTransaction)) {
+        if (!(object instanceof LaboratoryLaboratoryClinicAdminRoles)) {
             return false;
         }
-        LaboratorySelectedServiceTransaction other = (LaboratorySelectedServiceTransaction) object;
+        LaboratoryLaboratoryClinicAdminRoles other = (LaboratoryLaboratoryClinicAdminRoles) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -86,7 +87,7 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
 
     @Override
     public String toString() {
-        return "trial.entity.LaboratorySelectedServiceTransaction[ id=" + id + " ]";
+        return "trial.entity.LaboratoryLaboratoryClinicAdminRoles[ id=" + id + " ]";
     }
     
 }

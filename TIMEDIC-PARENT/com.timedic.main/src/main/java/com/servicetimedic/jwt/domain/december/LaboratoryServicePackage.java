@@ -6,6 +6,9 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
+import java.util.Collection;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,25 +16,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "laboratory_service_package")
 
 public class LaboratoryServicePackage implements Serializable {
-    
-	private static final long serialVersionUID = 1L;
-    
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @OneToMany(mappedBy = "idLaboratoryPackage")
+    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
-	@JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
+    @JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryPackage idLaboratoryPackage;
-    
-	@JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
+    @JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryService idLaboratoryService;
 
@@ -89,6 +93,15 @@ public class LaboratoryServicePackage implements Serializable {
     @Override
     public String toString() {
         return "trial.entity.LaboratoryServicePackage[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<LaboratorySelectedPackageTransaction> getLaboratorySelectedPackageTransactionCollection() {
+        return laboratorySelectedPackageTransactionCollection;
+    }
+
+    public void setLaboratorySelectedPackageTransactionCollection(Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection) {
+        this.laboratorySelectedPackageTransactionCollection = laboratorySelectedPackageTransactionCollection;
     }
     
 }

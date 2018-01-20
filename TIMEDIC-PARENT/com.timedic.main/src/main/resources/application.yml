@@ -50,7 +50,7 @@ datasource:
   sampleapp:
     #url: jdbc:mysql://localhost:3306/test
     url: jdbc:postgresql://localhost:5432/strapi
-    #url: jdbc:postgresql://timedic.id:49401/timedic
+    #url: jdbc:postgresql://timedic.id:49401/untukFajar
     #url: jdbc:postgresql://localhost:5432/timedic
     username: postgres
     password: adminadmin

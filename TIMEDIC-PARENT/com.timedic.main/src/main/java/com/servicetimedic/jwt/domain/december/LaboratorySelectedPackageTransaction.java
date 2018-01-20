@@ -18,8 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "laboratory_selected_service_transaction")
-public class LaboratorySelectedServiceTransaction implements Serializable {
+@Table(name = "laboratory_selected_package_transaction")
+public class LaboratorySelectedPackageTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +29,14 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
     @JoinColumn(name = "id_laboratory_service_transaction", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryServiceTransaction idLaboratoryServiceTransaction;
-    @JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
+    @JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
     @ManyToOne
-    private LaboratoryService idLaboratoryService;
+    private LaboratoryServicePackage idLaboratoryPackage;
 
-    public LaboratorySelectedServiceTransaction() {
+    public LaboratorySelectedPackageTransaction() {
     }
 
-    public LaboratorySelectedServiceTransaction(Long id) {
+    public LaboratorySelectedPackageTransaction(Long id) {
         this.id = id;
     }
 
@@ -56,12 +56,12 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
         this.idLaboratoryServiceTransaction = idLaboratoryServiceTransaction;
     }
 
-    public LaboratoryService getIdLaboratoryService() {
-        return idLaboratoryService;
+    public LaboratoryServicePackage getIdLaboratoryPackage() {
+        return idLaboratoryPackage;
     }
 
-    public void setIdLaboratoryService(LaboratoryService idLaboratoryService) {
-        this.idLaboratoryService = idLaboratoryService;
+    public void setIdLaboratoryPackage(LaboratoryServicePackage idLaboratoryPackage) {
+        this.idLaboratoryPackage = idLaboratoryPackage;
     }
 
     @Override
@@ -74,10 +74,10 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof LaboratorySelectedServiceTransaction)) {
+        if (!(object instanceof LaboratorySelectedPackageTransaction)) {
             return false;
         }
-        LaboratorySelectedServiceTransaction other = (LaboratorySelectedServiceTransaction) object;
+        LaboratorySelectedPackageTransaction other = (LaboratorySelectedPackageTransaction) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -86,7 +86,7 @@ public class LaboratorySelectedServiceTransaction implements Serializable {
 
     @Override
     public String toString() {
-        return "trial.entity.LaboratorySelectedServiceTransaction[ id=" + id + " ]";
+        return "trial.entity.LaboratorySelectedPackageTransaction[ id=" + id + " ]";
     }
     
 }

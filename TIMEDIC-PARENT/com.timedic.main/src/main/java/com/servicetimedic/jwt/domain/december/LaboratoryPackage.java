@@ -6,8 +6,9 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,39 +19,34 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 @Entity
 @Table(name = "laboratory_package")
 public class LaboratoryPackage implements Serializable {
-    
-	private static final long serialVersionUID = 1L;
-    
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "price")
+    private Float price;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "package_name")
     private String packageName;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "package_code")
     private String packageCode;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "package_description")
     private String packageDescription;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "uri_package_icon")
     private String uriPackageIcon;
-    
-	@OneToMany(mappedBy = "idLaboratoryPackage")
-    private List<LaboratoryServicePackage> laboratoryServicePackageList;
-    
-	@OneToMany(mappedBy = "idServicePackage")
-    private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
+    @OneToMany(mappedBy = "idLaboratoryPackage")
+    private Collection<LaboratoryServicePackage> laboratoryServicePackageCollection;
+    @OneToMany(mappedBy = "idServicePackage")
+    private Collection<LaboratoryServiceTransaction> laboratoryServiceTransactionCollection;
 
     public LaboratoryPackage() {
     }
@@ -100,21 +96,21 @@ public class LaboratoryPackage implements Serializable {
     }
 
     @XmlTransient
-    public List<LaboratoryServicePackage> getLaboratoryServicePackageList() {
-        return laboratoryServicePackageList;
+    public Collection<LaboratoryServicePackage> getLaboratoryServicePackageCollection() {
+        return laboratoryServicePackageCollection;
     }
 
-    public void setLaboratoryServicePackageList(List<LaboratoryServicePackage> laboratoryServicePackageList) {
-        this.laboratoryServicePackageList = laboratoryServicePackageList;
+    public void setLaboratoryServicePackageCollection(Collection<LaboratoryServicePackage> laboratoryServicePackageCollection) {
+        this.laboratoryServicePackageCollection = laboratoryServicePackageCollection;
     }
 
     @XmlTransient
-    public List<LaboratoryServiceTransaction> getLaboratoryServiceTransactionList() {
-        return laboratoryServiceTransactionList;
+    public Collection<LaboratoryServiceTransaction> getLaboratoryServiceTransactionCollection() {
+        return laboratoryServiceTransactionCollection;
     }
 
-    public void setLaboratoryServiceTransactionList(List<LaboratoryServiceTransaction> laboratoryServiceTransactionList) {
-        this.laboratoryServiceTransactionList = laboratoryServiceTransactionList;
+    public void setLaboratoryServiceTransactionCollection(Collection<LaboratoryServiceTransaction> laboratoryServiceTransactionCollection) {
+        this.laboratoryServiceTransactionCollection = laboratoryServiceTransactionCollection;
     }
 
     @Override
@@ -140,6 +136,14 @@ public class LaboratoryPackage implements Serializable {
     @Override
     public String toString() {
         return "trial.entity.LaboratoryPackage[ id=" + id + " ]";
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
     
 }

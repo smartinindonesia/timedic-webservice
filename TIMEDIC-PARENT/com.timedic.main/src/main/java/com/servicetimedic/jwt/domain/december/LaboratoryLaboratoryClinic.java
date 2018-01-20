@@ -6,7 +6,9 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,47 +19,36 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 @Entity
 @Table(name = "laboratory_laboratory_clinic")
-
 public class LaboratoryLaboratoryClinic implements Serializable {
-    
-	private static final long serialVersionUID = 1L;
-    
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "address")
     private String address;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "certificate")
     private String certificate;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "name")
     private String name;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "detail")
     private String detail;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "uri_logo")
     private String uriLogo;
-    
-	@OneToMany(mappedBy = "idLaboratoryClinic")
-    private List<HomecareCaregiver> homecareCaregiverList;
-    
-	@OneToMany(mappedBy = "idLaboratoryClinic")
-    private List<LaboratoryLaboratoryClinicAdmin> laboratoryLaboratoryClinicAdminList;
-    
-	@OneToMany(mappedBy = "idLaboratoryClinic")
-    private List<LaboratoryServiceTransaction> laboratoryServiceTransactionList;
+    @OneToMany(mappedBy = "idLaboratoryClinic")
+    private Collection<HomecareCaregiver> homecareCaregiverCollection;
+    @OneToMany(mappedBy = "idLaboratoryClinic")
+    private Collection<LaboratoryLaboratoryClinicAdmin> laboratoryLaboratoryClinicAdminCollection;
+    @OneToMany(mappedBy = "idLaboratoryClinic")
+    private Collection<LaboratoryServiceTransaction> laboratoryServiceTransactionCollection;
 
     public LaboratoryLaboratoryClinic() {
     }
@@ -115,30 +106,30 @@ public class LaboratoryLaboratoryClinic implements Serializable {
     }
 
     @XmlTransient
-    public List<HomecareCaregiver> getHomecareCaregiverList() {
-        return homecareCaregiverList;
+    public Collection<HomecareCaregiver> getHomecareCaregiverCollection() {
+        return homecareCaregiverCollection;
     }
 
-    public void setHomecareCaregiverList(List<HomecareCaregiver> homecareCaregiverList) {
-        this.homecareCaregiverList = homecareCaregiverList;
-    }
-
-    @XmlTransient
-    public List<LaboratoryLaboratoryClinicAdmin> getLaboratoryLaboratoryClinicAdminList() {
-        return laboratoryLaboratoryClinicAdminList;
-    }
-
-    public void setLaboratoryLaboratoryClinicAdminList(List<LaboratoryLaboratoryClinicAdmin> laboratoryLaboratoryClinicAdminList) {
-        this.laboratoryLaboratoryClinicAdminList = laboratoryLaboratoryClinicAdminList;
+    public void setHomecareCaregiverCollection(Collection<HomecareCaregiver> homecareCaregiverCollection) {
+        this.homecareCaregiverCollection = homecareCaregiverCollection;
     }
 
     @XmlTransient
-    public List<LaboratoryServiceTransaction> getLaboratoryServiceTransactionList() {
-        return laboratoryServiceTransactionList;
+    public Collection<LaboratoryLaboratoryClinicAdmin> getLaboratoryLaboratoryClinicAdminCollection() {
+        return laboratoryLaboratoryClinicAdminCollection;
     }
 
-    public void setLaboratoryServiceTransactionList(List<LaboratoryServiceTransaction> laboratoryServiceTransactionList) {
-        this.laboratoryServiceTransactionList = laboratoryServiceTransactionList;
+    public void setLaboratoryLaboratoryClinicAdminCollection(Collection<LaboratoryLaboratoryClinicAdmin> laboratoryLaboratoryClinicAdminCollection) {
+        this.laboratoryLaboratoryClinicAdminCollection = laboratoryLaboratoryClinicAdminCollection;
+    }
+
+    @XmlTransient
+    public Collection<LaboratoryServiceTransaction> getLaboratoryServiceTransactionCollection() {
+        return laboratoryServiceTransactionCollection;
+    }
+
+    public void setLaboratoryServiceTransactionCollection(Collection<LaboratoryServiceTransaction> laboratoryServiceTransactionCollection) {
+        this.laboratoryServiceTransactionCollection = laboratoryServiceTransactionCollection;
     }
 
     @Override

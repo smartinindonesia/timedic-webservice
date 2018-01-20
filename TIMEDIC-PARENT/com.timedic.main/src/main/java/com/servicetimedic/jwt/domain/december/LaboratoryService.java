@@ -6,7 +6,9 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,38 +21,33 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "laboratory_service")
+
 public class LaboratoryService implements Serializable {
-    
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
     @Size(max = 255)
     @Column(name = "service_name")
     private String serviceName;
-    
     @Size(max = 255)
     @Column(name = "service_code")
     private String serviceCode;
-    
     @Size(max = 255)
     @Column(name = "description")
     private String description;
-    
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "price")
     private Float price;
-    
     @Size(max = 255)
     @Column(name = "uri_service_icon")
     private String uriServiceIcon;
-    
     @OneToMany(mappedBy = "idLaboratoryService")
-    private List<LaboratoryServicePackage> laboratoryServicePackageList;
-    
+    private Collection<LaboratoryServicePackage> laboratoryServicePackageCollection;
     @OneToMany(mappedBy = "idLaboratoryService")
-    private List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList;
+    private Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection;
 
     public LaboratoryService() {
     }
@@ -108,21 +105,21 @@ public class LaboratoryService implements Serializable {
     }
 
     @XmlTransient
-    public List<LaboratoryServicePackage> getLaboratoryServicePackageList() {
-        return laboratoryServicePackageList;
+    public Collection<LaboratoryServicePackage> getLaboratoryServicePackageCollection() {
+        return laboratoryServicePackageCollection;
     }
 
-    public void setLaboratoryServicePackageList(List<LaboratoryServicePackage> laboratoryServicePackageList) {
-        this.laboratoryServicePackageList = laboratoryServicePackageList;
+    public void setLaboratoryServicePackageCollection(Collection<LaboratoryServicePackage> laboratoryServicePackageCollection) {
+        this.laboratoryServicePackageCollection = laboratoryServicePackageCollection;
     }
 
     @XmlTransient
-    public List<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionList() {
-        return laboratorySelectedServiceTransactionList;
+    public Collection<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionCollection() {
+        return laboratorySelectedServiceTransactionCollection;
     }
 
-    public void setLaboratorySelectedServiceTransactionList(List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList) {
-        this.laboratorySelectedServiceTransactionList = laboratorySelectedServiceTransactionList;
+    public void setLaboratorySelectedServiceTransactionCollection(Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection) {
+        this.laboratorySelectedServiceTransactionCollection = laboratorySelectedServiceTransactionCollection;
     }
 
     @Override

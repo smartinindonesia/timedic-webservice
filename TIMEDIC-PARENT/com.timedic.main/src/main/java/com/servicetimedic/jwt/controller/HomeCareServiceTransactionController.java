@@ -110,6 +110,25 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/history/homecare/{id}", method = RequestMethod.GET)
+	public ResponseEntity<List<HomecareServiceTransaction>> getHistoryTrxHomecareById(@PathVariable Long id)
+	{
+		
+		List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUser(id);
+		//List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findByHomecareByIdUserForAndroid(id);
+		if (homecareServiceTransaction == null)
+		{
+			logger.info("orderactive Homecare is null");
+			return new ResponseEntity<List<HomecareServiceTransaction>>(HttpStatus.NO_CONTENT);
+		}
+		else
+		{
+			logger.info("fetching orderactive Homecare by id "+id);
+			return new ResponseEntity<List<HomecareServiceTransaction>>(homecareServiceTransaction, HttpStatus.OK);
+		}
+	}
+	
 	
 	
 

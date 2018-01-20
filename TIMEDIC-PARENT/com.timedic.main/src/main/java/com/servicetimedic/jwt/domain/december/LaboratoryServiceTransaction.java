@@ -6,9 +6,10 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,53 +26,43 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "laboratory_service_transaction")
-
 public class LaboratoryServiceTransaction implements Serializable {
-    
-	private static final long serialVersionUID = 1L;
-    
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
-	@Column(name = "date")
+    @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
-    
-	@Column(name = "total_price")
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "total_price")
     private Float totalPrice;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "transaction_description")
     private String transactionDescription;
-    
-	@Column(name = "location_latitude")
+    @Column(name = "location_latitude")
     private Float locationLatitude;
-    
-	@Column(name = "location_longitude")
+    @Column(name = "location_longitude")
     private Float locationLongitude;
-    
-	@Size(max = 255)
+    @Size(max = 255)
     @Column(name = "employee_id_number")
     private String employeeIdNumber;
-    
-	@OneToMany(mappedBy = "idLaboratoryServiceTransaction")
-    private List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList;
-    
-	@JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
+    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    private Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection;
+    @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
-    
-	@JoinColumn(name = "id_patient", referencedColumnName = "id")
+    @JoinColumn(name = "id_patient", referencedColumnName = "id")
     @ManyToOne
     private HomecarePatient idPatient;
-    
-	@JoinColumn(name = "transaction_status", referencedColumnName = "id")
+    @JoinColumn(name = "transaction_status", referencedColumnName = "id")
     @ManyToOne
     private SystemTransactionStatus transactionStatus;
-    
-	@JoinColumn(name = "id_service_package", referencedColumnName = "id")
+    @JoinColumn(name = "id_service_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryPackage idServicePackage;
 
@@ -139,12 +130,12 @@ public class LaboratoryServiceTransaction implements Serializable {
     }
 
     @XmlTransient
-    public List<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionList() {
-        return laboratorySelectedServiceTransactionList;
+    public Collection<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionCollection() {
+        return laboratorySelectedServiceTransactionCollection;
     }
 
-    public void setLaboratorySelectedServiceTransactionList(List<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionList) {
-        this.laboratorySelectedServiceTransactionList = laboratorySelectedServiceTransactionList;
+    public void setLaboratorySelectedServiceTransactionCollection(Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection) {
+        this.laboratorySelectedServiceTransactionCollection = laboratorySelectedServiceTransactionCollection;
     }
 
     public LaboratoryLaboratoryClinic getIdLaboratoryClinic() {
@@ -202,6 +193,15 @@ public class LaboratoryServiceTransaction implements Serializable {
     @Override
     public String toString() {
         return "trial.entity.LaboratoryServiceTransaction[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<LaboratorySelectedPackageTransaction> getLaboratorySelectedPackageTransactionCollection() {
+        return laboratorySelectedPackageTransactionCollection;
+    }
+
+    public void setLaboratorySelectedPackageTransactionCollection(Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection) {
+        this.laboratorySelectedPackageTransactionCollection = laboratorySelectedPackageTransactionCollection;
     }
     
 }
