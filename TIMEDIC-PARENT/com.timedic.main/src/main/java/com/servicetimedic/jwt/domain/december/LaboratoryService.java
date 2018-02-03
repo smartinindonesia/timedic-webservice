@@ -19,34 +19,43 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "laboratory_service")
 
 public class LaboratoryService implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "service_name")
     private String serviceName;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "service_code")
     private String serviceCode;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "description")
     private String description;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "price")
+    
+	@Column(name = "price")
     private Float price;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "uri_service_icon")
     private String uriServiceIcon;
-    @OneToMany(mappedBy = "idLaboratoryService")
+    
+	@OneToMany(mappedBy = "idLaboratoryService")
     private Collection<LaboratoryServicePackage> laboratoryServicePackageCollection;
-    @OneToMany(mappedBy = "idLaboratoryService")
+    
+	@OneToMany(mappedBy = "idLaboratoryService")
     private Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection;
 
     public LaboratoryService() {
@@ -105,6 +114,7 @@ public class LaboratoryService implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public Collection<LaboratoryServicePackage> getLaboratoryServicePackageCollection() {
         return laboratoryServicePackageCollection;
     }
@@ -113,7 +123,8 @@ public class LaboratoryService implements Serializable {
         this.laboratoryServicePackageCollection = laboratoryServicePackageCollection;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionCollection() {
         return laboratorySelectedServiceTransactionCollection;
     }

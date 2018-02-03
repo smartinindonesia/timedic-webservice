@@ -20,24 +20,32 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "laboratory_service_package")
 
 public class LaboratoryServicePackage implements Serializable {
-    @OneToMany(mappedBy = "idLaboratoryPackage")
-    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryPackage idLaboratoryPackage;
+    
     @JoinColumn(name = "id_laboratory_service", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryService idLaboratoryService;
+    
+    @OneToMany(mappedBy = "idLaboratoryPackage")
+    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    
 
     public LaboratoryServicePackage() {
     }
@@ -54,6 +62,7 @@ public class LaboratoryServicePackage implements Serializable {
         this.id = id;
     }
 
+    //@JsonIgnore
     public LaboratoryPackage getIdLaboratoryPackage() {
         return idLaboratoryPackage;
     }
@@ -62,6 +71,7 @@ public class LaboratoryServicePackage implements Serializable {
         this.idLaboratoryPackage = idLaboratoryPackage;
     }
 
+    
     public LaboratoryService getIdLaboratoryService() {
         return idLaboratoryService;
     }
@@ -95,7 +105,8 @@ public class LaboratoryServicePackage implements Serializable {
         return "trial.entity.LaboratoryServicePackage[ id=" + id + " ]";
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<LaboratorySelectedPackageTransaction> getLaboratorySelectedPackageTransactionCollection() {
         return laboratorySelectedPackageTransactionCollection;
     }

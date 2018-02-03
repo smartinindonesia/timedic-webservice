@@ -20,16 +20,20 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "laboratory_selected_package_transaction")
 public class LaboratorySelectedPackageTransaction implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @JoinColumn(name = "id_laboratory_service_transaction", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_laboratory_service_transaction", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryServiceTransaction idLaboratoryServiceTransaction;
-    @JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_laboratory_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryServicePackage idLaboratoryPackage;
 
