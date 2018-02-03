@@ -5,11 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,10 +58,24 @@ public class HomeCarePatientController {
 		}
 	}
 	
+	/*
+	private FirebaseToken checkAuthorization(HttpHeaders headers) {
+	}
+	*/
+	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.GET)
-	public ResponseEntity<HomecarePatient> getPatientsByIdPatients(@PathVariable Long id)
+	public ResponseEntity<HomecarePatient> getPatientsByIdPatients(@PathVariable Long id,
+			@RequestHeader HttpHeaders requestHeaders)
 	{
+		/*s
+		FirebaseToken firebaseToken = checkAuthorization(requestHeaders);
+		User user = userRepo.findByFirebaseId(firebaseToken.getUid());
+		if (!user.getId().equals(id)) {
+			throw AccessDeniedException(..)
+		}
+		*/
+		
 		HomecarePatient homecarePatient = homeCarePatientDbRepository.findOne(id);
 		if (homecarePatient == null)
 		{
