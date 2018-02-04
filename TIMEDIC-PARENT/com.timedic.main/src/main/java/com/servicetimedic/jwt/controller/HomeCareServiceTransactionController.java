@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
-import com.servicetimedic.jwt.domain.posgresql.HomecareAssestmentRecord;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
@@ -90,7 +89,7 @@ public class HomeCareServiceTransactionController {
 			homeCareAssessmentRecordDbRepository.save(x);
 		}
 		
-		return new ResponseEntity<String>("Thank You, Your order has been recorded in our system", HttpStatus.CREATED);
+		return new ResponseEntity<String>("Thank You, Your order has been recorded in timedic system", HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")

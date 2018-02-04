@@ -111,7 +111,8 @@ public class JpaConfiguration
 		properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("datasource.sampleapp.hibernate.hbm2ddl.method"));
 		properties.put("hibernate.show_sql", environment.getRequiredProperty("datasource.sampleapp.hibernate.show_sql"));
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("datasource.sampleapp.hibernate.format_sql"));
-		properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
+		//properties.put("hibernate.temp.use_jdbc_metadata_defaults", "true");
+		properties.put("hibernate.jdbc.lob.non_contextual_creation", "true");
 		if(StringUtils.isNotEmpty(environment.getRequiredProperty("datasource.sampleapp.defaultSchema")))
 		{
 			properties.put("hibernate.default_schema", environment.getRequiredProperty("datasource.sampleapp.defaultSchema"));

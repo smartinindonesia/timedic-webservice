@@ -182,7 +182,7 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.transactionStatus = transactionStatus;
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     public LaboratoryPackage getIdServicePackage() {
         return idServicePackage;
     }

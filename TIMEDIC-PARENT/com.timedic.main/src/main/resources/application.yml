@@ -48,25 +48,17 @@ spring:
 
 datasource:
   sampleapp:
-    #url: jdbc:mysql://localhost:3306/test
     url: jdbc:postgresql://localhost:5432/strapi
-    #url: jdbc:postgresql://timedic.id:49401/untukFajar
-    #url: jdbc:postgresql://localhost:5432/timedic
     username: postgres
     password: adminadmin
-    #username: root
-    #password: 
-    #driverClassName: com.mysql.jdbc.Driver
     driverClassName: org.postgresql.Driver
-    defaultSchema:
+    defaultSchema: public
     maxPoolSize: 20
     hibernate:
       hbm2ddl.method: update
       show_sql: false
       format_sql: true
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      #dialect: org.hibernate.dialect.MySQLDialect
-
 jwt:
   expires_in: 1800 # second
       
