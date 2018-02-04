@@ -5,10 +5,10 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -23,15 +24,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.zaxxer.hikari.HikariDataSource;
-
 @Configuration
-
 @EnableJpaRepositories(basePackages = "com.servicetimedic.jwt.repository",
 		entityManagerFactoryRef = "entityManagerFactory",
 		transactionManagerRef = "transactionManager")
-///fff
-
 @EnableTransactionManagement
 public class JpaConfiguration
 {
@@ -59,6 +55,8 @@ public class JpaConfiguration
 	@Bean
 	public DataSource dataSource() {
 		DataSourceProperties dataSourceProperties = dataSourceProperties();
+			
+			/*
 			HikariDataSource dataSource = (HikariDataSource) DataSourceBuilder
 					.create(dataSourceProperties.getClassLoader())
 					.driverClassName(dataSourceProperties.getDriverClassName())
@@ -68,7 +66,16 @@ public class JpaConfiguration
 					.type(HikariDataSource.class)
 					.build();
 			dataSource.setMaximumPoolSize(maxPoolSize);
-			return dataSource;
+			*/
+		
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		
+	    dataSource.setDriverClassName(dataSourceProperties.getDriverClassName());
+	    dataSource.setUrl(dataSourceProperties.getUrl());
+	    dataSource.setUsername(dataSourceProperties.getUsername());
+	    dataSource.setPassword(dataSourceProperties.getPassword());
+		
+		return dataSource;
 	}
 
 	/*
@@ -104,6 +111,7 @@ public class JpaConfiguration
 		properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("datasource.sampleapp.hibernate.hbm2ddl.method"));
 		properties.put("hibernate.show_sql", environment.getRequiredProperty("datasource.sampleapp.hibernate.show_sql"));
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("datasource.sampleapp.hibernate.format_sql"));
+		properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 		if(StringUtils.isNotEmpty(environment.getRequiredProperty("datasource.sampleapp.defaultSchema")))
 		{
 			properties.put("hibernate.default_schema", environment.getRequiredProperty("datasource.sampleapp.defaultSchema"));

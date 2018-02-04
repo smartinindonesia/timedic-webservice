@@ -1,6 +1,7 @@
 package com.servicetimedic.jwt.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -43,7 +44,8 @@ public class AppUserController {
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
 	public ResponseEntity<AppUser> getUserById(@PathVariable Long id)
 	{
-		AppUser appUser = userRepository.findOne(id);
+		AppUser appUser = userRepository.getOne(id);
+		
 		if (appUser == null)
 		{
 			logger.info("Users is null");
@@ -60,7 +62,7 @@ public class AppUserController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<AppUser> deleteUser(@PathVariable Long id) {
-		AppUser appUser = userRepository.findOne(id);
+		AppUser appUser = userRepository.getOne(id);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String loggedUsername = auth.getName();
 		if (appUser == null) 
@@ -73,7 +75,7 @@ public class AppUserController {
 		}
 		else
 		{
-			userRepository.delete(id);
+			userRepository.deleteById(id);
 			return new ResponseEntity<AppUser>(new AppUser(), HttpStatus.OK);
 		}
 	}
@@ -88,7 +90,7 @@ public class AppUserController {
 			throw new RuntimeException("Username already exist");
 		}
 		
-		AppUser findFirst = userRepository.findOne(id);
+		AppUser findFirst = userRepository.getOne(id);
 		
 		if(findFirst == null) {
 			return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);

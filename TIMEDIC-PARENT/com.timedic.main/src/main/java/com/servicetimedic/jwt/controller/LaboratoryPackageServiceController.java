@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.servicetimedic.jwt.domain.december.LaboratoryPackage;
 import com.servicetimedic.jwt.domain.december.LaboratoryServicePackage;
 import com.servicetimedic.jwt.domain.december.LaboratoryService;
 import com.servicetimedic.jwt.repository.LaboratoryPackageServiceDbRepository;
@@ -60,12 +61,40 @@ public class LaboratoryPackageServiceController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/packageservice", method = RequestMethod.POST)
-	public ResponseEntity<LaboratoryServicePackage> createLaboratoryPackage(@RequestBody LaboratoryServicePackage laboratoryServicePackage) {
+	public ResponseEntity<LaboratoryServicePackage> createLaboratoryPackageService(@RequestBody LaboratoryServicePackage laboratoryServicePackage) {
 		LaboratoryServicePackage labPackage = laboratoryPackageServiceDbRepository.save(laboratoryServicePackage);
-		//System.out.println(laboratoryServicePackage.getIdLaboratoryPackage().getId());
 		logger.info("Create one Lab PackageService");
 		return new ResponseEntity<LaboratoryServicePackage>(labPackage, HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/packageservice/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteLaboratoryPackageService(@PathVariable Long id) {
+		LaboratoryServicePackage labPackageService = laboratoryPackageServiceDbRepository.getOne(id);
+		if (labPackageService != null) {
+			laboratoryPackageServiceDbRepository.deleteById(id);
+			return new ResponseEntity<String>("Succesfully delete Laboratory PackageService with id "+id, HttpStatus.OK);
+		}
+		else{
+			return new ResponseEntity<String>("Failed delete Laboratory PackageService", HttpStatus.FAILED_DEPENDENCY);
+		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/packageservice/{id}", method = RequestMethod.PUT )
+	public ResponseEntity<String> updateLaboratoryPackageService(@PathVariable(value = "id") Long id,@RequestBody LaboratoryServicePackage laboratoryServicePackage) {	
+		LaboratoryServicePackage labPackageService = laboratoryPackageServiceDbRepository.getOne(id);	
+		if(labPackageService == null) {
+			return new ResponseEntity<String>("Not Found Laboratory PackageService", HttpStatus.NOT_FOUND);
+	    }
+		else{
+			labPackageService.setIdLaboratoryPackage(laboratoryServicePackage.getIdLaboratoryPackage());
+			labPackageService.setIdLaboratoryService(laboratoryServicePackage.getIdLaboratoryService());
+			
+			laboratoryPackageServiceDbRepository.save(labPackageService);
+			
+			return new ResponseEntity<String>("Succesfully Update Laboratory PackageService with id "+id, HttpStatus.OK);
+		}
+	}
 	
 }

@@ -60,21 +60,20 @@ public class LaboratoryPackageController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/package/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryPackage(@PathVariable Long id) {
-		LaboratoryPackage labPackage = laboratoryPackageDbRepository.findOne(id);
+		LaboratoryPackage labPackage = laboratoryPackageDbRepository.getOne(id);
 		if (labPackage != null) {
-			laboratoryPackageDbRepository.delete(id);
+			laboratoryPackageDbRepository.deleteById(id);
 			return new ResponseEntity<String>("Succesfully delete Laboratory Package with id "+id, HttpStatus.OK);
 		}
 		else{
 			return new ResponseEntity<String>("Failed delete Laboratory Package", HttpStatus.FAILED_DEPENDENCY);
 		}
-
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/package/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateLaboratoryPackage(@PathVariable(value = "id") Long id,@RequestBody LaboratoryPackage laboratoryPackage) {	
-		LaboratoryPackage labPackage = laboratoryPackageDbRepository.findOne(id);	
+		LaboratoryPackage labPackage = laboratoryPackageDbRepository.getOne(id);	
 		if(labPackage == null) {
 			return new ResponseEntity<String>("Not Found Laboratory Package", HttpStatus.NOT_FOUND);
 	    }

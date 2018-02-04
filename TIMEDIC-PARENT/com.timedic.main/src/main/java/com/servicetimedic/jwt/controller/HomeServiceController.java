@@ -41,7 +41,7 @@ public class HomeServiceController {
 	@RequestMapping(value = "/homecareservices/{id}", method = RequestMethod.GET)
 	public ResponseEntity<HomecareService> getServicesById(@PathVariable Long id)
 	{
-		HomecareService homecareService = homeServicesDbRepository.findOne(id);
+		HomecareService homecareService = homeServicesDbRepository.getOne(id);
 		if (homecareService == null)
 		{
 			logger.info("homecareservices is null");
@@ -58,11 +58,11 @@ public class HomeServiceController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/homecareservices/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteServices(@PathVariable Long id) {
-		HomecareService homecareService = homeServicesDbRepository.findOne(id);
+		HomecareService homecareService = homeServicesDbRepository.getOne(id);
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		//String loggedUsername = auth.getName();
 		if (homecareService != null) {
-			homeServicesDbRepository.delete(id);
+			homeServicesDbRepository.deleteById(id);
 			return new ResponseEntity<String>("Succesfully delete Services with id "+id, HttpStatus.OK);
 		}
 		else{
@@ -76,7 +76,7 @@ public class HomeServiceController {
 	@RequestMapping(value = "/homecareservices/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateServices(@PathVariable(value = "id") Long id,@RequestBody HomecareService homecareService) 
 	{	
-		HomecareService findFirst = homeServicesDbRepository.findOne(id);	
+		HomecareService findFirst = homeServicesDbRepository.getOne(id);	
 		if(findFirst == null) {
 			return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
 	    }

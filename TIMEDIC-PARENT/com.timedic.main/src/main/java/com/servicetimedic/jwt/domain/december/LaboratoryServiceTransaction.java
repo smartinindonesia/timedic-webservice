@@ -24,48 +24,64 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "laboratory_service_transaction")
 public class LaboratoryServiceTransaction implements Serializable {
-    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
-    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
+    
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Column(name = "total_price")
     private Float totalPrice;
+    
     @Size(max = 255)
     @Column(name = "transaction_description")
     private String transactionDescription;
+    
     @Column(name = "location_latitude")
     private Float locationLatitude;
+    
     @Column(name = "location_longitude")
     private Float locationLongitude;
-    @Size(max = 255)
+    
+    @Size(max = 50)
     @Column(name = "employee_id_number")
     private String employeeIdNumber;
+    
     @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
     private Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection;
+    
+    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
+    
     @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryLaboratoryClinic idLaboratoryClinic;
+    
     @JoinColumn(name = "id_patient", referencedColumnName = "id")
     @ManyToOne
     private HomecarePatient idPatient;
+    
     @JoinColumn(name = "transaction_status", referencedColumnName = "id")
     @ManyToOne
     private SystemTransactionStatus transactionStatus;
+    
     @JoinColumn(name = "id_service_package", referencedColumnName = "id")
     @ManyToOne
     private LaboratoryPackage idServicePackage;
-
+    
+    
+ 
     public LaboratoryServiceTransaction() {
     }
 
@@ -129,7 +145,8 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.employeeIdNumber = employeeIdNumber;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    //@JsonIgnore
     public Collection<LaboratorySelectedServiceTransaction> getLaboratorySelectedServiceTransactionCollection() {
         return laboratorySelectedServiceTransactionCollection;
     }
@@ -138,6 +155,7 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.laboratorySelectedServiceTransactionCollection = laboratorySelectedServiceTransactionCollection;
     }
 
+    //@JsonIgnore
     public LaboratoryLaboratoryClinic getIdLaboratoryClinic() {
         return idLaboratoryClinic;
     }
@@ -146,6 +164,7 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.idLaboratoryClinic = idLaboratoryClinic;
     }
 
+    //@JsonIgnore
     public HomecarePatient getIdPatient() {
         return idPatient;
     }
@@ -154,6 +173,7 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.idPatient = idPatient;
     }
 
+    //@JsonIgnore
     public SystemTransactionStatus getTransactionStatus() {
         return transactionStatus;
     }
@@ -162,6 +182,7 @@ public class LaboratoryServiceTransaction implements Serializable {
         this.transactionStatus = transactionStatus;
     }
 
+    //@JsonIgnore
     public LaboratoryPackage getIdServicePackage() {
         return idServicePackage;
     }
@@ -195,7 +216,8 @@ public class LaboratoryServiceTransaction implements Serializable {
         return "trial.entity.LaboratoryServiceTransaction[ id=" + id + " ]";
     }
 
-    @XmlTransient
+    //@XmlTransient
+    //@JsonIgnore
     public Collection<LaboratorySelectedPackageTransaction> getLaboratorySelectedPackageTransactionCollection() {
         return laboratorySelectedPackageTransactionCollection;
     }

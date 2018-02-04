@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "laboratory_laboratory_clinic")
 public class LaboratoryLaboratoryClinic implements Serializable {
@@ -105,7 +107,8 @@ public class LaboratoryLaboratoryClinic implements Serializable {
         this.uriLogo = uriLogo;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<HomecareCaregiver> getHomecareCaregiverCollection() {
         return homecareCaregiverCollection;
     }
@@ -114,7 +117,8 @@ public class LaboratoryLaboratoryClinic implements Serializable {
         this.homecareCaregiverCollection = homecareCaregiverCollection;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<LaboratoryLaboratoryClinicAdmin> getLaboratoryLaboratoryClinicAdminCollection() {
         return laboratoryLaboratoryClinicAdminCollection;
     }
@@ -123,7 +127,8 @@ public class LaboratoryLaboratoryClinic implements Serializable {
         this.laboratoryLaboratoryClinicAdminCollection = laboratoryLaboratoryClinicAdminCollection;
     }
 
-    @XmlTransient
+    //@XmlTransient
+    @JsonIgnore
     public Collection<LaboratoryServiceTransaction> getLaboratoryServiceTransactionCollection() {
         return laboratoryServiceTransactionCollection;
     }

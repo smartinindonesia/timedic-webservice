@@ -17,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "laboratory_selected_package_transaction")
 public class LaboratorySelectedPackageTransaction implements Serializable {
@@ -52,6 +54,7 @@ public class LaboratorySelectedPackageTransaction implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     public LaboratoryServiceTransaction getIdLaboratoryServiceTransaction() {
         return idLaboratoryServiceTransaction;
     }

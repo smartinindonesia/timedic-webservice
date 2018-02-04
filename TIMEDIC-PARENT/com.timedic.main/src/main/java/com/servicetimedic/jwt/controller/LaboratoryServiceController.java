@@ -60,9 +60,9 @@ public class LaboratoryServiceController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/services/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryServices(@PathVariable Long id) {
-		LaboratoryService labservices = laboratoryServiceDbRepository.findOne(id);
+		LaboratoryService labservices = laboratoryServiceDbRepository.getOne(id);
 		if (labservices != null) {
-			laboratoryServiceDbRepository.delete(id);
+			laboratoryServiceDbRepository.deleteById(id);
 			return new ResponseEntity<String>("Succesfully delete Laboratory Services with id "+id, HttpStatus.OK);
 		}
 		else{
@@ -75,7 +75,7 @@ public class LaboratoryServiceController {
 	@RequestMapping(value = "/services/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateLaboratoryServices(@PathVariable(value = "id") Long id,@RequestBody LaboratoryService laboratoryService) 
 	{	
-		LaboratoryService labservices = laboratoryServiceDbRepository.findOne(id);	
+		LaboratoryService labservices = laboratoryServiceDbRepository.getOne(id);	
 		if(labservices == null) {
 			return new ResponseEntity<String>("Not Found Laboratory Service", HttpStatus.NOT_FOUND);
 	    }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
+import com.servicetimedic.jwt.domain.posgresql.HomecareAssestmentRecord;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
@@ -43,7 +44,7 @@ public class HomeCareServiceTransactionController {
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.GET)
 	public ResponseEntity<HomecareServiceTransaction> getTransactionsHomecareById(@PathVariable Long id)
 	{
-		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findOne(id);
+		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.getOne(id);
 		if (homecareServiceTransaction == null)
 		{
 			logger.info("Transactions Homecare is null");
@@ -59,10 +60,10 @@ public class HomeCareServiceTransactionController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteTransactionsHomecare(@PathVariable Long id) {
-		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findOne(id);
+		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.getOne(id);
 		
 		if (homecareServiceTransaction != null) {
-			homecareSeriveTransactionsDbRepository.delete(id);
+			homecareSeriveTransactionsDbRepository.deleteById(id);
 			return new ResponseEntity<String>("Succesfully delete transactions homecare with id "+id, HttpStatus.OK);
 		}
 		else{
@@ -83,11 +84,12 @@ public class HomeCareServiceTransactionController {
 			data.setIdServiceTransaction(newID);
 		}
 		
-		homeCareAssessmentRecordDbRepository.save(homecareService.getHomecareAssessmentRecordList());
+		List<HomecareAssessmentRecord> data = homecareService.getHomecareAssessmentRecordList();
 		
-		//process.setHomecareAssessmentRecordList(assessment);
+		for(HomecareAssessmentRecord x: data){
+			homeCareAssessmentRecordDbRepository.save(x);
+		}
 		
-		//return new ResponseEntity<HomecareServiceTransaction>(process, HttpStatus.CREATED);
 		return new ResponseEntity<String>("Thank You, Your order has been recorded in our system", HttpStatus.CREATED);
 	}
 	

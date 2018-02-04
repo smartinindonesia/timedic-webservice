@@ -76,7 +76,7 @@ public class HomeCarePatientController {
 		}
 		*/
 		
-		HomecarePatient homecarePatient = homeCarePatientDbRepository.findOne(id);
+		HomecarePatient homecarePatient = homeCarePatientDbRepository.getOne(id);
 		if (homecarePatient == null)
 		{
 			logger.info("patients is null");
@@ -107,9 +107,9 @@ public class HomeCarePatientController {
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deletePatient(@PathVariable Long id) {
-		HomecarePatient homecarePatient = homeCarePatientDbRepository.findOne(id);
+		HomecarePatient homecarePatient = homeCarePatientDbRepository.getOne(id);
 		if (homecarePatient != null) {
-			homeCarePatientDbRepository.delete(id);
+			homeCarePatientDbRepository.deleteById(id);
 			return new ResponseEntity<String>("Succesfully delete patients with id "+id, HttpStatus.OK);
 		}
 		else{
@@ -122,7 +122,7 @@ public class HomeCarePatientController {
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updatePatients(@PathVariable(value = "id") Long id,@RequestBody HomecarePatient homecarePatient) 
 	{	
-		HomecarePatient data = homeCarePatientDbRepository.findOne(id);	
+		HomecarePatient data = homeCarePatientDbRepository.getOne(id);	
 		if(data == null) {
 			return new ResponseEntity<String>("Not Found patients", HttpStatus.NOT_FOUND);
 	    }
