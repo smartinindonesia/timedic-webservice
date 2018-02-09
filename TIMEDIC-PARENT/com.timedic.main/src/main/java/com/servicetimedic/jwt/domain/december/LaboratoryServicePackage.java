@@ -21,10 +21,11 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "laboratory_service_package")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LaboratoryServicePackage implements Serializable {
     
     private static final long serialVersionUID = 1L;

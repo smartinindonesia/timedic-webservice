@@ -18,10 +18,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "homecare_transaction_caregiverlist")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareTransactionCaregiverlist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -31,10 +31,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "homecare_caregiver")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareCaregiver implements UserDetails, Serializable {
     
 	private static final long serialVersionUID = 1L;

@@ -7,6 +7,7 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,8 +18,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "homecare_caregiver_status")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class HomecareCaregiverStatus implements Serializable {
     private static final long serialVersionUID = 1L;

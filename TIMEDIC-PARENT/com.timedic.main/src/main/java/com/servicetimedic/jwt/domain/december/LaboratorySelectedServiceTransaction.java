@@ -18,9 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "laboratory_selected_service_transaction")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LaboratorySelectedServiceTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

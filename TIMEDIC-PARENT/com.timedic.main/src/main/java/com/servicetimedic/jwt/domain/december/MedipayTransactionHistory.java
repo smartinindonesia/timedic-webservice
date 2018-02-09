@@ -20,9 +20,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "medipay_transaction_history")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MedipayTransactionHistory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

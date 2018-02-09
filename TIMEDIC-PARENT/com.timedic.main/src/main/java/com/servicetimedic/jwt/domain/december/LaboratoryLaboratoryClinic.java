@@ -20,9 +20,11 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "laboratory_laboratory_clinic")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LaboratoryLaboratoryClinic implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

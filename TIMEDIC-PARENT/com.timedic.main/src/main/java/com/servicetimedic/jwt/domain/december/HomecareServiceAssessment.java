@@ -17,10 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "homecare_service_assessment")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareServiceAssessment implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

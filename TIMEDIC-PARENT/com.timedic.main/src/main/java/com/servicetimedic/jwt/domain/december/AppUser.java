@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,12 +20,11 @@ import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
 @Table(name = "app_user")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AppUser implements UserDetails, Serializable {
     
 	private static final long serialVersionUID = 1L;

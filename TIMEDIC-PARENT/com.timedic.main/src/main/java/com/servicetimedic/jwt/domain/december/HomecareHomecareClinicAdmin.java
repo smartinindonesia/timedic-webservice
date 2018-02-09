@@ -8,17 +8,21 @@ package com.servicetimedic.jwt.domain.december;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "homecare_homecare_clinic_admin")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareHomecareClinicAdmin implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id

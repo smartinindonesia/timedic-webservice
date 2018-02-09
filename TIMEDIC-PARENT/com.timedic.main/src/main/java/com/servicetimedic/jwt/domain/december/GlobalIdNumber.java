@@ -7,6 +7,7 @@ package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,10 +19,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Table(name = "global_id_number")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class GlobalIdNumber implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

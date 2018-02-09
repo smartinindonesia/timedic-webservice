@@ -19,10 +19,11 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "system_transaction_status")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SystemTransactionStatus implements Serializable {
     
 	private static final long serialVersionUID = 1L;

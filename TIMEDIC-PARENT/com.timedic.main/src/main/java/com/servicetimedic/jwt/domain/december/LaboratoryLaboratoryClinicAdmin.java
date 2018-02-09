@@ -24,8 +24,11 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "laboratory_laboratory_clinic_admin")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LaboratoryLaboratoryClinicAdmin implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -20,10 +20,11 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "homecare_service")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareService implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -96,6 +97,7 @@ public class HomecareService implements Serializable {
 
     //@XmlTransient
     @JsonIgnore
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public List<HomecareServiceAssessment> getHomecareServiceAssessmentList() {
         return homecareServiceAssessmentList;
     }

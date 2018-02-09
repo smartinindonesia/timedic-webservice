@@ -19,8 +19,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "medipay_transaction")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MedipayTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
