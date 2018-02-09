@@ -68,7 +68,6 @@ public class LaboratoryServiceController {
 		else{
 			return new ResponseEntity<String>("Failed delete Laboratory Services", HttpStatus.FAILED_DEPENDENCY);
 		}
-
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")

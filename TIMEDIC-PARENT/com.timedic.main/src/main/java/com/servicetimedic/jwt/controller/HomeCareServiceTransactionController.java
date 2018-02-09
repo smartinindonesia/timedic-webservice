@@ -44,13 +44,11 @@ public class HomeCareServiceTransactionController {
 	public ResponseEntity<HomecareServiceTransaction> getTransactionsHomecareById(@PathVariable Long id)
 	{
 		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.getOne(id);
-		if (homecareServiceTransaction == null)
-		{
+		if (homecareServiceTransaction == null){
 			logger.info("Transactions Homecare is null");
 			return new ResponseEntity<HomecareServiceTransaction>(HttpStatus.NO_CONTENT);
 		}
-		else
-		{
+		else{
 			logger.info("fetching Transactions Homecare by id "+id);
 			return new ResponseEntity<HomecareServiceTransaction>(homecareServiceTransaction, HttpStatus.OK);
 		}
@@ -89,43 +87,36 @@ public class HomeCareServiceTransactionController {
 			homeCareAssessmentRecordDbRepository.save(x);
 		}
 		
-		return new ResponseEntity<String>("Thank You, Your order has been recorded in timedic system", HttpStatus.CREATED);
+		return new ResponseEntity<String>("Thank You, Your homecare order has been recorded in timedic system with id " + process.getId() , HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/orderactive/homecare/{id}", method = RequestMethod.GET)
 	public ResponseEntity<List<HomecareServiceTransaction>> getOrderactiveHomecareById(@PathVariable Long id)
 	{
-		
 		List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findOrderActiveHomecareByIdUser(id);
-		//List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findByHomecareByIdUserForAndroid(id);
-		if (homecareServiceTransaction == null)
-		{
+		if (homecareServiceTransaction == null){
 			logger.info("orderactive Homecare is null");
 			return new ResponseEntity<List<HomecareServiceTransaction>>(HttpStatus.NO_CONTENT);
 		}
-		else
-		{
+		else{
 			logger.info("fetching orderactive Homecare by id "+id);
 			return new ResponseEntity<List<HomecareServiceTransaction>>(homecareServiceTransaction, HttpStatus.OK);
 		}
 	}
 	
+	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/history/homecare/{id}", method = RequestMethod.GET)
 	public ResponseEntity<List<HomecareServiceTransaction>> getHistoryTrxHomecareById(@PathVariable Long id)
 	{
-		
 		List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUser(id);
-		//List<HomecareServiceTransaction> homecareServiceTransaction = homecareSeriveTransactionsDbRepository.findByHomecareByIdUserForAndroid(id);
-		if (homecareServiceTransaction == null)
-		{
-			logger.info("orderactive Homecare is null");
+		if (homecareServiceTransaction == null){
+			logger.info("history Homecare is null");
 			return new ResponseEntity<List<HomecareServiceTransaction>>(HttpStatus.NO_CONTENT);
 		}
-		else
-		{
-			logger.info("fetching orderactive Homecare by id "+id);
+		else{
+			logger.info("fetching history Homecare by id "+id);
 			return new ResponseEntity<List<HomecareServiceTransaction>>(homecareServiceTransaction, HttpStatus.OK);
 		}
 	}

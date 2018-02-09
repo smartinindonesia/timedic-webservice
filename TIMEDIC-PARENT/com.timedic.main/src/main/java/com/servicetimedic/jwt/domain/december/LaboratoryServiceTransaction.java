@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,10 +61,10 @@ public class LaboratoryServiceTransaction implements Serializable {
     @Column(name = "employee_id_number")
     private String employeeIdNumber;
     
-    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    @OneToMany(mappedBy = "idLaboratoryServiceTransaction", cascade= CascadeType.REMOVE)
     private Collection<LaboratorySelectedServiceTransaction> laboratorySelectedServiceTransactionCollection;
     
-    @OneToMany(mappedBy = "idLaboratoryServiceTransaction")
+    @OneToMany(mappedBy = "idLaboratoryServiceTransaction", cascade= CascadeType.REMOVE)
     private Collection<LaboratorySelectedPackageTransaction> laboratorySelectedPackageTransactionCollection;
     
     @JoinColumn(name = "id_laboratory_clinic", referencedColumnName = "id")
