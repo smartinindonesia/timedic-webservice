@@ -49,7 +49,7 @@ public class LaboratoryServiceController {
 		return new ResponseEntity<List<LaboratoryService>>(laboratoryServiceDbRepository.findByIdBetween(start, end), HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/services", method = RequestMethod.POST)
 	public ResponseEntity<LaboratoryService> createLaboratoryServices(@RequestBody LaboratoryService laboratoryService) {
 		LaboratoryService labservices = laboratoryServiceDbRepository.save(laboratoryService);
@@ -57,7 +57,7 @@ public class LaboratoryServiceController {
 		return new ResponseEntity<LaboratoryService>(labservices, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/services/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryServices(@PathVariable Long id) {
 		LaboratoryService labservices = laboratoryServiceDbRepository.getOne(id);
@@ -70,7 +70,7 @@ public class LaboratoryServiceController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/services/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateLaboratoryServices(@PathVariable(value = "id") Long id,@RequestBody LaboratoryService laboratoryService) 
 	{	

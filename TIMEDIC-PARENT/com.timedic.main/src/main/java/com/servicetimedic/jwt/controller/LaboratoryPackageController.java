@@ -49,7 +49,7 @@ public class LaboratoryPackageController {
 		return new ResponseEntity<List<LaboratoryPackage>>(laboratoryPackageDbRepository.findByIdBetween(start, end), HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/package", method = RequestMethod.POST)
 	public ResponseEntity<LaboratoryPackage> createLaboratoryPackage(@RequestBody LaboratoryPackage laboratoryPackage) {
 		LaboratoryPackage labPackage = laboratoryPackageDbRepository.save(laboratoryPackage);
@@ -57,7 +57,7 @@ public class LaboratoryPackageController {
 		return new ResponseEntity<LaboratoryPackage>(labPackage, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/package/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryPackage(@PathVariable Long id) {
 		LaboratoryPackage labPackage = laboratoryPackageDbRepository.getOne(id);
@@ -70,7 +70,7 @@ public class LaboratoryPackageController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/package/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateLaboratoryPackage(@PathVariable(value = "id") Long id,@RequestBody LaboratoryPackage laboratoryPackage) {	
 		LaboratoryPackage labPackage = laboratoryPackageDbRepository.getOne(id);	

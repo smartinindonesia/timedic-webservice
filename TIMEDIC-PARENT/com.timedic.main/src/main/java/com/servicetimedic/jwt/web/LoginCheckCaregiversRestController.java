@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
+
+
 
 //import org.springframework.security.core.userdetails.User; 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,14 +57,17 @@ public class LoginCheckCaregiversRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/register/caregiver", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
-	public ResponseEntity<HomecareCaregiver> createUser(@RequestBody HomecareCaregiver homecareCaregiver) {
+	public ResponseEntity<Object> createUser(@RequestBody HomecareCaregiver homecareCaregiver) {
 		if (caregiversDbRepository.findByUsername(homecareCaregiver.getUsername()) != null) {
-			throw new RuntimeException("Username already exist");
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.OK);
+			error.setMessage("user already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
 		}
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_CAREGIVER");
 		homecareCaregiver.setRoles(roles);
-		return new ResponseEntity<HomecareCaregiver>(caregiversDbRepository.save(homecareCaregiver), HttpStatus.CREATED);
+		return new ResponseEntity<Object>(caregiversDbRepository.save(homecareCaregiver), HttpStatus.CREATED);
 	}
 
 	/**
@@ -96,36 +103,37 @@ public class LoginCheckCaregiversRestController {
 	 */
 	
 	@RequestMapping(value = "/authenticate/caregiver", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> login(@RequestParam String username, @RequestParam String password,
-			HttpServletResponse response) throws IOException {
+	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
 		String token = null;
 		HomecareCaregiver homecareCaregiver = caregiversDbRepository.findByUsername(username);
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
 		if (homecareCaregiver != null && homecareCaregiver.getPassword().equals(password)) 
 		{
-			//Date expiration = Date.from(LocalDateTime.now().plusMinutes(1).toInstant(UTC));
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
-			//System.out.println("Date "+exp);
 			token = Jwts.builder()
 					.setSubject(username)
 					.setExpiration(exp)
 					.claim("roles", homecareCaregiver.getRoles())
+					.claim("id", homecareCaregiver.getId())
 					.setIssuedAt(new Date())
 					.signWith(SignatureAlgorithm.HS256, "secretkey")
 					.compact();
 			tokenMap.put("token", token);
 			tokenMap.put("user", homecareCaregiver);
-			//System.out.println("Token "+token);
-			//System.out.println(appUser.getRoles());
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
+			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
 		}
 		else if(homecareCaregiver == null){
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.NOT_FOUND);
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.NOT_FOUND);
+			error.setMessage("INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
 		}
 		else{
-			//tokenMap.put("token", null);
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.UNAUTHORIZED);
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 
 	}

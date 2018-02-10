@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
@@ -256,7 +257,7 @@ public class AppUser implements UserDetails, Serializable {
         this.longitude = longitude;
     }
 
-    //@XmlTransient
+    @XmlTransient
     @JsonIgnore
     public List<HomecareCaregiverRate> getHomecareCaregiverRateList() {
         return homecareCaregiverRateList;
@@ -267,29 +268,31 @@ public class AppUser implements UserDetails, Serializable {
         this.homecareCaregiverRateList = homecareCaregiverRateList;
     }
 
-    //@XmlTransient
+    @XmlTransient
     @JsonIgnore
     public List<HomecarePatient> getHomecarePatientList() {
         return homecarePatientList;
     }
 
+    @XmlTransient
     @JsonIgnore
     public void setHomecarePatientList(List<HomecarePatient> homecarePatientList) {
         this.homecarePatientList = homecarePatientList;
     }
 
-    //@XmlTransient
+    @XmlTransient
     @JsonIgnore
     public List<AppUserSocialAuth> getAppUserSocialAuthList() {
         return appUserSocialAuthList;
     }
 
+    @XmlTransient
     @JsonIgnore
     public void setAppUserSocialAuthList(List<AppUserSocialAuth> appUserSocialAuthList) {
         this.appUserSocialAuthList = appUserSocialAuthList;
     }
 
-    //@XmlTransient
+    @XmlTransient
     @JsonIgnore
     public List<GlobalIdNumber> getGlobalIdNumberList() {
         return globalIdNumberList;

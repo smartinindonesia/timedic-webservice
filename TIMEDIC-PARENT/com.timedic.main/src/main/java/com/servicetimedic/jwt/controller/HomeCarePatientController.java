@@ -30,7 +30,7 @@ public class HomeCarePatientController {
 	@Autowired
 	private HomeCarePatientDbRepository homeCarePatientDbRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/patients", method = RequestMethod.GET)
 	public List<HomecarePatient> getAllPatients() 
 	{
@@ -63,10 +63,9 @@ public class HomeCarePatientController {
 	}
 	*/
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.GET)
-	public ResponseEntity<HomecarePatient> getPatientsByIdPatients(@PathVariable Long id,
-			@RequestHeader HttpHeaders requestHeaders)
+	public ResponseEntity<HomecarePatient> getPatientsByIdPatients(@PathVariable Long id,@RequestHeader HttpHeaders requestHeaders)
 	{
 		/*s
 		FirebaseToken firebaseToken = checkAuthorization(requestHeaders);
@@ -77,13 +76,11 @@ public class HomeCarePatientController {
 		*/
 		
 		HomecarePatient homecarePatient = homeCarePatientDbRepository.getOne(id);
-		if (homecarePatient == null)
-		{
+		if (homecarePatient == null){
 			logger.info("patients is null");
 			return new ResponseEntity<HomecarePatient>(HttpStatus.NO_CONTENT);
 		}
-		else
-		{
+		else{
 			logger.info("fetching patients with id "+id);
 			return new ResponseEntity<HomecarePatient>(homecarePatient, HttpStatus.OK);
 		}
@@ -93,11 +90,6 @@ public class HomeCarePatientController {
 	@RequestMapping(value = "/patients", method = RequestMethod.POST)
 	public ResponseEntity<HomecarePatient> createPatients(@RequestBody HomecarePatient homePatient) 
 	{
-		//AppUser data = new AppUser();
-		//Long no = (long) 3;
-		//data.setId(no);
-		
-		//homePatient.setIdAppUser(data);
 		
 		HomecarePatient homecarePatient = homeCarePatientDbRepository.save(homePatient);
 		

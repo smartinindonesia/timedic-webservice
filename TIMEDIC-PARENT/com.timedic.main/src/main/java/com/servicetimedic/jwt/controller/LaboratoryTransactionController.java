@@ -38,7 +38,7 @@ public class LaboratoryTransactionController {
 	private LaboratoryServiceSelectedDbRepository laboratoryServiceSelectedDbRepository;
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transaction", method = RequestMethod.GET)
 	public List<LaboratoryServiceTransaction> getAllLabTransaction() {
 		logger.info("Fetching all Lab transaction");
@@ -100,7 +100,7 @@ public class LaboratoryTransactionController {
 		return new ResponseEntity<String>("Thank You, Your laboratory order has been recorded in timedic system with id "+laboratoryServiceTransaction.getId(), HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transaction/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryServicesTransaction(@PathVariable Long id) {
 		LaboratoryServiceTransaction labservicesTrx = laboratoryTransactionDbRepository.getOne(id);

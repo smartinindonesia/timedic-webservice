@@ -55,7 +55,7 @@ public class HomeServiceController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/homecareservices/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteServices(@PathVariable Long id) {
 		HomecareService homecareService = homeServicesDbRepository.getOne(id);
@@ -72,7 +72,7 @@ public class HomeServiceController {
 	}
 	
 	//@PreAuthorize("hasRole('ADMIN')")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/homecareservices/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateServices(@PathVariable(value = "id") Long id,@RequestBody HomecareService homecareService) 
 	{	
@@ -92,7 +92,7 @@ public class HomeServiceController {
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/homecareservices", method = RequestMethod.POST)
 	public ResponseEntity<HomecareService> createServices(@RequestBody HomecareService homecareService) 
 	{

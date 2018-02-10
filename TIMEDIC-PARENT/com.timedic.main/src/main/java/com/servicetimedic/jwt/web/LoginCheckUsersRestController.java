@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
+
+
 
 
 
@@ -53,14 +57,19 @@ public class LoginCheckUsersRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/register/user", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
-	public ResponseEntity<AppUser> createUser(@RequestBody AppUser appUser) {
+	public ResponseEntity<Object> createUser(@RequestBody AppUser appUser) {
 		if (appUserRepository.findByUsername(appUser.getUsername()) != null) {
-			throw new RuntimeException("Username already exist");
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.OK);
+			error.setMessage("user already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
 		}
-		List<String> roles = new ArrayList<>();
-		roles.add("ROLE_USER");
-		appUser.setRoles(roles);
-		return new ResponseEntity<AppUser>(appUserRepository.save(appUser), HttpStatus.CREATED);
+		else{
+			List<String> roles = new ArrayList<>();
+			roles.add("ROLE_USER");
+			appUser.setRoles(roles);
+			return new ResponseEntity<Object>(appUserRepository.save(appUser), new HttpHeaders() ,HttpStatus.CREATED);
+		}
 	}
 
 	/**
@@ -96,40 +105,37 @@ public class LoginCheckUsersRestController {
 	 */
 	
 	@RequestMapping(value = "/authenticate/user", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> login(@RequestParam String username, @RequestParam String password,
-			HttpServletResponse response) throws IOException {
+	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
 		String token = null;
 		AppUser appUser = appUserRepository.findByUsername(username);
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		
-		
-		if (appUser != null && appUser.getPassword().equals(password)) 
-		{
+		if (appUser != null && appUser.getPassword().equals(password)) {
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
-			//Date expiration = Date.from(LocalDateTime.now().plusMinutes(1).toInstant(UTC));
-			//Date exp = new Date(System.currentTimeMillis() + 600000);
-			//Date exp = new Date(System.currentTimeMillis() + 18000000);
-			//System.out.println("Date "+exp);
+		
 			token = Jwts.builder()
 					.setSubject(username)
 					.setExpiration(exp)
 					.claim("roles", appUser.getRoles())
+					.claim("id", appUser.getId())
 					.setIssuedAt(new Date())
 					.signWith(SignatureAlgorithm.HS256, "secretkey")
 					.compact();
 			tokenMap.put("token", token);
 			tokenMap.put("user", appUser);
-			//System.out.println("Token "+token);
-			//System.out.println(appUser.getRoles());
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
+			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
 		}
 		else if(appUser == null){
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.NOT_FOUND);
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.NOT_FOUND);
+			error.setMessage("INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
 		}
 		else{
-			//tokenMap.put("token", null);
-			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.UNAUTHORIZED);
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 
 	}

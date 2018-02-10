@@ -59,7 +59,7 @@ public class LaboratoryPackageServiceController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/packageservice", method = RequestMethod.POST)
 	public ResponseEntity<LaboratoryServicePackage> createLaboratoryPackageService(@RequestBody LaboratoryServicePackage laboratoryServicePackage) {
 		LaboratoryServicePackage labPackage = laboratoryPackageServiceDbRepository.save(laboratoryServicePackage);
@@ -67,7 +67,7 @@ public class LaboratoryPackageServiceController {
 		return new ResponseEntity<LaboratoryServicePackage>(labPackage, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/packageservice/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteLaboratoryPackageService(@PathVariable Long id) {
 		LaboratoryServicePackage labPackageService = laboratoryPackageServiceDbRepository.getOne(id);
@@ -80,7 +80,7 @@ public class LaboratoryPackageServiceController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/packageservice/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateLaboratoryPackageService(@PathVariable(value = "id") Long id,@RequestBody LaboratoryServicePackage laboratoryServicePackage) {	
 		LaboratoryServicePackage labPackageService = laboratoryPackageServiceDbRepository.getOne(id);	

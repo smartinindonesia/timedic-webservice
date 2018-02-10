@@ -31,7 +31,7 @@ public class HomeCareServiceTransactionController {
 	@Autowired
 	private HomeCareAssessmentRecordDbRepository homeCareAssessmentRecordDbRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transactions/homecare", method = RequestMethod.GET)
 	public List<HomecareServiceTransaction> getAllTransactionsHomecare() 
 	{
