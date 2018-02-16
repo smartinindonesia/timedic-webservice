@@ -60,7 +60,8 @@ public class HomeCareServiceTransactionController {
 		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.getOne(id);
 		
 		if (homecareServiceTransaction != null) {
-			homecareSeriveTransactionsDbRepository.deleteById(id);
+			//homecareSeriveTransactionsDbRepository.deleteById(id);
+			homecareSeriveTransactionsDbRepository.delete(id);
 			return new ResponseEntity<String>("Succesfully delete transactions homecare with id "+id, HttpStatus.OK);
 		}
 		else{

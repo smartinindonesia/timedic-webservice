@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
+
+
 
 
 
@@ -107,12 +111,18 @@ public class LoginCheckUsersRestController {
 	@RequestMapping(value = "/authenticate/user", method = RequestMethod.POST)
 	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
 		String token = null;
+		
+		String userPasswordAPI = Decrypt(password, "timedictimedic18");
+		
 		AppUser appUser = appUserRepository.findByUsername(username);
+		
+		String userPasswordDB = Decrypt(appUser.getPassword(), "timedictimedic18");
+		
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		if (appUser != null && appUser.getPassword().equals(password)) {
+		//if (appUser != null && appUser.getPassword().equals(password)) {
+		if (appUser != null && userPasswordDB.equals(userPasswordAPI)) {
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
-		
 			token = Jwts.builder()
 					.setSubject(username)
 					.setExpiration(exp)
@@ -138,5 +148,22 @@ public class LoginCheckUsersRestController {
 			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 
+	}
+	
+	public String Decrypt(String source, String key){
+	    byte[] raw = key.getBytes();
+	    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+	    String decrypted = null;
+	    try
+	    {
+	      Cipher cipher = Cipher.getInstance("AES");
+	      cipher.init(2, skeySpec);
+	      decrypted = new String(cipher.doFinal(Base64.decodeBase64(source)));
+	    }
+	    catch (Exception e)
+	    {
+	      System.out.println(e.getMessage());
+	    }
+	    return decrypted;
 	}
 }

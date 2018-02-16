@@ -110,7 +110,8 @@ public class AppUserController {
 				
 			}
 			else{
-				userRepository.deleteById(id);
+				//userRepository.deleteById(id);
+				userRepository.delete(id);
 				logger.info("user sucessfully deleted");
 				ApiError message = new ApiError();
 				message.setStatus(HttpStatus.OK);

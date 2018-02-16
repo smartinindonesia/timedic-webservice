@@ -105,7 +105,8 @@ public class LaboratoryTransactionController {
 	public ResponseEntity<String> deleteLaboratoryServicesTransaction(@PathVariable Long id) {
 		LaboratoryServiceTransaction labservicesTrx = laboratoryTransactionDbRepository.getOne(id);
 		if (labservicesTrx != null) {
-			laboratoryTransactionDbRepository.deleteById(id);
+			//laboratoryTransactionDbRepository.deleteById(id);
+			laboratoryTransactionDbRepository.delete(id);
 			return new ResponseEntity<String>("Succesfully delete Laboratory Services Transaction with id "+id, HttpStatus.OK);
 		}
 		else{

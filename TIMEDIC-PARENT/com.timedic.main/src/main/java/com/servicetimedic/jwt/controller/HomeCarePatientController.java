@@ -90,9 +90,7 @@ public class HomeCarePatientController {
 	@RequestMapping(value = "/patients", method = RequestMethod.POST)
 	public ResponseEntity<HomecarePatient> createPatients(@RequestBody HomecarePatient homePatient) 
 	{
-		
-		HomecarePatient homecarePatient = homeCarePatientDbRepository.save(homePatient);
-		
+		HomecarePatient homecarePatient = homeCarePatientDbRepository.save(homePatient);	
 		return new ResponseEntity<HomecarePatient>(homecarePatient, HttpStatus.CREATED);
 	}
 	
@@ -101,13 +99,13 @@ public class HomeCarePatientController {
 	public ResponseEntity<String> deletePatient(@PathVariable Long id) {
 		HomecarePatient homecarePatient = homeCarePatientDbRepository.getOne(id);
 		if (homecarePatient != null) {
-			homeCarePatientDbRepository.deleteById(id);
+			//homeCarePatientDbRepository.deleteById(id);
+			homeCarePatientDbRepository.delete(id);
 			return new ResponseEntity<String>("Succesfully delete patients with id "+id, HttpStatus.OK);
 		}
 		else{
 			return new ResponseEntity<String>("Failed delete patients", HttpStatus.FAILED_DEPENDENCY);
 		}
-
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")

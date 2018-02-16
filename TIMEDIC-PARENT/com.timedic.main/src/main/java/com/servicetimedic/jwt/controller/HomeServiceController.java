@@ -62,7 +62,8 @@ public class HomeServiceController {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		//String loggedUsername = auth.getName();
 		if (homecareService != null) {
-			homeServicesDbRepository.deleteById(id);
+			//homeServicesDbRepository.deleteById(id);
+			homeServicesDbRepository.delete(id);
 			return new ResponseEntity<String>("Succesfully delete Services with id "+id, HttpStatus.OK);
 		}
 		else{

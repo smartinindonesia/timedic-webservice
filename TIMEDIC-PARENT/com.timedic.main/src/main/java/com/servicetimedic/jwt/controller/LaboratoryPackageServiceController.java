@@ -72,7 +72,8 @@ public class LaboratoryPackageServiceController {
 	public ResponseEntity<String> deleteLaboratoryPackageService(@PathVariable Long id) {
 		LaboratoryServicePackage labPackageService = laboratoryPackageServiceDbRepository.getOne(id);
 		if (labPackageService != null) {
-			laboratoryPackageServiceDbRepository.deleteById(id);
+			//laboratoryPackageServiceDbRepository.deleteById(id);
+			laboratoryPackageServiceDbRepository.delete(id);
 			return new ResponseEntity<String>("Succesfully delete Laboratory PackageService with id "+id, HttpStatus.OK);
 		}
 		else{
