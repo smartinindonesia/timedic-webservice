@@ -10,18 +10,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.userdetails.User; 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,15 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.HomecareHomecareClinicAdmin;
 import com.servicetimedic.jwt.repository.HomeCareClinicDbRepository;
-
-
-
-
-
-
-
-//import org.springframework.security.core.userdetails.User; 
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * All web services in this controller will be available for all the users
@@ -52,6 +40,12 @@ public class LoginCheckHomeCareClinicRestController {
 	
 	@Value("${jwt.expires_in}")
     private int EXPIRES_IN;
+	
+	private static final String IV =   "dc0da04af8fee58593442bf834b30739";
+    private static final String SALT = "dc0da04af8fee58593442bf834b30739";
+    private static final int KEY_SIZE = 128;
+    private static final int ITERATION_COUNT = 1000;
+    private static final String PASSPHRASE = "timedictimedic18";
 
 	/**
 	 * This method is used for user registration. Note: user registration is not
@@ -109,11 +103,11 @@ public class LoginCheckHomeCareClinicRestController {
 	@RequestMapping(value = "/authenticate/clinic", method = RequestMethod.POST)
 	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
 		String token = null;
-		String userPasswordAPI = Decrypt(password, "timedictimedic18");
+		String userPasswordAPI = Decrypt(password);
 		
 		HomecareHomecareClinicAdmin homecareClinicAdmin = homeCareClinicDbRepository.findByUsername(username);
 		
-		String userPasswordDB = Decrypt(homecareClinicAdmin.getPassword(), "timedictimedic18");
+		String userPasswordDB = Decrypt(homecareClinicAdmin.getPassword());
 		
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
@@ -147,21 +141,16 @@ public class LoginCheckHomeCareClinicRestController {
 
 	}
 	
-	public String Decrypt(String source, String key){
-	    byte[] raw = key.getBytes();
-	    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-	    String decrypted = null;
-	    try
-	    {
-	      Cipher cipher = Cipher.getInstance("AES");
-	      cipher.init(2, skeySpec);
-	      decrypted = new String(cipher.doFinal(Base64.decodeBase64(source)));
-	    }
-	    catch (Exception e)
-	    {
-	      System.out.println(e.getMessage());
-	    }
-	    return decrypted;
-	}
+	public String  Decrypt(String CIPHER_TEXT) {
+        AesUtilHelper util = new AesUtilHelper(KEY_SIZE, ITERATION_COUNT);
+        String decrypt = util.decrypt(SALT, IV, PASSPHRASE, CIPHER_TEXT);
+        return decrypt;
+    }
+	
+	public String Encrypt(String PLAIN_TEXT) {
+        AesUtilHelper util = new AesUtilHelper(KEY_SIZE, ITERATION_COUNT);
+        String encrypt = util.encrypt(SALT, IV, PASSPHRASE, PLAIN_TEXT);     
+        return encrypt;
+    }
 	
 }
