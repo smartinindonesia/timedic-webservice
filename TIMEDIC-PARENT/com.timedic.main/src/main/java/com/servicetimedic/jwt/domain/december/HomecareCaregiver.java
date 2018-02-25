@@ -292,6 +292,7 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareCaregiverRate> getHomecareCaregiverRateList() {
         return homecareCaregiverRateList;
     }
@@ -301,6 +302,7 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareCaregiverSchedule> getHomecareCaregiverScheduleList() {
         return homecareCaregiverScheduleList;
     }
@@ -337,6 +339,7 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<GlobalIdNumber> getGlobalIdNumberList() {
         return globalIdNumberList;
     }

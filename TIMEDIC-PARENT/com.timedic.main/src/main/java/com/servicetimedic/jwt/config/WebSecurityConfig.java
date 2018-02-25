@@ -1,8 +1,11 @@
 package com.servicetimedic.jwt.config;
 
+import java.util.Arrays;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +16,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Spring Web security configuration class
@@ -47,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 
 		//web.ignoring().antMatchers("/", "/index.html", "/app/**", "/register/**", "/authenticate/**", "/favicon.ico");
-		web.ignoring().antMatchers("/register/**", "/authenticate/**", "/logged/user");
+		web.ignoring().antMatchers("/api/users/register", "/register/**", "/authenticate/**", "/logged/user");
 	}
 
 	// This method is used for override HttpSecurity of the web Application.
@@ -62,24 +69,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
         .and()
         */
-		
-		.sessionManagement()
+		.cors().and()
+		//.sessionManagement()
         	//.invalidSessionUrl("/login?invalid=1")
-        	.maximumSessions(1)
-        	.maxSessionsPreventsLogin(true)
-        	.sessionRegistry(sessionRegistry())
+        	//.maximumSessions(1)
+        	//.maxSessionsPreventsLogin(true)
+        	//.sessionRegistry(sessionRegistry())
             //.expiredUrl("/login?time=1")
-            .and()
-        .and()
+            //.and()
+        //.and()
 			//.antMatcher("/api/**")	// starts authorizing configurations
 		.authorizeRequests()//.antMatchers("/api/users","/api/users/").hasRole("USER")	
 				// authenticate all remaining URLS
-				.anyRequest().authenticated().and().logout().logoutSuccessHandler(logoutSuccess).deleteCookies("JSESSIONID").invalidateHttpSession(false).permitAll()
+				.anyRequest().authenticated()
+				.and().logout().logoutSuccessHandler(logoutSuccess).deleteCookies("JSESSIONID")//.invalidateHttpSession(false).permitAll()
 				.and()
 				.csrf().disable()
                 //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
 				// adding JWT filter
 				.addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
+				//.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
 				// enabling the basic authentication
 				.httpBasic();
 				// configuring the session as state less. Which means there is
@@ -121,6 +130,73 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new HttpSessionEventPublisher();
     }
 	
+	/*
+	@Bean
+    public FilterRegistrationBean corsFilterRegistration() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new CORSFilter());
+        registrationBean.setName("CORS Filter");
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
+	*/
+	
+	/*
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
+    }
+	*/
+	
+	/*
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		final CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("*"));
+		configuration.setAllowCredentials(true);
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Max-Age",
+				"Access-Control-Request-Headers", "Access-Control-Request-Method"));
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	*/
+	
+	/*
+	 @Bean
+	    public CorsConfigurationSource corsConfigurationSource() {
+	        final CorsConfiguration configuration = new CorsConfiguration();
+	        configuration.setAllowedOrigins(Arrays.asList("*"));
+	        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+	        // setAllowCredentials(true) is important, otherwise:
+	        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+	        configuration.setAllowCredentials(true);
+	        // setAllowedHeaders is important! Without it, OPTIONS preflight request
+	        // will fail with 403 Invalid CORS request
+	        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+	        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	        source.registerCorsConfiguration("/**", configuration);
+	        return source;
+	    }
+	 */
+	
+	/*
+	@Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+	*/
 	/*
 	@Bean
 	public static ServletListenerRegistrationBean httpSessionEventPublisher() 

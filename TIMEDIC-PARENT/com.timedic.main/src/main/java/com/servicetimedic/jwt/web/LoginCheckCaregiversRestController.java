@@ -4,13 +4,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.userdetails.User; 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +61,8 @@ public class LoginCheckCaregiversRestController {
 	 * @param appUser
 	 * @return
 	 */
+    
+    @CrossOrigin
 	@RequestMapping(value = "/register/caregiver", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
 	public ResponseEntity<Object> createUser(@RequestBody HomecareCaregiver homecareCaregiver) {
 		if (caregiversDbRepository.findByUsername(homecareCaregiver.getUsername()) != null) {
@@ -77,6 +83,8 @@ public class LoginCheckCaregiversRestController {
 	 * @param principal
 	 * @return Principal java security principal object
 	 */
+	
+	@CrossOrigin
 	@RequestMapping(value = "/logged/caregiver", method = RequestMethod.GET)
 	public HomecareCaregiver user(Principal principal) {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -101,10 +109,12 @@ public class LoginCheckCaregiversRestController {
 	 * @param response
 	 * @return JSON contains token and user after success authentication.
 	 * @throws IOException
+	 * @throws GeneralSecurityException 
 	 */
 	
+	@CrossOrigin
 	@RequestMapping(value = "/authenticate/caregiver", method = RequestMethod.POST)
-	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
+	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException, GeneralSecurityException {
 		String token = null;
 		
 		String userPasswordAPI = Decrypt(password);
@@ -130,7 +140,7 @@ public class LoginCheckCaregiversRestController {
 			tokenMap.put("user", homecareCaregiver);
 			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
 		}
-		else if(homecareCaregiver == null){
+		else if(homecareCaregiver.equals(null)){
 			ApiError error = new ApiError();
 			error.setStatus(HttpStatus.NOT_FOUND);
 			error.setMessage("INVALID USERNAME OR PASSWORD");
@@ -144,7 +154,7 @@ public class LoginCheckCaregiversRestController {
 		}
 	}
 	
-	public String  Decrypt(String CIPHER_TEXT) {
+	public String  Decrypt(String CIPHER_TEXT) throws GeneralSecurityException {
         AesUtilHelper util = new AesUtilHelper(KEY_SIZE, ITERATION_COUNT);
         String decrypt = util.decrypt(SALT, IV, PASSPHRASE, CIPHER_TEXT);
         return decrypt;

@@ -8,20 +8,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.repository.UserDbRepository;
@@ -35,16 +38,63 @@ public class AppUserController {
 	@Autowired
 	private UserDbRepository userRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public List<AppUser> getAllUsers() 
-	{
-		logger.info("Fetching All Users Details");
-		return userRepository.findAll();
+	
+	private Pageable createPageRequest(int page, int size, String sort, String field) {
+		Direction direction;
+		if(sort.equals("ASC")){direction = Sort.Direction.ASC;}
+		else{direction = Sort.Direction.DESC;}
+		return new PageRequest(page, size, direction, field);
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/userByField", method = RequestMethod.GET)
+	public AppUser getUserByField(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+		AppUser data = null;
+		if(searchField.equals("username")){
+			data = userRepository.findByUsername(value);
+		}
+		else if(searchField.equals("email")){
+			data = userRepository.findByEmail(value);
+		}
+		else if(searchField.equals("phonenumber")){
+			data = userRepository.findByPhoneNumber(value);
+		}
+		return data;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/usersWithPaginationByField", method = RequestMethod.GET)
+	public List<AppUser> getAllUsersWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+		
+		List<AppUser> data = null;
+		
+		if(searchField.equals("fistname")){
+			data = userRepository.findUserByfrontName(value, createPageRequest(page, size, sort, sortField));
+		}
+		else if(searchField.equals("middlename")){
+			data = userRepository.findUserBymiddleName(value, createPageRequest(page, size, sort, sortField));
+		}
+		else if(searchField.equals("lastname")){
+			data = userRepository.findUserBylastName(value, createPageRequest(page, size, sort, sortField));
+		}
+		
+		logger.info("Fetching User with "+ searchField +" order by " + sortField + " " + sort);
+		
+		return data;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/userswithpagination", method = RequestMethod.GET)
+	public List<AppUser> getAllUsersWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
+		
+		List<AppUser> data = userRepository.findAllUsers(createPageRequest(page, size, sort, sortField));
+		
+		logger.info("Fetching All Users Details with pagination order by " + sortField + " " + sort);
+		return data;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getUserById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
 	{
 		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
@@ -57,11 +107,11 @@ public class AppUserController {
 			appUser = userRepository.getOne(id);	
 			
 			if (appUser != null){
-				logger.info("fetching users with id " + appUser.getId());
+				logger.info("fetching user with id " + appUser.getId());
 				return new ResponseEntity<Object>(appUser, new HttpHeaders() ,HttpStatus.OK);
 			}
 			else{
-				logger.info("users not found");
+				logger.info("user not found");
 				ApiError error = new ApiError();
 				error.setStatus(HttpStatus.NOT_FOUND);
 				error.setMessage("users NOT_FOUND");
@@ -80,7 +130,7 @@ public class AppUserController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id, @RequestHeader(value="Authorization") String token) {
 		
 		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
@@ -94,10 +144,10 @@ public class AppUserController {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			String loggedUsername = auth.getName();
 			if (appUser == null){
-				logger.info("users NOT FOUND");
+				logger.info("user NOT FOUND");
 				ApiError error = new ApiError();
 				error.setStatus(HttpStatus.NOT_FOUND);
-				error.setMessage("users NOT FOUND");
+				error.setMessage("user NOT FOUND");
 				return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
 			}
 			else if (appUser.getUsername().equalsIgnoreCase(loggedUsername)){
@@ -120,7 +170,7 @@ public class AppUserController {
 			}
 		}
 		else{
-			logger.info("users UNAUTHORIZED");
+			logger.info("user UNAUTHORIZED");
 			ApiError error = new ApiError();
 			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("user with id "+ id +" is UNAUTHORIZED");
@@ -129,7 +179,7 @@ public class AppUserController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT )
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<Object> updateUser(@PathVariable(value = "id") Long id,@RequestBody AppUser appUser ,  @RequestHeader(value="Authorization") String token) 
 	{
 		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
@@ -149,7 +199,7 @@ public class AppUserController {
 			if(findFirst == null) {
 				ApiError message = new ApiError();
 				message.setStatus(HttpStatus.NOT_FOUND);
-				message.setMessage("users with id "+ id + " NOT_FOUND");
+				message.setMessage("user with id "+ id + " NOT_FOUND");
 				return new ResponseEntity<Object>(message, new HttpHeaders() ,HttpStatus.NOT_FOUND);
 		    }
 			
@@ -171,7 +221,7 @@ public class AppUserController {
 				mes = "Succesfully Update use with id "+ findFirst.getId() + ", but username '"+ appUser.getUsername()  +"' that you input is already exist";
 			}
 			else{
-				mes = "Succesfully Update users with id "+ findFirst.getId();
+				mes = "Succesfully Update user with id "+ findFirst.getId();
 			}
 			userRepository.save(findFirst);
 			
@@ -181,7 +231,7 @@ public class AppUserController {
 			
 			return new ResponseEntity<Object>(message, new HttpHeaders() ,HttpStatus.OK);
 		}else{
-			logger.info("users UNAUTHORIZED");
+			logger.info("user UNAUTHORIZED");
 			ApiError error = new ApiError();
 			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("user with id "+ id +" is UNAUTHORIZED");
@@ -190,7 +240,7 @@ public class AppUserController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-	@RequestMapping(value = "/users", method = RequestMethod.POST)
+	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public ResponseEntity<Object> createUser(@RequestBody AppUser appUser) 
 	{
 		if (userRepository.findByUsername(appUser.getUsername()) != null) {
@@ -204,4 +254,5 @@ public class AppUserController {
 			return new ResponseEntity<Object>(process, new HttpHeaders() ,HttpStatus.CREATED);
 		}
 	}
+	
 }

@@ -4,22 +4,20 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.userdetails.User; 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +56,8 @@ public class LoginCheckUsersRestController {
 	 * @param appUser
 	 * @return
 	 */
+    
+    //@CrossOrigin
 	@RequestMapping(value = "/register/user", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
 	public ResponseEntity<Object> createUser(@RequestBody AppUser appUser) {
 		if (appUserRepository.findByUsername(appUser.getUsername()) != null) {
@@ -80,6 +80,7 @@ public class LoginCheckUsersRestController {
 	 * @param principal
 	 * @return Principal java security principal object
 	 */
+	//@CrossOrigin
 	@RequestMapping(value = "/logged/user", method = RequestMethod.GET)
 	public AppUser user(Principal principal) {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -103,23 +104,34 @@ public class LoginCheckUsersRestController {
 	 * @param password
 	 * @param response
 	 * @return JSON contains token and user after success authentication.
+	 * @throws GeneralSecurityException 
 	 * @throws IOException
 	 */
 	
-	@CrossOrigin
+	//@CrossOrigin
 	@RequestMapping(value = "/authenticate/user", method = RequestMethod.POST)
-	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
+	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws GeneralSecurityException {
 		String token = null;
+		String userPasswordDB = "";
+		String userPasswordAPI = "";
+		AppUser appUser = new AppUser();
 		
-		String userPasswordAPI = Decrypt(password);
-		
-		AppUser appUser = appUserRepository.findByUsername(username);
-		
-		String userPasswordDB = Decrypt(appUser.getPassword());
-		
+		try {
+			userPasswordAPI = Decrypt(password.trim());
+			appUser = appUserRepository.findByUsername(username);
+			if(appUser!=null){
+				userPasswordDB = Decrypt(appUser.getPassword().trim());
+			}
+			System.out.println(userPasswordAPI + " " + userPasswordDB);
+		} catch (Exception ee) {
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}  
+
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		//if (appUser != null && appUser.getPassword().equals(password)) {
 		if (appUser != null && userPasswordDB.equals(userPasswordAPI)) {
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
 			token = Jwts.builder()
@@ -134,22 +146,15 @@ public class LoginCheckUsersRestController {
 			tokenMap.put("user", appUser);
 			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
 		}
-		else if(appUser == null){
-			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.NOT_FOUND);
-			error.setMessage("INVALID USERNAME OR PASSWORD");
-			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
-		}
 		else{
 			ApiError error = new ApiError();
 			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
 			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
-
 	}
 	
-	public String  Decrypt(String CIPHER_TEXT) {
+	public String  Decrypt(String CIPHER_TEXT) throws GeneralSecurityException {
         AesUtilHelper util = new AesUtilHelper(KEY_SIZE, ITERATION_COUNT);
         String decrypt = util.decrypt(SALT, IV, PASSPHRASE, CIPHER_TEXT);
         return decrypt;

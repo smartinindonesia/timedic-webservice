@@ -63,7 +63,7 @@ public class AppUser implements UserDetails, Serializable {
     private String password;
     
     @Column(name = "phone_number")
-    private Integer phoneNumber;
+    private String phoneNumber;
     
     @Size(max = 255)
     @Column(name = "photo_path")
@@ -189,11 +189,11 @@ public class AppUser implements UserDetails, Serializable {
         this.password = password;
     }
 
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

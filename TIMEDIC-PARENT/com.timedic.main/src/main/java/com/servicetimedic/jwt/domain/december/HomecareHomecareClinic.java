@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -108,6 +109,7 @@ public class HomecareHomecareClinic implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareCaregiver> getHomecareCaregiverList() {
         return homecareCaregiverList;
     }
@@ -117,6 +119,7 @@ public class HomecareHomecareClinic implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareTransactionCaregiverlist> getHomecareTransactionCaregiverlistList() {
         return homecareTransactionCaregiverlistList;
     }
@@ -126,6 +129,7 @@ public class HomecareHomecareClinic implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareHomecareClinicAdmin> getHomecareHomecareClinicAdminList() {
         return homecareHomecareClinicAdminList;
     }

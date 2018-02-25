@@ -45,7 +45,7 @@ public class HomeServiceController {
 		if (homecareService == null)
 		{
 			logger.info("homecareservices is null");
-			return new ResponseEntity<HomecareService>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<HomecareService>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{

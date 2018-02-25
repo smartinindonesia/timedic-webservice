@@ -1,5 +1,9 @@
 package com.servicetimedic.jwt.config;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,13 +23,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.filter.GenericFilterBean;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
-
 /**
  * A generic filter for security. I will check token present in the header.
  */
+
 public class JWTFilter extends GenericFilterBean {
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String AUTHORITIES_KEY = "roles";
@@ -33,7 +34,16 @@ public class JWTFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
+		//HttpServletResponse response = (HttpServletResponse) res;
+		
+		//response.setHeader("Access-Control-Allow-Origin", "*");
+        //response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH");
+        //response.setHeader("Access-Control-Max-Age", "3600");
+        //response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        //response.setHeader("Access-Control-Expose-Headers", "Location");
+		
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+		
 		
 		//System.out.println("Token : "+token);
 		if (authHeader == null || !authHeader.startsWith("")) 
@@ -138,4 +148,6 @@ public class JWTFilter extends GenericFilterBean {
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(principal, "", authorities);
 		return usernamePasswordAuthenticationToken;
 	}
+	
+	
 }

@@ -1,9 +1,11 @@
 package com.servicetimedic.jwt.web;
 
 import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -39,15 +41,16 @@ public class AesUtilHelper {
         }
     }
     
-    public String decrypt(String salt, String iv, String passphrase, String ciphertext) {
+    public String decrypt(String salt, String iv, String passphrase, String ciphertext) throws GeneralSecurityException {
         try {
             SecretKey key = generateKey(salt, passphrase);
             byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, iv, base64(ciphertext));
             return new String(decrypted, "UTF-8");
         }
-        catch (UnsupportedEncodingException e) {
+        catch ( UnsupportedEncodingException e) {
             throw fail(e);
         }
+        
     }
     
     private byte[] doFinal(int encryptMode, SecretKey key, String iv, byte[] bytes) {
