@@ -22,11 +22,20 @@ public interface UserDbRepository extends JpaRepository<AppUser, Long>{
 	@Query("select u from AppUser u where LOWER (u.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<AppUser> findUserByfrontName(@Param("value")String value, Pageable pageable);
 	
+	@Query("select u from AppUser u where LOWER (u.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	public List<AppUser> findUserByfrontNameGetCount(@Param("value")String value);
+	
 	@Query("select u from AppUser u where LOWER (u.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<AppUser> findUserBymiddleName(@Param("value")String value, Pageable pageable);
 	
+	@Query("select u from AppUser u where LOWER (u.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	public List<AppUser> findUserBymiddleNameCount(@Param("value")String value);
+	
 	@Query("select u from AppUser u where LOWER (u.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<AppUser> findUserBylastName(@Param("value")String value, Pageable pageable);
+	
+	@Query("select u from AppUser u where LOWER (u.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	public List<AppUser> findUserBylastNameCount(@Param("value")String value);
 	
 	
 }

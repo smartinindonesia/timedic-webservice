@@ -3,6 +3,7 @@ package com.servicetimedic.jwt.controller;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
+import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.repository.UserDbRepository;
 
 @RestController
@@ -64,33 +67,80 @@ public class AppUserController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/usersWithPaginationByField", method = RequestMethod.GET)
-	public List<AppUser> getAllUsersWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+	public List<Object> getAllUsersWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
 		List<AppUser> data = null;
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
 		
 		if(searchField.equals("fistname")){
 			data = userRepository.findUserByfrontName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = userRepository.findUserByfrontNameGetCount(value).size();
 		}
 		else if(searchField.equals("middlename")){
 			data = userRepository.findUserBymiddleName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = userRepository.findUserBymiddleNameCount(value).size();
 		}
 		else if(searchField.equals("lastname")){
 			data = userRepository.findUserBylastName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = userRepository.findUserBylastNameCount(value).size();
 		}
 		
 		logger.info("Fetching User with "+ searchField +" order by " + sortField + " " + sort);
 		
-		return data;
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
+		list.add(data);
+		list.add(rows);
+		
+		return list;
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/usersWithPaginationByFieldGetCount", method = RequestMethod.GET)
+	public NumberOfRows getAllUsersWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+	
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(searchField.equals("fistname")){
+			rowCount = userRepository.findUserByfrontNameGetCount(value).size();
+		}
+		else if(searchField.equals("middlename")){
+			rowCount = userRepository.findUserBymiddleNameCount(value).size();
+		}
+		else if(searchField.equals("lastname")){
+			rowCount = userRepository.findUserBylastNameCount(value).size();
+		}	
+		rows.setNumOfRows(rowCount);
+		return rows;
+	}
+	
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/userswithpagination", method = RequestMethod.GET)
-	public List<AppUser> getAllUsersWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
+	public List<Object> getAllUsersWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		
 		List<AppUser> data = userRepository.findAllUsers(createPageRequest(page, size, sort, sortField));
-		
 		logger.info("Fetching All Users Details with pagination order by " + sortField + " " + sort);
-		return data;
+		
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(userRepository.findAll().size());
+		List<Object> list = new ArrayList<Object>();
+		list.add(data);
+		list.add(rows);
+		
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'USER')")
+	@RequestMapping(value = "/userswithpaginationGetCount", method = RequestMethod.GET)
+	public NumberOfRows getAllUsersWithPaginationGetCount() {
+	
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(userRepository.findAll().size());
+	
+		return rows;
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
