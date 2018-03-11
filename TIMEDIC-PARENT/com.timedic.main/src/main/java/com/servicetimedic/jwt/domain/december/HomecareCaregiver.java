@@ -320,7 +320,7 @@ public class HomecareCaregiver implements UserDetails, Serializable {
         this.idHomecareClinic = idHomecareClinic;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public HomecareCaregiverStatus getIdCaregiverStatus() {
         return idCaregiverStatus;
     }

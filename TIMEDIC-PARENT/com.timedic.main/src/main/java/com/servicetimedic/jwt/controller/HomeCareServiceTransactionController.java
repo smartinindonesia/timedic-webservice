@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
+import com.servicetimedic.jwt.domain.december.LaboratoryService;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
@@ -69,6 +70,37 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'USER')")
+	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.PUT )
+	public ResponseEntity<String> updateTransactionsHomecare(@PathVariable(value = "id") Long id,@RequestBody HomecareServiceTransaction homecareServiceTrx) 
+	{
+		HomecareServiceTransaction respon = homecareSeriveTransactionsDbRepository.getOne(id);
+		
+		if(respon == null) {
+			return new ResponseEntity<String>("Not Found transaction homecare", HttpStatus.NOT_FOUND);
+	    }
+		else{
+			if(homecareServiceTrx.getDate() != null){respon.setDate(homecareServiceTrx.getDate());}
+			if(homecareServiceTrx.getExpiredTransactionTime() !=null){respon.setExpiredTransactionTime(homecareServiceTrx.getExpiredTransactionTime());}
+			if(homecareServiceTrx.getFixedPrice() != null){respon.setFixedPrice(homecareServiceTrx.getFixedPrice());}
+			if(homecareServiceTrx.getHomecareAssessmentRecordList() !=null){respon.setHomecareAssessmentRecordList(homecareServiceTrx.getHomecareAssessmentRecordList());}
+			if(homecareServiceTrx.getHomecarePatientId() != null){respon.setHomecarePatientId(homecareServiceTrx.getHomecarePatientId());}
+			if(homecareServiceTrx.getHomecareTransactionCaregiverlistList() != null){respon.setHomecareTransactionCaregiverlistList(homecareServiceTrx.getHomecareTransactionCaregiverlistList());}
+			if(homecareServiceTrx.getLocationLatitude() != null){respon.setLocationLatitude(homecareServiceTrx.getLocationLatitude());}
+			if(homecareServiceTrx.getLocationLongitude() != null){respon.setLocationLongitude(homecareServiceTrx.getLocationLongitude());}
+			if(homecareServiceTrx.getPaymentMethodId() != null){respon.setPaymentMethodId(homecareServiceTrx.getPaymentMethodId());}
+			if(homecareServiceTrx.getPredictionPrice() != null){respon.setPredictionPrice(homecareServiceTrx.getPredictionPrice());}
+			if(homecareServiceTrx.getPrepaidPrice() != null){respon.setPrepaidPrice(homecareServiceTrx.getPrepaidPrice());}
+			if(homecareServiceTrx.getReceiptPath() != null){respon.setReceiptPath(homecareServiceTrx.getReceiptPath());}
+			if(homecareServiceTrx.getTransactionDescription() != null){respon.setTransactionDescription(homecareServiceTrx.getTransactionDescription());}
+			if(homecareServiceTrx.getTransactionStatusId() != null){respon.setTransactionStatusId(homecareServiceTrx.getTransactionStatusId());}
+			
+			homecareSeriveTransactionsDbRepository.save(respon);
+			
+			return new ResponseEntity<String>("Succesfully update transaction homecare with id "+id, HttpStatus.OK);
+		}
+	}
+	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/transactions/homecare/", method = RequestMethod.POST)
 	public ResponseEntity<String> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
@@ -101,7 +133,7 @@ public class HomeCareServiceTransactionController {
 			return new ResponseEntity<List<HomecareServiceTransaction>>(HttpStatus.NO_CONTENT);
 		}
 		else{
-			logger.info("fetching orderactive Homecare by id "+id);
+			logger.info("fetching orderactive Homecare by id user "+id);
 			return new ResponseEntity<List<HomecareServiceTransaction>>(homecareServiceTransaction, HttpStatus.OK);
 		}
 	}

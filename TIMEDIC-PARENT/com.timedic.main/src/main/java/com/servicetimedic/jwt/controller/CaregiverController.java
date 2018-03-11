@@ -2,7 +2,10 @@ package com.servicetimedic.jwt.controller;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
+import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
 
 @RestController
@@ -49,52 +54,104 @@ public class CaregiverController {
 		HomecareCaregiver data = null;
 		if(searchField.equals("sipp")){
 			data = caregiversDbRepository.findBySipp(value);
+			// every nurse has only one SIPP
 		}
 		else if(searchField.equals("nursenumber")){
 			data = caregiversDbRepository.findByRegisterNurseNumber(value);
+			// every nurse has only one Nurse Number
 		}
 		else if(searchField.equals("username")){
 			data = caregiversDbRepository.findByUsername(value);
+			// every nurse has only one username
 		}
 		else if(searchField.equals("email")){
 			data = caregiversDbRepository.findByEmail(value);
+			// every nurse has only one email
 		}
 		else if(searchField.equals("phonenumber")){
 			data = caregiversDbRepository.findByPhoneNumber(value);
+			// every nurse has only one phone number
 		}
 		return data;
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/caregiversWithPaginationByField", method = RequestMethod.GET)
-	public List<HomecareCaregiver> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+	public List<Object> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
 		List<HomecareCaregiver> data = null;
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
 		
 		if(searchField.equals("fistname")){
 			data = caregiversDbRepository.findCaregiverByfrontName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = caregiversDbRepository.findCaregiverByfrontNameGetCount(value).size();
 		}
 		else if(searchField.equals("middlename")){
 			data = caregiversDbRepository.findCaregiverBymiddleName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = caregiversDbRepository.findCaregiverBymiddleNameGetCount(value).size();
 		}
 		else if(searchField.equals("lastname")){
 			data = caregiversDbRepository.findCaregiverBylastName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = caregiversDbRepository.findCaregiverBylastNameGetCount(value).size();
 		}
 		
 		logger.info("Fetching caregivers with "+ searchField +" order by " + sortField + " " + sort);
 		
-		return data;
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
+		list.add(data);
+		list.add(rows);
+		
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/caregiversWithPaginationByFieldGetCount", method = RequestMethod.GET)
+	public NumberOfRows getAllCaregiversWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+	
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(searchField.equals("fistname")){
+			rowCount = caregiversDbRepository.findCaregiverByfrontNameGetCount(value).size();
+		}
+		else if(searchField.equals("middlename")){
+			rowCount = caregiversDbRepository.findCaregiverBymiddleNameGetCount(value).size();
+		}
+		else if(searchField.equals("lastname")){
+			rowCount = caregiversDbRepository.findCaregiverBylastNameGetCount(value).size();
+		}	
+		rows.setNumOfRows(rowCount);
+		return rows;
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/caregiversWithPagination", method = RequestMethod.GET)
-	public List<HomecareCaregiver> getAllCaregiversWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
+	public List<Object> getAllCaregiversWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		List<HomecareCaregiver> data = caregiversDbRepository.findAllCaregiver(createPageRequest(page, size, sort, sortField));
 		logger.info("Fetching All caregivers Details with pagination order by " + sortField + " " + sort);
-		return data;
+		
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(caregiversDbRepository.findAll().size());
+		List<Object> list = new ArrayList<Object>();
+		list.add(data);
+		list.add(rows);
+		
+		return list;
 	}
 	
-
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'USER')")
+	@RequestMapping(value = "/caregiversWithPaginationGetCount", method = RequestMethod.GET)
+	public NumberOfRows getAllCaregiversWithPaginationGetCount() {
+	
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(caregiversDbRepository.findAll().size());
+	
+		return rows;
+	}
+	
+	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
@@ -259,5 +316,7 @@ public class CaregiverController {
 			return new ResponseEntity<Object>(process, new HttpHeaders() ,HttpStatus.CREATED);
 		}
 	}
+	
+	
 	
 }

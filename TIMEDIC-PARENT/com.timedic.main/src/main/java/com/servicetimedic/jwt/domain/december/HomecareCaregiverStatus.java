@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -25,15 +26,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class HomecareCaregiverStatus implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "status")
     private String status;
+    
     @OneToMany(mappedBy = "idCaregiverStatus")
     private List<HomecareCaregiver> homecareCaregiverList;
 
@@ -61,6 +65,7 @@ public class HomecareCaregiverStatus implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public List<HomecareCaregiver> getHomecareCaregiverList() {
         return homecareCaregiverList;
     }

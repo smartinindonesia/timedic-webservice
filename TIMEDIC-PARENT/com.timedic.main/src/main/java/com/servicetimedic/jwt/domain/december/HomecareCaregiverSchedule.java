@@ -19,7 +19,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
@@ -28,19 +30,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class HomecareCaregiverSchedule implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Column(name = "date")
+    
+	@Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    @Column(name = "time")
+    
+	@Column(name = "time")
     @Temporal(TemporalType.TIME)
     private Date time;
-    @JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
     @ManyToOne
     private HomecareCaregiver idHomecareCaregiver;
 
@@ -75,6 +82,8 @@ public class HomecareCaregiverSchedule implements Serializable {
         this.time = time;
     }
 
+    @XmlTransient
+    @JsonIgnore
     public HomecareCaregiver getIdHomecareCaregiver() {
         return idHomecareCaregiver;
     }
