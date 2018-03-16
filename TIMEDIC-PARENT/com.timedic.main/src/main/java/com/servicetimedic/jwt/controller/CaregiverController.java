@@ -277,7 +277,7 @@ public class CaregiverController {
 			if(homecareCaregiver.getRegisterNurseNumber() != null) findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());
 			if(homecareCaregiver.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());
 			if(homecareCaregiver.getEmployeeIdNumber() != null) findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());
-			
+			if(homecareCaregiver.getIdCaregiverStatus() != null){findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());}
 			
 			if(cekUsername != null){
 				mes = "Succesfully Update caregiver with id "+ findFirst.getId() + ", but username '"+ homecareCaregiver.getUsername()  +"' that you input is already exist";

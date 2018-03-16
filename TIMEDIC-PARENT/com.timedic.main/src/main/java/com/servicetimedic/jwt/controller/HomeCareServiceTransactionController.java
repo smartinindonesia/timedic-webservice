@@ -1,5 +1,7 @@
 package com.servicetimedic.jwt.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -7,11 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
@@ -20,9 +25,12 @@ import com.servicetimedic.jwt.domain.december.LaboratoryService;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
+@Controller
 @RestController
 @RequestMapping(value = "/api")
 public class HomeCareServiceTransactionController {
+	
+	private final SimpMessagingTemplate template;
 	
 	public static final Logger logger = LoggerFactory.getLogger(HomeCareServiceTransactionController.class);
 	
@@ -31,6 +39,12 @@ public class HomeCareServiceTransactionController {
 	
 	@Autowired
 	private HomeCareAssessmentRecordDbRepository homeCareAssessmentRecordDbRepository;
+	
+	
+	@Autowired
+	HomeCareServiceTransactionController(SimpMessagingTemplate template){
+        this.template = template;
+    }
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
 	@RequestMapping(value = "/transactions/homecare", method = RequestMethod.GET)
@@ -102,10 +116,18 @@ public class HomeCareServiceTransactionController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@RequestMapping(value = "/sendToClient", method = RequestMethod.GET)
+    public void test(@RequestParam("value") String value){
+    	this.template.convertAndSend("/notification",  new SimpleDateFormat("HH:mm:ss").format(new Date())+" -- "+value);
+    }
+	
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/transactions/homecare/", method = RequestMethod.POST)
 	public ResponseEntity<String> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
 	{
 		HomecareServiceTransaction process = homecareSeriveTransactionsDbRepository.save(homecareService);
+		
 		HomecareServiceTransaction newID = new HomecareServiceTransaction();
 		newID.setId(process.getId());
 		List<HomecareAssessmentRecord> assessment = homecareService.getHomecareAssessmentRecordList();
@@ -119,6 +141,8 @@ public class HomeCareServiceTransactionController {
 		for(HomecareAssessmentRecord x: data){
 			homeCareAssessmentRecordDbRepository.save(x);
 		}
+		
+		this.template.convertAndSend("/notification", process);
 		
 		return new ResponseEntity<String>("Thank You, Your homecare order has been recorded in timedic system with id " + process.getId() , HttpStatus.CREATED);
 	}
