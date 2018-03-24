@@ -26,24 +26,32 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "homecare_service")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareService implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "service_caterogry")
     private String serviceCaterogry;
-    @Size(max = 4)
+    
+	@Size(max = 4)
     @Column(name = "service_code")
     private String serviceCode;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "service_name")
     private String serviceName;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "service_url_icon")
     private String serviceUrlIcon;
+	
+	@Column(name = "visit_cost ")
+    private Float visitCost ;
     
     @OneToMany(mappedBy = "idService", cascade= CascadeType.REMOVE)
     private List<HomecareServiceAssessment> homecareServiceAssessmentList;
@@ -94,8 +102,17 @@ public class HomecareService implements Serializable {
     public void setServiceUrlIcon(String serviceUrlIcon) {
         this.serviceUrlIcon = serviceUrlIcon;
     }
+      
 
-    //@XmlTransient
+    public Float getVisitCost() {
+		return visitCost;
+	}
+
+	public void setVisitCost(Float visitCost) {
+		this.visitCost = visitCost;
+	}
+
+	@XmlTransient
     @JsonIgnore
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public List<HomecareServiceAssessment> getHomecareServiceAssessmentList() {

@@ -68,6 +68,14 @@ public class HomecareServiceTransaction implements Serializable {
 	@Size(max = 255)
     @Column(name = "transaction_description")
     private String transactionDescription;
+	
+	@Size(max = 255)
+    @Column(name = "selected_service ")
+    private String selectedService ;
+	
+	@Size(max = 255)
+    @Column(name = "full_address  ")
+    private String fullAddress  ;
     
 	@OneToMany(mappedBy = "idServiceTransaction", cascade= CascadeType.REMOVE)
     private List<HomecareTransactionCaregiverlist> homecareTransactionCaregiverlistList;
@@ -174,7 +182,7 @@ public class HomecareServiceTransaction implements Serializable {
         this.transactionDescription = transactionDescription;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public List<HomecareTransactionCaregiverlist> getHomecareTransactionCaregiverlistList() {
         return homecareTransactionCaregiverlistList;
     }
@@ -183,7 +191,7 @@ public class HomecareServiceTransaction implements Serializable {
         this.homecareTransactionCaregiverlistList = homecareTransactionCaregiverlistList;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public List<HomecareAssessmentRecord> getHomecareAssessmentRecordList() {
         return homecareAssessmentRecordList;
     }
@@ -215,8 +223,24 @@ public class HomecareServiceTransaction implements Serializable {
     public void setPaymentMethodId(TimedicPaymentMethod paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
+    
+    public String getSelectedService() {
+		return selectedService;
+	}
 
-    @Override
+	public void setSelectedService(String selectedService) {
+		this.selectedService = selectedService;
+	}
+
+	public String getFullAddress() {
+		return fullAddress;
+	}
+
+	public void setFullAddress(String fullAddress) {
+		this.fullAddress = fullAddress;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

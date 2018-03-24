@@ -295,9 +295,21 @@ public class AppUserController {
 	{
 		if (userRepository.findByUsername(appUser.getUsername()) != null) {
 				ApiError error = new ApiError();
-				error.setStatus(HttpStatus.OK);
-				error.setMessage("user already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
+				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setMessage("user is already exist");
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+		}
+		else if(userRepository.findByEmail(appUser.getEmail()) != null){
+				ApiError error = new ApiError();
+				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setMessage("email is already exist");
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+		}
+		else if(userRepository.findByPhoneNumber(appUser.getPhoneNumber()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.FORBIDDEN);
+			error.setMessage("phone number is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
 		}
 		else{
 			AppUser process = userRepository.save(appUser);		

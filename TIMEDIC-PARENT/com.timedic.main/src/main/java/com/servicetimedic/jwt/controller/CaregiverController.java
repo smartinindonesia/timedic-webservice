@@ -307,13 +307,25 @@ public class CaregiverController {
 	{
 		if (caregiversDbRepository.findByUsername(homecareCaregiver.getUsername()) != null) {
 				ApiError error = new ApiError();
-				error.setStatus(HttpStatus.OK);
+				error.setStatus(HttpStatus.FORBIDDEN);
 				error.setMessage("caregiver already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+		}
+		else if(caregiversDbRepository.findByEmail(homecareCaregiver.getEmail()) != null){
+				ApiError error = new ApiError();
+				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setMessage("email is already exist");
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+		}
+		else if(caregiversDbRepository.findByPhoneNumber(homecareCaregiver.getPhoneNumber()) != null){
+				ApiError error = new ApiError();
+				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setMessage("phone number is already exist");
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
 		}
 		else{
-			HomecareCaregiver process = caregiversDbRepository.save(homecareCaregiver);		
-			return new ResponseEntity<Object>(process, new HttpHeaders() ,HttpStatus.CREATED);
+				HomecareCaregiver process = caregiversDbRepository.save(homecareCaregiver);		
+				return new ResponseEntity<Object>(process, new HttpHeaders() ,HttpStatus.CREATED);
 		}
 	}
 	

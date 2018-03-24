@@ -66,7 +66,7 @@ public class HomecareAssessmentOption implements Serializable {
         this.option = option;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public Float getPriceAdded() {
         return priceAdded;
     }
