@@ -16,6 +16,10 @@ public interface UserDbRepository extends JpaRepository<AppUser, Long>{
 	
 	public AppUser findByPhoneNumber(String phone);
 	
+	public AppUser findByFirebaseIdFacebook(String idFirebase);
+	
+	public AppUser findByFirebaseIdGoogle(String idFirebase);
+	
 	@Query( "select u from AppUser u" )
 	public List<AppUser> findAllUsers(Pageable pageable);
 	

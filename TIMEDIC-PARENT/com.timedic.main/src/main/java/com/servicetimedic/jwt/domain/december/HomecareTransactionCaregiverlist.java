@@ -24,17 +24,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "homecare_transaction_caregiverlist")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareTransactionCaregiverlist implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    
+	@Size(max = 255)
     @Column(name = "caregiver_name")
     private String caregiverName;
-    @Column(name = "register_nurse_number")
+    
+	@Column(name = "register_nurse_number")
     private Integer registerNurseNumber;
+	
+	@Column(name = "rate_status")
+    private Boolean rateStatus;
+	
+	@Column(name = "id_caregiver")
+    private Long idCaregiver;
     
     @JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
     @ManyToOne
@@ -74,8 +83,24 @@ public class HomecareTransactionCaregiverlist implements Serializable {
     public void setRegisterNurseNumber(Integer registerNurseNumber) {
         this.registerNurseNumber = registerNurseNumber;
     }
+    
+    public Boolean getRateStatus() {
+		return rateStatus;
+	}
 
-    @JsonIgnore
+	public void setRateStatus(Boolean rateStatus) {
+		this.rateStatus = rateStatus;
+	}
+
+	public Long getIdCaregiver() {
+		return idCaregiver;
+	}
+
+	public void setIdCaregiver(Long idCaregiver) {
+		this.idCaregiver = idCaregiver;
+	}
+
+	@JsonIgnore
     public HomecareHomecareClinic getIdHomecareClinic() {
         return idHomecareClinic;
     }

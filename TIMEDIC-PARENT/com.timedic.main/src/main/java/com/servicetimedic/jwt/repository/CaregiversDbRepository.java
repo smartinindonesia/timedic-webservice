@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 
 public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver, Long>{
@@ -19,6 +20,10 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	public HomecareCaregiver findByEmail(String email);
 	
 	public HomecareCaregiver findByPhoneNumber(String phone);
+	
+	public HomecareCaregiver findByFirebaseIdFacebook(String idFirebase);
+	
+	public HomecareCaregiver findByFirebaseIdGoogle(String idFirebase);
 	
 	@Query( "select f from HomecareCaregiver f" )
 	public List<HomecareCaregiver> findAllCaregiver(Pageable pageable);

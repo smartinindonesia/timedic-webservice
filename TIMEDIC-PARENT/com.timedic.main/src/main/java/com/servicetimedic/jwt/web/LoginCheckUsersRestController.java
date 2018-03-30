@@ -70,7 +70,9 @@ public class LoginCheckUsersRestController {
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			appUser.setRoles(roles);
-			return new ResponseEntity<Object>(appUserRepository.save(appUser), new HttpHeaders() ,HttpStatus.CREATED);
+			//appUserRepository.save(appUser)	
+			
+			return new ResponseEntity<Object>(appUser.getAppUserSocialAuthList(), new HttpHeaders() ,HttpStatus.CREATED);
 		}
 	}
 
@@ -98,6 +100,42 @@ public class LoginCheckUsersRestController {
         
         return userName;
     }
+	
+	@RequestMapping(value = "/authenticateBySocial/user", method = RequestMethod.POST)
+	public ResponseEntity<Object> loginByGoogle(@RequestParam String firebaseId, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException {
+		String token = null;
+		AppUser appUser = new AppUser();
+		
+		if(type.equals("google")){
+			appUser = appUserRepository.findByFirebaseIdGoogle(firebaseId);
+		}
+		else if(type.equals("facebook")){
+			appUser = appUserRepository.findByFirebaseIdFacebook(firebaseId);
+		}
+			
+		Map<String, Object> tokenMap = new HashMap<String, Object>();
+			
+		if (appUser != null) {
+				Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
+				token = Jwts.builder()
+						.setSubject(appUser.getUsername())
+						.setExpiration(exp)
+						.claim("roles", appUser.getRoles())
+						.claim("id", appUser.getId())
+						.setIssuedAt(new Date())
+						.signWith(SignatureAlgorithm.HS256, "secretkey")
+						.compact();
+				tokenMap.put("token", token);
+				tokenMap.put("user", appUser);
+				return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
+		}
+		else{
+			ApiError message = new ApiError();
+			message.setMessage("Your Firebase Id is not exist");
+			message.setStatus(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Object>(message , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
+	}
 
 	/**
 	 * @param username

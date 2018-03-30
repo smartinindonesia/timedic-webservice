@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.ApiError;
+import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
 
@@ -102,6 +103,42 @@ public class LoginCheckCaregiversRestController {
         
         return userName;
     }
+	
+	@RequestMapping(value = "/authenticateBySocial/caregiver", method = RequestMethod.POST)
+	public ResponseEntity<Object> loginByGoogle(@RequestParam String firebaseId, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException {
+		String token = null;
+		HomecareCaregiver homecareCaregiver = new HomecareCaregiver();
+		
+		if(type.equals("google")){
+			homecareCaregiver = caregiversDbRepository.findByFirebaseIdGoogle(firebaseId);
+		}
+		else if(type.equals("facebook")){
+			homecareCaregiver = caregiversDbRepository.findByFirebaseIdFacebook(firebaseId);
+		}
+			
+		Map<String, Object> tokenMap = new HashMap<String, Object>();
+			
+		if (homecareCaregiver != null) {
+				Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
+				token = Jwts.builder()
+						.setSubject(homecareCaregiver.getUsername())
+						.setExpiration(exp)
+						.claim("roles", homecareCaregiver.getRoles())
+						.claim("id", homecareCaregiver.getId())
+						.setIssuedAt(new Date())
+						.signWith(SignatureAlgorithm.HS256, "secretkey")
+						.compact();
+				tokenMap.put("token", token);
+				tokenMap.put("user", homecareCaregiver);
+				return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
+		}
+		else{
+			ApiError message = new ApiError();
+			message.setMessage("Your Firebase Id is not exist");
+			message.setStatus(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Object>(message , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
+	}
 
 	/**
 	 * @param username
@@ -112,7 +149,7 @@ public class LoginCheckCaregiversRestController {
 	 * @throws GeneralSecurityException 
 	 */
 	
-	@CrossOrigin
+	//@CrossOrigin
 	@RequestMapping(value = "/authenticate/caregiver", method = RequestMethod.POST)
 	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException, GeneralSecurityException {
 		String token = null;

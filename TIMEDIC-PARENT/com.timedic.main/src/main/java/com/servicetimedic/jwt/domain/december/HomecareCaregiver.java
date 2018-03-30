@@ -104,8 +104,11 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 	@Column(name = "fcm_token")
     private String fcmToken;
     
-    @Column(name = "firebase_id ")
-    private String firebaseId ;
+	@Column(name = "firebase_id_google")
+    private String firebaseIdGoogle ;
+    
+    @Column(name = "firebase_id_facebook")
+    private String firebaseIdFacebook ;
     
 	@OneToMany(mappedBy = "idHomecareCaregiver")
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
@@ -305,13 +308,22 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 		this.fcmToken = fcmToken;
 	}
 
-	public String getFirebaseId() {
-		return firebaseId;
+	public String getFirebaseIdGoogle() {
+		return firebaseIdGoogle;
 	}
 
-	public void setFirebaseId(String firebaseId) {
-		this.firebaseId = firebaseId;
+	public void setFirebaseIdGoogle(String firebaseIdGoogle) {
+		this.firebaseIdGoogle = firebaseIdGoogle;
 	}
+
+	public String getFirebaseIdFacebook() {
+		return firebaseIdFacebook;
+	}
+
+	public void setFirebaseIdFacebook(String firebaseIdFacebook) {
+		this.firebaseIdFacebook = firebaseIdFacebook;
+	}
+
 
 	@XmlTransient
     @JsonIgnore

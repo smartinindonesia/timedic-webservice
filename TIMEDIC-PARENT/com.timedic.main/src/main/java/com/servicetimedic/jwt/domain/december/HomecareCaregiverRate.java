@@ -22,19 +22,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "homecare_caregiver_rate")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareCaregiverRate implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
+    
+	private static final long serialVersionUID = 1L;
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "rate")
+    
+	@Column(name = "rate")
     private Float rate;
-    @JoinColumn(name = "id_app_user", referencedColumnName = "id")
+	
+	@Column(name = "comment")
+    private String comment;
+    
+	@JoinColumn(name = "id_app_user", referencedColumnName = "id")
     @ManyToOne
     private AppUser idAppUser;
-    @JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
+    
+	@JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
     @ManyToOne
     private HomecareCaregiver idHomecareCaregiver;
 
@@ -60,8 +66,16 @@ public class HomecareCaregiverRate implements Serializable {
     public void setRate(Float rate) {
         this.rate = rate;
     }
+    
+    public String getComment() {
+		return comment;
+	}
 
-    public AppUser getIdAppUser() {
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public AppUser getIdAppUser() {
         return idAppUser;
     }
 
