@@ -110,6 +110,9 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     @Column(name = "firebase_id_facebook")
     private String firebaseIdFacebook ;
     
+    @Column(name = "gender")
+    private String gender ;
+    
 	@OneToMany(mappedBy = "idHomecareCaregiver")
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
     
@@ -323,7 +326,15 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 	public void setFirebaseIdFacebook(String firebaseIdFacebook) {
 		this.firebaseIdFacebook = firebaseIdFacebook;
 	}
+	
+	
+	public String getGender() {
+		return gender;
+	}
 
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
 	@XmlTransient
     @JsonIgnore

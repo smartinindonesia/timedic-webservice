@@ -90,8 +90,12 @@ public class CaregiverSchedulleController {
 		HomecareCaregiverSchedule schedule = caregiversSchedulle.getOne(id);
 		
 		if(homecareCaregiverSchedule.getDate() != null){schedule.setDate(homecareCaregiverSchedule.getDate());}
-		if(homecareCaregiverSchedule.getTime() != null){schedule.setTime(homecareCaregiverSchedule.getTime());}
-		
+		if(homecareCaregiverSchedule.getStartTime() != null){schedule.setStartTime(homecareCaregiverSchedule.getStartTime());}
+		if(homecareCaregiverSchedule.getStartTime2() != null){schedule.setStartTime2(homecareCaregiverSchedule.getStartTime2());}
+		if(homecareCaregiverSchedule.getEndTime() != null){schedule.setEndTime(homecareCaregiverSchedule.getEndTime());}
+		if(homecareCaregiverSchedule.getEndTime2() != null){schedule.setEndTime2(homecareCaregiverSchedule.getEndTime2());}
+		if(homecareCaregiverSchedule.isStatus()){schedule.setStatus(homecareCaregiverSchedule.isStatus());}
+		if(!homecareCaregiverSchedule.isStatus()){schedule.setStatus(!homecareCaregiverSchedule.isStatus());}
 		
 		if(schedule!=null){
 			caregiversSchedulle.save(schedule);

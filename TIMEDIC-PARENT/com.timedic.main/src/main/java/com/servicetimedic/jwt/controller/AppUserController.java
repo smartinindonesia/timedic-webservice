@@ -266,6 +266,10 @@ public class AppUserController {
 			if(appUser.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(appUser.getFirstRegistrationDate());
 			if(appUser.getLatitude() != null) findFirst.setLatitude(appUser.getLatitude());
 			if(appUser.getLongitude() != null) findFirst.setLongitude(appUser.getLongitude());
+			if(appUser.getFirebaseIdFacebook() != null) findFirst.setFirebaseIdFacebook(appUser.getFirebaseIdFacebook());
+			if(appUser.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(appUser.getFirebaseIdGoogle());
+			if(appUser.getFcmToken() != null) findFirst.setFcmToken(appUser.getFcmToken());
+			if(appUser.getGender() != null) findFirst.setGender(appUser.getGender());
 			
 			if(cekUsername != null){
 				mes = "Succesfully Update use with id "+ findFirst.getId() + ", but username '"+ appUser.getUsername()  +"' that you input is already exist";
@@ -297,19 +301,19 @@ public class AppUserController {
 				ApiError error = new ApiError();
 				error.setStatus(HttpStatus.FORBIDDEN);
 				error.setMessage("user is already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else if(userRepository.findByEmail(appUser.getEmail()) != null){
 				ApiError error = new ApiError();
-				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setStatus(HttpStatus.UNAUTHORIZED);
 				error.setMessage("email is already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else if(userRepository.findByPhoneNumber(appUser.getPhoneNumber()) != null){
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.FORBIDDEN);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("phone number is already exist");
-			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else{
 			AppUser process = userRepository.save(appUser);		

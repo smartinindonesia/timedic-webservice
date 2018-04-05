@@ -11,7 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -62,18 +64,29 @@ public class LoginCheckUsersRestController {
 	public ResponseEntity<Object> createUser(@RequestBody AppUser appUser) {
 		if (appUserRepository.findByUsername(appUser.getUsername()) != null) {
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.OK);
-			error.setMessage("user already exist");
-			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("username already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
-		else{
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			appUser.setRoles(roles);
-			//appUserRepository.save(appUser)	
+		else if(appUserRepository.findByEmail(appUser.getEmail()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("email is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		else if(appUserRepository.findByPhoneNumber(appUser.getPhoneNumber()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("phone number is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		
+		List<String> roles = new ArrayList<>();
+		roles.add("ROLE_USER");
+		appUser.setRoles(roles);
 			
-			return new ResponseEntity<Object>(appUser.getAppUserSocialAuthList(), new HttpHeaders() ,HttpStatus.CREATED);
-		}
+		return new ResponseEntity<Object>(appUserRepository.save(appUser), HttpStatus.CREATED);
+		
 	}
 
 	/**
@@ -152,23 +165,16 @@ public class LoginCheckUsersRestController {
 		String token = null;
 		String userPasswordDB = "";
 		String userPasswordAPI = "";
-		AppUser appUser = new AppUser();
-		
-		try {
-			userPasswordAPI = Decrypt(password.trim());
-			appUser = appUserRepository.findByUsername(username);
-			if(appUser!=null){
-				userPasswordDB = Decrypt(appUser.getPassword().trim());
-			}
-			System.out.println(userPasswordAPI + " " + userPasswordDB);
-		} catch (Exception ee) {
-			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.UNAUTHORIZED);
-			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
-			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
-		}  
-
+		AppUser appUser = null;
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
+		
+		if( username != "" || password != "" ){
+			userPasswordAPI = Decrypt(password);
+			appUser = appUserRepository.findByUsername(username);
+			if(appUser != null){
+				userPasswordDB = Decrypt(appUser.getPassword());
+			}
+		}
 		
 		if (appUser != null && userPasswordDB.equals(userPasswordAPI)) {
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
@@ -183,6 +189,12 @@ public class LoginCheckUsersRestController {
 			tokenMap.put("token", token);
 			tokenMap.put("user", appUser);
 			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
+		}
+		else if(appUser == null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 		else{
 			ApiError error = new ApiError();

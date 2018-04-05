@@ -42,10 +42,28 @@ public class HomecareCaregiverSchedule implements Serializable {
 	@Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
+	
+	@Column(name = "day")
+    private String day;
     
-	@Column(name = "time")
+	@Column(name = "start_time")
     @Temporal(TemporalType.TIME)
-    private Date time;
+    private Date startTime;
+	
+	@Column(name = "end_time")
+    @Temporal(TemporalType.TIME)
+    private Date endTime;
+	
+	@Column(name = "start_time2")
+    @Temporal(TemporalType.TIME)
+    private Date startTime2;
+	
+	@Column(name = "end_time2")
+    @Temporal(TemporalType.TIME)
+    private Date endTime2;
+	
+	@Column(name = "status")
+    private boolean status;
     
 	@JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
     @ManyToOne
@@ -73,16 +91,57 @@ public class HomecareCaregiverSchedule implements Serializable {
     public void setDate(Date date) {
         this.date = date;
     }
+    
+    public String getDay() {
+		return day;
+	}
 
-    public Date getTime() {
-        return time;
-    }
+	public void setDay(String day) {
+		this.day = day;
+	}
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
 
-    @XmlTransient
+    public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Date getStartTime2() {
+		return startTime2;
+	}
+
+	public void setStartTime2(Date startTime2) {
+		this.startTime2 = startTime2;
+	}
+
+	public Date getEndTime2() {
+		return endTime2;
+	}
+
+	public void setEndTime2(Date endTime2) {
+		this.endTime2 = endTime2;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	@XmlTransient
     @JsonIgnore
     public HomecareCaregiver getIdHomecareCaregiver() {
         return idHomecareCaregiver;

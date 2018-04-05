@@ -63,15 +63,28 @@ public class LoginCheckCaregiversRestController {
 	 * @return
 	 */
     
-    @CrossOrigin
+    //@CrossOrigin
 	@RequestMapping(value = "/register/caregiver", method = RequestMethod.POST /*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE */)
 	public ResponseEntity<Object> createUser(@RequestBody HomecareCaregiver homecareCaregiver) {
 		if (caregiversDbRepository.findByUsername(homecareCaregiver.getUsername()) != null) {
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.OK);
-			error.setMessage("user already exist");
-			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("username already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
+		else if(caregiversDbRepository.findByEmail(homecareCaregiver.getEmail()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("email is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		else if(caregiversDbRepository.findByPhoneNumber(homecareCaregiver.getPhoneNumber()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("phone number is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_CAREGIVER");
 		homecareCaregiver.setRoles(roles);
@@ -151,18 +164,21 @@ public class LoginCheckCaregiversRestController {
 	
 	//@CrossOrigin
 	@RequestMapping(value = "/authenticate/caregiver", method = RequestMethod.POST)
-	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException, GeneralSecurityException {
-		String token = null;
-		
-		String userPasswordAPI = Decrypt(password);
-		
-		HomecareCaregiver homecareCaregiver = caregiversDbRepository.findByUsername(username);
-		
-		String userPasswordDB = Decrypt(homecareCaregiver.getPassword());
-		
+	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws GeneralSecurityException {
+		String token = "";
+		String userPasswordAPI = "";
+		String userPasswordDB = "";
+		HomecareCaregiver homecareCaregiver = null; 
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		//if (homecareCaregiver != null && homecareCaregiver.getPassword().equals(password)){
+		if( username != "" || password != "" ){
+			userPasswordAPI = Decrypt(password);
+			homecareCaregiver = caregiversDbRepository.findByUsername(username);
+			if(homecareCaregiver != null){
+				userPasswordDB = Decrypt(homecareCaregiver.getPassword());
+			}
+		}
+		
 		if (homecareCaregiver != null && userPasswordDB.equals(userPasswordAPI)) {	
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
 			token = Jwts.builder()
@@ -177,11 +193,11 @@ public class LoginCheckCaregiversRestController {
 			tokenMap.put("user", homecareCaregiver);
 			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
 		}
-		else if(homecareCaregiver.equals(null)){
+		else if(homecareCaregiver == null){
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.NOT_FOUND);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("INVALID USERNAME OR PASSWORD");
-			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 		else{
 			ApiError error = new ApiError();

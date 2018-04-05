@@ -48,7 +48,7 @@ public class CaregiverController {
 		return new PageRequest(page, size, direction, field);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiverByField", method = RequestMethod.GET)
 	public HomecareCaregiver getCaregiversByField(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		HomecareCaregiver data = null;
@@ -75,7 +75,7 @@ public class CaregiverController {
 		return data;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiversWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
@@ -106,7 +106,7 @@ public class CaregiverController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiversWithPaginationByFieldGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 	
@@ -126,7 +126,7 @@ public class CaregiverController {
 		return rows;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiversWithPagination", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		List<HomecareCaregiver> data = caregiversDbRepository.findAllCaregiver(createPageRequest(page, size, sort, sortField));
@@ -141,7 +141,7 @@ public class CaregiverController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiversWithPaginationGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationGetCount() {
 	
@@ -152,7 +152,7 @@ public class CaregiverController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
 	{
@@ -237,7 +237,7 @@ public class CaregiverController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<Object> updateCaregiver(@PathVariable(value = "id") Long id,@RequestBody HomecareCaregiver homecareCaregiver ,  @RequestHeader(value="Authorization") String token) 
 	{
@@ -277,8 +277,11 @@ public class CaregiverController {
 			if(homecareCaregiver.getRegisterNurseNumber() != null) findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());
 			if(homecareCaregiver.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());
 			if(homecareCaregiver.getEmployeeIdNumber() != null) findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());
-			if(homecareCaregiver.getIdCaregiverStatus() != null){findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());}
-			
+			if(homecareCaregiver.getIdCaregiverStatus() != null) findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());
+			if(homecareCaregiver.getFirebaseIdFacebook() != null) findFirst.setFirebaseIdFacebook(homecareCaregiver.getFirebaseIdFacebook());
+			if(homecareCaregiver.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(homecareCaregiver.getFirebaseIdGoogle());
+			if(homecareCaregiver.getFcmToken() != null) findFirst.setFcmToken(homecareCaregiver.getFcmToken());
+			if(homecareCaregiver.getGender() != null) findFirst.setGender(homecareCaregiver.getGender());
 			if(cekUsername != null){
 				mes = "Succesfully Update caregiver with id "+ findFirst.getId() + ", but username '"+ homecareCaregiver.getUsername()  +"' that you input is already exist";
 			}
@@ -309,19 +312,19 @@ public class CaregiverController {
 				ApiError error = new ApiError();
 				error.setStatus(HttpStatus.FORBIDDEN);
 				error.setMessage("caregiver already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else if(caregiversDbRepository.findByEmail(homecareCaregiver.getEmail()) != null){
 				ApiError error = new ApiError();
-				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setStatus(HttpStatus.UNAUTHORIZED);
 				error.setMessage("email is already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else if(caregiversDbRepository.findByPhoneNumber(homecareCaregiver.getPhoneNumber()) != null){
 				ApiError error = new ApiError();
-				error.setStatus(HttpStatus.FORBIDDEN);
+				error.setStatus(HttpStatus.UNAUTHORIZED);
 				error.setMessage("phone number is already exist");
-				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.FORBIDDEN);
+				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else{
 				HomecareCaregiver process = caregiversDbRepository.save(homecareCaregiver);		
