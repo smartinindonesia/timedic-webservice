@@ -49,7 +49,7 @@ public class AppUserController {
 		return new PageRequest(page, size, direction, field);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/userByField", method = RequestMethod.GET)
 	public AppUser getUserByField(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		AppUser data = null;
@@ -65,7 +65,7 @@ public class AppUserController {
 		return data;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/usersWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllUsersWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
@@ -96,7 +96,7 @@ public class AppUserController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/usersWithPaginationByFieldGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllUsersWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 	
@@ -117,7 +117,7 @@ public class AppUserController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/userswithpagination", method = RequestMethod.GET)
 	public List<Object> getAllUsersWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		
@@ -133,7 +133,7 @@ public class AppUserController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/userswithpaginationGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllUsersWithPaginationGetCount() {
 	
@@ -143,7 +143,7 @@ public class AppUserController {
 		return rows;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getUserById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
 	{
@@ -179,7 +179,7 @@ public class AppUserController {
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id, @RequestHeader(value="Authorization") String token) {
 		
@@ -228,7 +228,7 @@ public class AppUserController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<Object> updateUser(@PathVariable(value = "id") Long id,@RequestBody AppUser appUser ,  @RequestHeader(value="Authorization") String token) 
 	{
@@ -293,7 +293,7 @@ public class AppUserController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public ResponseEntity<Object> createUser(@RequestBody AppUser appUser) 
 	{

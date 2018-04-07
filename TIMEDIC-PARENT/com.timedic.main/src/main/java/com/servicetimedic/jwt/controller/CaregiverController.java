@@ -48,7 +48,7 @@ public class CaregiverController {
 		return new PageRequest(page, size, direction, field);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiverByField", method = RequestMethod.GET)
 	public HomecareCaregiver getCaregiversByField(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		HomecareCaregiver data = null;
@@ -75,7 +75,7 @@ public class CaregiverController {
 		return data;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
@@ -106,7 +106,7 @@ public class CaregiverController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationByFieldGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 	
@@ -126,7 +126,7 @@ public class CaregiverController {
 		return rows;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiversWithPagination", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		List<HomecareCaregiver> data = caregiversDbRepository.findAllCaregiver(createPageRequest(page, size, sort, sortField));
@@ -141,7 +141,7 @@ public class CaregiverController {
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationGetCount() {
 	
@@ -152,7 +152,7 @@ public class CaregiverController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
 	{
@@ -188,7 +188,7 @@ public class CaregiverController {
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteCaregiver(@PathVariable Long id, @RequestHeader(value="Authorization") String token) {
 		
@@ -237,7 +237,7 @@ public class CaregiverController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<Object> updateCaregiver(@PathVariable(value = "id") Long id,@RequestBody HomecareCaregiver homecareCaregiver ,  @RequestHeader(value="Authorization") String token) 
 	{
@@ -247,7 +247,7 @@ public class CaregiverController {
 		int idCaregiverFromToken = (Integer) claims.get("id");
 		List<String> roleCaregiverFromToken = (List<String>) claims.get("roles");
 		
-		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN") == true){
+		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN") || roleCaregiverFromToken.contains("ROLE_CLINIC")== true){
 					
 			HomecareCaregiver findFirst = caregiversDbRepository.getOne(id);
 			HomecareCaregiver cekUsername = caregiversDbRepository.findByUsername(homecareCaregiver.getUsername());
@@ -304,7 +304,7 @@ public class CaregiverController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiver", method = RequestMethod.POST)
 	public ResponseEntity<Object> createCaregiver(@RequestBody HomecareCaregiver homecareCaregiver) 
 	{

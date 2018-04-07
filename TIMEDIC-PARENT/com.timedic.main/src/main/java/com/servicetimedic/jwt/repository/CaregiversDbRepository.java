@@ -25,25 +25,25 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	
 	public HomecareCaregiver findByFirebaseIdGoogle(String idFirebase);
 	
-	@Query( "select f from HomecareCaregiver f" )
+	@Query( "select c from HomecareCaregiver c" )
 	public List<HomecareCaregiver> findAllCaregiver(Pageable pageable);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverByfrontName(@Param("value")String value, Pageable pageable);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverByfrontNameGetCount(@Param("value")String value);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBymiddleName(@Param("value")String value, Pageable pageable);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBymiddleNameGetCount(@Param("value")String value);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBylastName(@Param("value")String value, Pageable pageable);
 	
-	@Query("select f from HomecareCaregiver f where LOWER (f.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBylastNameGetCount(@Param("value")String value);
 	
 }

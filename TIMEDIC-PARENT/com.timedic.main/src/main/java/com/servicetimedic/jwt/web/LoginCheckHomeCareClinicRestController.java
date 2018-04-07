@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.ApiError;
+import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.domain.december.HomecareHomecareClinicAdmin;
 import com.servicetimedic.jwt.repository.HomeCareClinicDbRepository;
 
@@ -63,13 +64,28 @@ public class LoginCheckHomeCareClinicRestController {
 	public ResponseEntity<Object> createUser(@RequestBody HomecareHomecareClinicAdmin homecareClinicAdmin) {
 		if (homeCareClinicDbRepository.findByUsername(homecareClinicAdmin.getUsername()) != null) {
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.OK);
-			error.setMessage("user already exist");
-			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.OK);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("username already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
+		
+		else if(homeCareClinicDbRepository.findByEmail(homecareClinicAdmin.getEmail()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("email is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		else if(homeCareClinicDbRepository.findByPhoneNumber(homecareClinicAdmin.getPhoneNumber()) != null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("phone number is already exist");
+			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
+		}
+		
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_CLINIC");
 		homecareClinicAdmin.setRoles(roles);
+		
 		return new ResponseEntity<Object>(homeCareClinicDbRepository.save(homecareClinicAdmin), HttpStatus.CREATED);
 	}
 
@@ -110,16 +126,13 @@ public class LoginCheckHomeCareClinicRestController {
 	@CrossOrigin
 	@RequestMapping(value = "/authenticate/clinic", method = RequestMethod.POST)
 	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException, GeneralSecurityException {
+		/*
 		String token = null;
 		String userPasswordAPI = Decrypt(password);
-		
 		HomecareHomecareClinicAdmin homecareClinicAdmin = homeCareClinicDbRepository.findByUsername(username);
-		
 		String userPasswordDB = Decrypt(homecareClinicAdmin.getPassword());
-		
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		//if (homecareClinicAdmin != null && homecareClinicAdmin.getPassword().equals(password)){
 		if (homecareClinicAdmin != null && userPasswordDB.equals(userPasswordAPI)) {	
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
 			token = Jwts.builder()
@@ -136,9 +149,51 @@ public class LoginCheckHomeCareClinicRestController {
 		}
 		else if(homecareClinicAdmin.equals(null)){
 			ApiError error = new ApiError();
-			error.setStatus(HttpStatus.NOT_FOUND);
+			error.setStatus(HttpStatus.UNAUTHORIZED);
 			error.setMessage("INVALID USERNAME OR PASSWORD");
-			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
+		else{
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("UNAUTHORIZED REQUEST / INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
+		*/
+		
+		String token = null;
+		String userPasswordDB = "";
+		String userPasswordAPI = "";
+		HomecareHomecareClinicAdmin homecareClinicAdmin = null;
+		Map<String, Object> tokenMap = new HashMap<String, Object>();
+		
+		if( username != "" || password != "" ){
+			userPasswordAPI = Decrypt(password);
+			homecareClinicAdmin = homeCareClinicDbRepository.findByUsername(username);
+			if(homecareClinicAdmin != null){
+				userPasswordDB = Decrypt(homecareClinicAdmin.getPassword());
+			}
+		}
+		
+		if (homecareClinicAdmin != null && userPasswordDB.equals(userPasswordAPI)) {
+			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
+			token = Jwts.builder()
+					.setSubject(username)
+					.setExpiration(exp)
+					.claim("roles", homecareClinicAdmin.getRoles())
+					.claim("id", homecareClinicAdmin.getId())
+					.setIssuedAt(new Date())
+					.signWith(SignatureAlgorithm.HS256, "secretkey")
+					.compact();
+			tokenMap.put("token", token);
+			tokenMap.put("user", homecareClinicAdmin);
+			return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
+		}
+		else if(homecareClinicAdmin == null){
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("INVALID USERNAME OR PASSWORD");
+			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 		else{
 			ApiError error = new ApiError();

@@ -8,6 +8,7 @@ package com.servicetimedic.jwt.domain.posgresql;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -115,6 +118,7 @@ public class HomecareServiceTransaction implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public Collection<HomecareTransactionCaregiverlist> getHomecareTransactionCaregiverlistCollection() {
         return homecareTransactionCaregiverlistCollection;
     }

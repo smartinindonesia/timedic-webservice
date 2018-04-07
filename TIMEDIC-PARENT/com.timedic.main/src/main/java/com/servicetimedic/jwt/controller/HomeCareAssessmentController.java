@@ -31,7 +31,7 @@ public class HomeCareAssessmentController {
 	@Autowired
 	private HomeCareServiceAssesmentDbRepository homeCareServiceAssesmentDbRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/assessments", method = RequestMethod.GET)
 	public List<HomecareServiceAssessment> getAllHomeCareServiceAssessment() 
 	{
@@ -39,7 +39,7 @@ public class HomeCareAssessmentController {
 		return homeCareServiceAssesmentDbRepository.findAll();
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/assessments/findbyidservices/{id}", method = RequestMethod.GET)
 	public ResponseEntity<List<HomecareServiceAssessment>> getAssessmentsByIdServices(@PathVariable Long id)
 	{

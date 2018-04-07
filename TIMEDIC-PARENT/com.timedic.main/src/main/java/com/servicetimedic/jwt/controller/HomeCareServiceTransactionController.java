@@ -1,12 +1,17 @@
 package com.servicetimedic.jwt.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
 import com.servicetimedic.jwt.domain.december.LaboratoryService;
+import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
@@ -40,13 +46,19 @@ public class HomeCareServiceTransactionController {
 	@Autowired
 	private HomeCareAssessmentRecordDbRepository homeCareAssessmentRecordDbRepository;
 	
+	private Pageable createPageRequest(int page, int size, String sort, String field) {
+		Direction direction;
+		if(sort.equals("ASC")){direction = Sort.Direction.ASC;}
+		else{direction = Sort.Direction.DESC;}
+		return new PageRequest(page, size, direction, field);
+	}
 	
 	@Autowired
 	HomeCareServiceTransactionController(SimpMessagingTemplate template){
         this.template = template;
     }
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','ROLE_CLINIC')")
 	@RequestMapping(value = "/transactions/homecare", method = RequestMethod.GET)
 	public List<HomecareServiceTransaction> getAllTransactionsHomecare() 
 	{
@@ -54,7 +66,23 @@ public class HomeCareServiceTransactionController {
 		return homecareSeriveTransactionsDbRepository.findAll();
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC')")
+	@RequestMapping(value = "/transactionWithPagination/homecare", method = RequestMethod.GET)
+	public List<Object> getAllTransactionsHomecareWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
+		
+		List<HomecareServiceTransaction> data = homecareSeriveTransactionsDbRepository.findAllHomecareTrx(createPageRequest(page, size, sort, sortField));
+		logger.info("Fetching All HomecareServiceTransaction Details with pagination order by " + sortField + " " + sort);
+		
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(homecareSeriveTransactionsDbRepository.findAll().size());
+		List<Object> list = new ArrayList<Object>();
+		list.add(data);
+		list.add(rows);
+		
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER','ROLE_CLINIC')")
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.GET)
 	public ResponseEntity<HomecareServiceTransaction> getTransactionsHomecareById(@PathVariable Long id)
 	{
@@ -69,7 +97,7 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','ROLE_CLINIC')")
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteTransactionsHomecare(@PathVariable Long id) {
 		HomecareServiceTransaction homecareServiceTransaction = homecareSeriveTransactionsDbRepository.getOne(id);
@@ -84,7 +112,7 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateTransactionsHomecare(@PathVariable(value = "id") Long id,@RequestBody HomecareServiceTransaction homecareServiceTrx) 
 	{
@@ -115,7 +143,7 @@ public class HomeCareServiceTransactionController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/sendToClient", method = RequestMethod.GET)
     public void test(@RequestParam("value") String value){
     	this.template.convertAndSend("/notification",  new SimpleDateFormat("HH:mm:ss").format(new Date())+" -- "+value);

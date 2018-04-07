@@ -63,7 +63,7 @@ public class HomecareCaregiverSchedule implements Serializable {
     private Date endTime2;
 	
 	@Column(name = "status")
-    private boolean status;
+    private Boolean status;
     
 	@JoinColumn(name = "id_homecare_caregiver", referencedColumnName = "id")
     @ManyToOne
@@ -133,16 +133,16 @@ public class HomecareCaregiverSchedule implements Serializable {
 		this.endTime2 = endTime2;
 	}
 
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 
 	@XmlTransient
-    @JsonIgnore
+    //@JsonIgnore
     public HomecareCaregiver getIdHomecareCaregiver() {
         return idHomecareCaregiver;
     }

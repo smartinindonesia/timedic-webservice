@@ -30,7 +30,7 @@ public class HomeCarePatientController {
 	@Autowired
 	private HomeCarePatientDbRepository homeCarePatientDbRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/patients", method = RequestMethod.GET)
 	public List<HomecarePatient> getAllPatients() 
 	{
@@ -38,7 +38,7 @@ public class HomeCarePatientController {
 		return homeCarePatientDbRepository.findAll();
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/patients/findbyiduser/{id}", method = RequestMethod.GET)
 	public ResponseEntity<List<HomecarePatient>> getPatientsByIdUser(@PathVariable Long id)
 	{
@@ -63,7 +63,7 @@ public class HomeCarePatientController {
 	}
 	*/
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','ROLE_CLINIC')")
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.GET)
 	public ResponseEntity<HomecarePatient> getPatientsByIdPatients(@PathVariable Long id,@RequestHeader HttpHeaders requestHeaders)
 	{
@@ -86,7 +86,7 @@ public class HomeCarePatientController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER','ROLE_CLINIC')")
 	@RequestMapping(value = "/patients", method = RequestMethod.POST)
 	public ResponseEntity<HomecarePatient> createPatients(@RequestBody HomecarePatient homePatient) 
 	{
@@ -108,7 +108,7 @@ public class HomeCarePatientController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER','ROLE_CLINIC')")
 	@RequestMapping(value = "/patients/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updatePatients(@PathVariable(value = "id") Long id,@RequestBody HomecarePatient homecarePatient) 
 	{	

@@ -1,10 +1,16 @@
 package com.servicetimedic.jwt.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
@@ -27,7 +34,7 @@ public class CaregiverSchedulleController {
 	@Autowired
 	private CaregiversSchedulle caregiversSchedulle;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle", method = RequestMethod.POST)
 	public ResponseEntity<String> createCaregiverSchedulle(@RequestBody HomecareCaregiverSchedule homecareCaregiverSchedule) 
 	{
@@ -37,7 +44,7 @@ public class CaregiverSchedulleController {
 		return new ResponseEntity<String>("Succesfully Create one Homecare Caregiver schedule", HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/SchedulleByIdCaregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getSchedulleByIdCaregiver(@PathVariable Long id) 
 	{
@@ -52,7 +59,42 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@RequestMapping(value = "/caregiverSchedulleByTime", method = RequestMethod.POST)
+	public ResponseEntity<Object> SchedulleByTime(@RequestParam("time") String time , @RequestParam("day") String day) throws ParseException 
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
+		String dateInString = time;
+		Date date = formatter.parse(dateInString);
+		
+		List<HomecareCaregiverSchedule> schedule = caregiversSchedulle.findByTime(date, day);
+		
+		if (schedule == null){
+			logger.info("Homecare Caregiver Schedule is null");
+			return new ResponseEntity<Object>("Homecare Caregiver Schedule is null",HttpStatus.NO_CONTENT);
+		}
+		else{
+			logger.info("fetching Schedule by time "+time);
+			return new ResponseEntity<Object>(schedule, HttpStatus.OK);
+		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@RequestMapping(value = "/caregiverSchedulleCekData", method = RequestMethod.POST)
+	public ResponseEntity<Object> cekDataSchedulle(@RequestParam("idCaregiver") Long idCaregiver, @RequestParam("day") String day){
+		
+		//HomecareCaregiverSchedule data = caregiversSchedulle.cekDataCaregiverSchedule(idCaregiver, day);
+		
+		if(caregiversSchedulle.cekDataCaregiverSchedule(idCaregiver, day) != null){
+			return new ResponseEntity<Object>("There is a data", HttpStatus.OK);
+		}
+		else{
+			return new ResponseEntity<Object>("No data available", HttpStatus.NO_CONTENT);
+		}
+		
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getSchedulleById(@PathVariable Long id) 
 	{
@@ -67,7 +109,7 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteSchedulleById(@PathVariable Long id) 
 	{
@@ -79,11 +121,11 @@ public class CaregiverSchedulleController {
 		else{
 			caregiversSchedulle.delete(id);
 			logger.info("Succesfully delete Caregiver Schedule by id "+id);
-			return new ResponseEntity<Object>(schedule, HttpStatus.OK);
+			return new ResponseEntity<Object>("Succesfully delete Caregiver Schedule by id "+id, HttpStatus.OK);
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateSchedulleById(@PathVariable Long id, @RequestBody HomecareCaregiverSchedule homecareCaregiverSchedule) 
 	{
@@ -94,8 +136,8 @@ public class CaregiverSchedulleController {
 		if(homecareCaregiverSchedule.getStartTime2() != null){schedule.setStartTime2(homecareCaregiverSchedule.getStartTime2());}
 		if(homecareCaregiverSchedule.getEndTime() != null){schedule.setEndTime(homecareCaregiverSchedule.getEndTime());}
 		if(homecareCaregiverSchedule.getEndTime2() != null){schedule.setEndTime2(homecareCaregiverSchedule.getEndTime2());}
-		if(homecareCaregiverSchedule.isStatus()){schedule.setStatus(homecareCaregiverSchedule.isStatus());}
-		if(!homecareCaregiverSchedule.isStatus()){schedule.setStatus(!homecareCaregiverSchedule.isStatus());}
+		if(homecareCaregiverSchedule.isStatus() != null){schedule.setStatus(homecareCaregiverSchedule.isStatus());}
+		//if(!homecareCaregiverSchedule.isStatus()){schedule.setStatus(!homecareCaregiverSchedule.isStatus());}
 		
 		if(schedule!=null){
 			caregiversSchedulle.save(schedule);

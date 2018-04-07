@@ -69,7 +69,8 @@ public class WebConfig extends WebMvcConfigurerAdapter
 	                		.allowedMethods("GET", "POST", "PUT", "DELETE")
 	                		.allowedOrigins("*")
 	                        .allowedHeaders("*");
-                		 */
+	                		*/
+                		 
             }
         };
     }

@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -44,6 +45,9 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 	
 	@Column(name = "id_caregiver")
     private Long idCaregiver;
+	
+	@Column(name = "id_transaction")
+    private Long idTransaction;
     
     @JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
     @ManyToOne
@@ -99,8 +103,16 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 	public void setIdCaregiver(Long idCaregiver) {
 		this.idCaregiver = idCaregiver;
 	}
+	
+	public Long getIdTransaction() {
+		return idTransaction;
+	}
 
-	@JsonIgnore
+	public void setIdTransaction(Long idTransaction) {
+		this.idTransaction = idTransaction;
+	}
+
+	//@JsonIgnore
     public HomecareHomecareClinic getIdHomecareClinic() {
         return idHomecareClinic;
     }
@@ -110,6 +122,7 @@ public class HomecareTransactionCaregiverlist implements Serializable {
     }
 
     @JsonIgnore
+    @XmlTransient
     public HomecareServiceTransaction getIdServiceTransaction() {
         return idServiceTransaction;
     }
