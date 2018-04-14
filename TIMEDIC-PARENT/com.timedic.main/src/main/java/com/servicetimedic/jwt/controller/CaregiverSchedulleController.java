@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
 import com.servicetimedic.jwt.repository.CaregiversSchedulle;
 
-
 @RestController
 @RequestMapping(value = "/api")
 public class CaregiverSchedulleController {
@@ -34,17 +33,25 @@ public class CaregiverSchedulleController {
 	@Autowired
 	private CaregiversSchedulle caregiversSchedulle;
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle", method = RequestMethod.POST)
-	public ResponseEntity<String> createCaregiverSchedulle(@RequestBody HomecareCaregiverSchedule homecareCaregiverSchedule) 
+	public ResponseEntity<String> createCaregiverSchedulle(@RequestBody HomecareCaregiverSchedule homecareCaregiverSchedule) throws ParseException 
 	{
-		//System.out.println(homecareCaregiverSchedule.getIdHomecareCaregiver().getId());
 		caregiversSchedulle.save(homecareCaregiverSchedule);
 		logger.info("Succesfully Create one Homecare Caregiver schedule");
 		return new ResponseEntity<String>("Succesfully Create one Homecare Caregiver schedule", HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
+	@RequestMapping(value = "/caregiverSchedulleArray", method = RequestMethod.POST)
+	public ResponseEntity<String> createCaregiverSchedulleArrayList(@RequestBody List<HomecareCaregiverSchedule> homecareCaregiverSchedule) 
+	{
+		caregiversSchedulle.save(homecareCaregiverSchedule);
+		logger.info("Succesfully Create one Homecare Caregiver schedule for a week");
+		return new ResponseEntity<String>("Succesfully Create one Homecare Caregiver schedule for a week", HttpStatus.CREATED);
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/SchedulleByIdCaregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getSchedulleByIdCaregiver(@PathVariable Long id) 
 	{
@@ -59,7 +66,16 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	public Date convertStringTimeToDate(String time) throws ParseException{
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
+		String dateInString = time;
+		Date date = formatter.parse(dateInString);
+		
+		return date;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulleByTime", method = RequestMethod.POST)
 	public ResponseEntity<Object> SchedulleByTime(@RequestParam("time") String time , @RequestParam("day") String day) throws ParseException 
 	{
@@ -79,7 +95,7 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulleCekData", method = RequestMethod.POST)
 	public ResponseEntity<Object> cekDataSchedulle(@RequestParam("idCaregiver") Long idCaregiver, @RequestParam("day") String day){
 		
@@ -94,7 +110,22 @@ public class CaregiverSchedulleController {
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
+	@RequestMapping(value = "/caregiverSchedulleCekStatus", method = RequestMethod.POST)
+	public ResponseEntity<Object> cekStatusSchedulle(@RequestParam("idCaregiver") Long idCaregiver){
+		
+		List<HomecareCaregiverSchedule> data = caregiversSchedulle.findByIdHomecareCaregiverStatusAndDay(idCaregiver);
+		
+		if(data != null){
+			return new ResponseEntity<Object>(data, HttpStatus.OK);
+		}
+		else{
+			return new ResponseEntity<Object>("No data available", HttpStatus.NO_CONTENT);
+		}
+		
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getSchedulleById(@PathVariable Long id) 
 	{
@@ -109,7 +140,7 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteSchedulleById(@PathVariable Long id) 
 	{
@@ -125,7 +156,41 @@ public class CaregiverSchedulleController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'ROLE_CLINIC' , 'CAREGIVER')")
+	@RequestMapping(value = "/caregiverSchedulleByIdCaregiverAndDay", method = RequestMethod.PUT)
+	public ResponseEntity<Object> updateSchedulleByIdCaregiverAndDay(@RequestParam("idCaregiver") Long idCaregiver, @RequestParam("day") String day, @RequestParam("status") boolean sts) 
+	{
+		HomecareCaregiverSchedule schedule = caregiversSchedulle.cekDataCaregiverSchedule(idCaregiver, day);
+		
+		if(schedule!=null){
+			schedule.setStatus(sts);
+			caregiversSchedulle.save(schedule);
+			return new ResponseEntity<Object>("Succesfully update caregivers Schedulle with id "+idCaregiver +" and "+day, HttpStatus.OK);
+		}else{
+			return new ResponseEntity<Object>("Failed update caregivers Schedulle", HttpStatus.FAILED_DEPENDENCY);
+		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
+	@RequestMapping(value = "/updateCaregiverSchedulleForTime", method = RequestMethod.PUT)
+	public ResponseEntity<Object> updateCaregiverSchedulleForTime(@RequestParam("id") Long id, @RequestParam("startTime1") String startTime1, @RequestParam("startTime2") String startTime2, @RequestParam("endTime1") String endTime1, @RequestParam("endTime2") String endTime2) throws ParseException 
+	{
+		HomecareCaregiverSchedule schedule = caregiversSchedulle.getOne(id);
+		
+		if(startTime1 != null){schedule.setStartTime(convertStringTimeToDate(startTime1));}
+		if(startTime2 != null){schedule.setStartTime2(convertStringTimeToDate(startTime2));}
+		if(endTime1 != null){schedule.setEndTime(convertStringTimeToDate(endTime1));}
+		if(endTime2 != null){schedule.setEndTime2(convertStringTimeToDate(endTime2));}
+		
+		if(schedule!=null){
+			caregiversSchedulle.save(schedule);
+			return new ResponseEntity<Object>("Succesfully update caregivers Schedulle with id "+id, HttpStatus.OK);
+		}else{
+			return new ResponseEntity<Object>("Failed update caregivers Schedulle", HttpStatus.FAILED_DEPENDENCY);
+		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverSchedulle/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateSchedulleById(@PathVariable Long id, @RequestBody HomecareCaregiverSchedule homecareCaregiverSchedule) 
 	{

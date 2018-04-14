@@ -32,7 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiverStatus;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
+import com.servicetimedic.jwt.repository.CaregiversSchedulle;
 
 /**
  * All web services in this controller will be available for all the users
@@ -43,6 +46,9 @@ public class LoginCheckCaregiversRestController {
 	
 	@Autowired
 	private CaregiversDbRepository caregiversDbRepository;
+	
+	@Autowired
+	private CaregiversSchedulle caregiversSchedulle;
 
 	
 	@Value("${jwt.expires_in}")
@@ -85,10 +91,41 @@ public class LoginCheckCaregiversRestController {
 			return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		
+		
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_CAREGIVER");
 		homecareCaregiver.setRoles(roles);
-		return new ResponseEntity<Object>(caregiversDbRepository.save(homecareCaregiver), HttpStatus.CREATED);
+		
+		HomecareCaregiverStatus sts = new HomecareCaregiverStatus();
+		Long id = (long) 3; //suspend
+		sts.setId(id);
+		homecareCaregiver.setIdCaregiverStatus(sts);
+		
+		HomecareCaregiver data = caregiversDbRepository.save(homecareCaregiver);
+		insertSchedule(data);
+		return new ResponseEntity<Object>(data, HttpStatus.CREATED);
+	}
+	
+	public void insertSchedule(HomecareCaregiver data){
+		HomecareCaregiverSchedule schedule ;
+		for(int i=0; i<7; i++){
+			schedule = new HomecareCaregiverSchedule();
+			schedule.setIdHomecareCaregiver(data);
+			schedule.setStatus(false);
+			schedule.setStartTime(null);
+			schedule.setStartTime2(null);
+			schedule.setEndTime(null);
+			schedule.setEndTime2(null);
+			if(i==0){schedule.setDay("monday");}
+			else if(i==1){schedule.setDay("tuesday");}
+			else if(i==2){schedule.setDay("wednesday");}
+			else if(i==3){schedule.setDay("thursday");}
+			else if(i==4){schedule.setDay("friday");}
+			else if(i==5){schedule.setDay("saturday");}
+			else if(i==6){schedule.setDay("sunday");}
+			schedule.setDate(null);
+			caregiversSchedulle.save(schedule);
+		}
 	}
 
 	/**

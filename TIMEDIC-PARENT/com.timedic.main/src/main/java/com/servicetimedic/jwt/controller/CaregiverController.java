@@ -29,8 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiverStatus;
 import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
+import com.servicetimedic.jwt.repository.CaregiversSchedulle;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -40,6 +43,9 @@ public class CaregiverController {
 	
 	@Autowired
 	private CaregiversDbRepository caregiversDbRepository;
+	
+	@Autowired
+	private CaregiversSchedulle caregiversSchedulle;
 	
 	private Pageable createPageRequest(int page, int size, String sort, String field) {
 		Direction direction;
@@ -327,8 +333,36 @@ public class CaregiverController {
 				return new ResponseEntity<Object>(error ,new HttpHeaders() , HttpStatus.UNAUTHORIZED);
 		}
 		else{
-				HomecareCaregiver process = caregiversDbRepository.save(homecareCaregiver);		
+				HomecareCaregiverStatus sts = new HomecareCaregiverStatus();
+				Long id = (long) 3; // suspend
+				sts.setId(id);
+				homecareCaregiver.setIdCaregiverStatus(sts);
+				
+				HomecareCaregiver process = caregiversDbRepository.save(homecareCaregiver);
+				insertSchedule(process);
 				return new ResponseEntity<Object>(process, new HttpHeaders() ,HttpStatus.CREATED);
+		}
+	}
+	
+	public void insertSchedule(HomecareCaregiver data){
+		HomecareCaregiverSchedule schedule ;
+		for(int i=0; i<7; i++){
+			schedule = new HomecareCaregiverSchedule();
+			schedule.setIdHomecareCaregiver(data);
+			schedule.setStatus(false);
+			schedule.setStartTime(null);
+			schedule.setStartTime2(null);
+			schedule.setEndTime(null);
+			schedule.setEndTime2(null);
+			if(i==0){schedule.setDay("monday");}
+			else if(i==1){schedule.setDay("tuesday");}
+			else if(i==2){schedule.setDay("wednesday");}
+			else if(i==3){schedule.setDay("thursday");}
+			else if(i==4){schedule.setDay("friday");}
+			else if(i==5){schedule.setDay("saturday");}
+			else if(i==6){schedule.setDay("sunday");}
+			schedule.setDate(null);
+			caregiversSchedulle.save(schedule);
 		}
 	}
 	

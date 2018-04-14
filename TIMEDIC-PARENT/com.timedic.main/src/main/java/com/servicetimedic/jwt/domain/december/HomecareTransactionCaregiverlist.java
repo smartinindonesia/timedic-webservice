@@ -37,8 +37,9 @@ public class HomecareTransactionCaregiverlist implements Serializable {
     @Column(name = "caregiver_name")
     private String caregiverName;
     
+	@Size(max = 100)
 	@Column(name = "register_nurse_number")
-    private Integer registerNurseNumber;
+    private String registerNurseNumber;
 	
 	@Column(name = "rate_status")
     private Boolean rateStatus;
@@ -80,11 +81,11 @@ public class HomecareTransactionCaregiverlist implements Serializable {
         this.caregiverName = caregiverName;
     }
 
-    public Integer getRegisterNurseNumber() {
+    public String getRegisterNurseNumber() {
         return registerNurseNumber;
     }
 
-    public void setRegisterNurseNumber(Integer registerNurseNumber) {
+    public void setRegisterNurseNumber(String registerNurseNumber) {
         this.registerNurseNumber = registerNurseNumber;
     }
     
