@@ -85,11 +85,12 @@ public class CaregiverController {
 	@RequestMapping(value = "/caregiversWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
-		List<HomecareCaregiver> data = null;
+		List<HomecareCaregiver> data = new ArrayList<>();
+		HomecareCaregiver data2 = new HomecareCaregiver();
 		NumberOfRows rows = new NumberOfRows();
 		int rowCount = 0 ;
 		
-		if(searchField.equals("fistname")){
+		if(searchField.equals("firstname")){
 			data = caregiversDbRepository.findCaregiverByfrontName(value, createPageRequest(page, size, sort, sortField));
 			rowCount = caregiversDbRepository.findCaregiverByfrontNameGetCount(value).size();
 		}
@@ -100,6 +101,31 @@ public class CaregiverController {
 		else if(searchField.equals("lastname")){
 			data = caregiversDbRepository.findCaregiverBylastName(value, createPageRequest(page, size, sort, sortField));
 			rowCount = caregiversDbRepository.findCaregiverBylastNameGetCount(value).size();
+		}
+		else if(searchField.equals("email")){
+			data2  = caregiversDbRepository.findByEmail(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("sipp")){
+			data2  = caregiversDbRepository.findBySipp(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("username")){
+			data2  = caregiversDbRepository.findByUsername(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("str")){
+			data2  = caregiversDbRepository.findByRegisterNurseNumber(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("phoneNumber")){
+			data2  = caregiversDbRepository.findByPhoneNumber(value);
+			rowCount = 1;
+			data.add(data2);
 		}
 		
 		logger.info("Fetching caregivers with "+ searchField +" order by " + sortField + " " + sort);

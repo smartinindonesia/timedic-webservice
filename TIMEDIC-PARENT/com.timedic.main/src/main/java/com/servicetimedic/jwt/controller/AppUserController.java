@@ -69,7 +69,8 @@ public class AppUserController {
 	@RequestMapping(value = "/usersWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllUsersWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
-		List<AppUser> data = null;
+		List<AppUser> data = new ArrayList<>();
+		AppUser data2 = new AppUser();
 		NumberOfRows rows = new NumberOfRows();
 		int rowCount = 0 ;
 		
@@ -84,6 +85,21 @@ public class AppUserController {
 		else if(searchField.equals("lastname")){
 			data = userRepository.findUserBylastName(value, createPageRequest(page, size, sort, sortField));
 			rowCount = userRepository.findUserBylastNameCount(value).size();
+		}
+		else if(searchField.equals("email")){
+			data2  = userRepository.findByEmail(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("username")){
+			data2  = userRepository.findByUsername(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("phoneNumber")){
+			data2  = userRepository.findByPhoneNumber(value);
+			rowCount = 1;
+			data.add(data2);
 		}
 		
 		logger.info("Fetching User with "+ searchField +" order by " + sortField + " " + sort);

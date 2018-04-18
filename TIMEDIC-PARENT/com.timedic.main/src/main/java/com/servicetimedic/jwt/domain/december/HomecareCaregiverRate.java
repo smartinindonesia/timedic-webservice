@@ -35,6 +35,9 @@ public class HomecareCaregiverRate implements Serializable {
 	
 	@Column(name = "comment")
     private String comment;
+	
+	@Column(name = "id_HomeCare_Transaction")
+    private Long idHomeCareTransaction;
     
 	@JoinColumn(name = "id_app_user", referencedColumnName = "id")
     @ManyToOne
@@ -73,6 +76,15 @@ public class HomecareCaregiverRate implements Serializable {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	
+
+	public Long getIdHomeCareTransaction() {
+		return idHomeCareTransaction;
+	}
+
+	public void setIdHomeCareTransaction(Long idHomeCareTransaction) {
+		this.idHomeCareTransaction = idHomeCareTransaction;
 	}
 
 	public AppUser getIdAppUser() {

@@ -14,7 +14,7 @@
   <name>api-timedic-parent</name>
   <description>api-timedic-parent</description>
   
-  <pluginRepositories>
+  	<pluginRepositories>
         <pluginRepository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>

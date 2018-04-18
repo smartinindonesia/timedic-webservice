@@ -34,7 +34,7 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	@Query("select c from HomecareCaregiver c where LOWER (c.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverByfrontNameGetCount(@Param("value")String value);
 	
-	@Query("select c from HomecareCaregiver c where LOWER (c.frontName) LIKE LOWER( CONCAT('%',:value,'%'))")
+	@Query("select c from HomecareCaregiver c where LOWER (c.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBymiddleName(@Param("value")String value, Pageable pageable);
 	
 	@Query("select c from HomecareCaregiver c where LOWER (c.middleName) LIKE LOWER( CONCAT('%',:value,'%'))")
