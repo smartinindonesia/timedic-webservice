@@ -74,7 +74,7 @@ public class AppUserController {
 		NumberOfRows rows = new NumberOfRows();
 		int rowCount = 0 ;
 		
-		if(searchField.equals("fistname")){
+		if(searchField.equals("firstname")){
 			data = userRepository.findUserByfrontName(value, createPageRequest(page, size, sort, sortField));
 			rowCount = userRepository.findUserByfrontNameGetCount(value).size();
 		}

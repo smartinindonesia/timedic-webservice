@@ -11,7 +11,10 @@ import com.servicetimedic.jwt.domain.december.HomecareCaregiverRate;
 
 public interface CaregiversRateRepository extends JpaRepository<HomecareCaregiverRate, Long>{
 
-	@Query("select c from HomecareCaregiverRate c where c.idHomecareCaregiver = :idCaregiver")
+	@Query("select c from HomecareCaregiverRate c where c.idHomecareCaregiver.id = :idCaregiver")
 	public List<HomecareCaregiverRate> findCaregiverRateByIdCaregiver(@Param("idCaregiver")Long idCaregiver);
+	
+	@Query("select SUM(c.rate) from HomecareCaregiverRate c where c.idHomecareCaregiver.id = :idCaregiver")
+	public Long findCaregiverRateByIdCaregiverGetSum(@Param("idCaregiver")Long idCaregiver);
 	
 }

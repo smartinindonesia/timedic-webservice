@@ -1,5 +1,7 @@
 package com.servicetimedic.jwt.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
 import com.servicetimedic.jwt.domain.december.LaboratoryService;
 import com.servicetimedic.jwt.domain.december.NumberOfRows;
+import com.servicetimedic.jwt.domain.december.OrderRespons;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
@@ -76,6 +80,45 @@ public class HomeCareServiceTransactionController {
 		NumberOfRows rows = new NumberOfRows();
 		rows.setNumOfRows(homecareSeriveTransactionsDbRepository.findAll().size());
 		List<Object> list = new ArrayList<Object>();
+		list.add(data);
+		list.add(rows);
+		
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
+	@RequestMapping(value = "/transactionWithPaginationByField", method = RequestMethod.GET)
+	public List<Object> getAllTransactionWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) throws ParseException {
+		
+		List<HomecareServiceTransaction> data = new ArrayList<>();
+		HomecareServiceTransaction data2 = new HomecareServiceTransaction();
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(searchField.equals("date")){
+			data = homecareSeriveTransactionsDbRepository.findWithPaginationByDate(convertStringTimeToDate(value), createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findByDate(convertStringTimeToDate(value)).size();
+		}
+		else if(searchField.equals("idUser")){
+			long id = Long.parseLong(value);
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPagination(id, createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPaginationGetCount(id).size();
+		}
+		else if(searchField.equals("username")){
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByUsernameWithPagination(value, createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByUsernameWithPaginationGetCount(value).size();
+		}
+		/*
+		else if(searchField.equals("noOrder")){
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPagination(id, createPageRequest(page, size, sort, sortField));
+			data.add(data2);
+			rowCount = 0;
+		}*/
+		
+		logger.info("Fetching HomecareServiceTransaction with "+ searchField +" order by " + sortField + " " + sort);
+		
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
 		list.add(data);
 		list.add(rows);
 		
@@ -149,10 +192,18 @@ public class HomeCareServiceTransactionController {
     	this.template.convertAndSend("/notification",  new SimpleDateFormat("HH:mm:ss").format(new Date())+" -- "+value);
     }
 	
+	public Date convertStringTimeToDate(String time) throws ParseException{
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateInString = time;
+		Date date = formatter.parse(dateInString);
+		
+		return date;
+	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
 	@RequestMapping(value = "/transactions/homecare/", method = RequestMethod.POST)
-	public ResponseEntity<String> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
+	public ResponseEntity<Object> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
 	{
 		HomecareServiceTransaction process = homecareSeriveTransactionsDbRepository.save(homecareService);
 		
@@ -172,7 +223,19 @@ public class HomeCareServiceTransactionController {
 		
 		this.template.convertAndSend("/notification", process);
 		
-		return new ResponseEntity<String>("Thank You, Your homecare order has been recorded in timedic system with id " + process.getId() , HttpStatus.CREATED);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date();
+		String message = "Thank You, Your homecare order has been recorded in timedic system with id " + process.getId();
+		//System.out.println(dateFormat.format(date));
+		
+		OrderRespons respons = new OrderRespons();
+		
+		respons.setMessage(message);
+		respons.setDate(dateFormat.format(date));
+		respons.setHttpStatus(HttpStatus.CREATED);
+		
+		
+		return new ResponseEntity<Object>(respons , HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")

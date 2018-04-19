@@ -47,8 +47,6 @@ public class HomeCareClinicAdminController {
 	@Autowired
 	private HomeCareClinicDbRepository homeCareClinicDbRepository;
 		
-
-	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','ROLE_CLINIC')")
 	@RequestMapping(value = "/clinicAdmin/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
