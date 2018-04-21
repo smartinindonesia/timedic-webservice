@@ -86,14 +86,23 @@ public class AppUser implements UserDetails, Serializable {
     @Column(name = "fcm_token")
     private String fcmToken;
     
+    @Size(max = 10)
+    @Column(name = "user_code")
+    private String userCode;
+    
     @Column(name = "firebase_id_google")
     private String firebaseIdGoogle ;
     
     @Column(name = "firebase_id_facebook")
     private String firebaseIdFacebook ;
     
+    @Size(max = 50)
     @Column(name = "gender")
     private String gender ;
+    
+    @Size(max = 50)
+    @Column(name = "religion")
+    private String religion;
     
     @OneToMany(mappedBy = "idAppUser")
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
@@ -157,8 +166,16 @@ public class AppUser implements UserDetails, Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String getReligion() {
+		return religion;
+	}
 
-    public String getFrontName() {
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getFrontName() {
         return frontName;
     }
 
@@ -271,6 +288,14 @@ public class AppUser implements UserDetails, Serializable {
     
     public String getFcmToken() {
 		return fcmToken;
+	}
+    
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 	public void setFcmToken(String fcmToken) {

@@ -62,6 +62,9 @@ public class AppUserController {
 		else if(searchField.equals("phonenumber")){
 			data = userRepository.findByPhoneNumber(value);
 		}
+		else if(searchField.equals("userCode")){
+			data = userRepository.findByUserCode(value);
+		}
 		return data;
 	}
 	
@@ -98,6 +101,11 @@ public class AppUserController {
 		}
 		else if(searchField.equals("phoneNumber")){
 			data2  = userRepository.findByPhoneNumber(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("userCode")){
+			data2  = userRepository.findByUserCode(value);
 			rowCount = 1;
 			data.add(data2);
 		}

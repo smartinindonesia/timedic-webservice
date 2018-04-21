@@ -84,10 +84,18 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 	@Size(max = 255)
     @Column(name = "sipp")
     private String sipp;
+	
+	@Size(max = 255)
+    @Column(name = "sipp_url")
+    private String sippUrl;
     
 	@Size(max = 255)
     @Column(name = "register_nurse_number")
     private String registerNurseNumber;
+	
+	@Size(max = 255)
+    @Column(name = "register_nurse_number_url")
+    private String registerNurseNumberUrl;
     
 	@Size(max = 255)
     @Column(name = "username")
@@ -112,6 +120,12 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     
     @Column(name = "gender")
     private String gender ;
+    
+    @Column(name = "religion")
+    private String religion;
+    
+    @Column(name = "caregiver_code")
+    private String caregiverCode;
     
 	@OneToMany(mappedBy = "idHomecareCaregiver")
     private List<HomecareCaregiverRate> homecareCaregiverRateList;
@@ -286,8 +300,24 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    public String getReligion() {
+		return religion;
+	}
 
-    public Date getFirstRegistrationDate() {
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getCaregiverCode() {
+		return caregiverCode;
+	}
+
+	public void setCaregiverCode(String caregiverCode) {
+		this.caregiverCode = caregiverCode;
+	}
+
+	public Date getFirstRegistrationDate() {
         return firstRegistrationDate;
     }
 
@@ -326,8 +356,23 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 	public void setFirebaseIdFacebook(String firebaseIdFacebook) {
 		this.firebaseIdFacebook = firebaseIdFacebook;
 	}
-	
-	
+		
+	public String getSippUrl() {
+		return sippUrl;
+	}
+
+	public void setSippUrl(String sippUrl) {
+		this.sippUrl = sippUrl;
+	}
+
+	public String getRegisterNurseNumberUrl() {
+		return registerNurseNumberUrl;
+	}
+
+	public void setRegisterNurseNumberUrl(String registerNurseNumberUrl) {
+		this.registerNurseNumberUrl = registerNurseNumberUrl;
+	}
+
 	public String getGender() {
 		return gender;
 	}

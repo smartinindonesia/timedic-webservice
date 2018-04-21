@@ -24,6 +24,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -42,6 +44,10 @@ public class HomecareServiceTransaction implements Serializable {
 	@Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
+	
+	@Column(name = "date_order_in")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateOrderIn;
     
 	@Column(name = "fixed_price")
     private Float fixedPrice;
@@ -52,9 +58,13 @@ public class HomecareServiceTransaction implements Serializable {
 	@Column(name = "prepaid_price")
     private Float prepaidPrice;
     
-	@Column(name = "expired_transaction_time")
+	@Column(name = "expired_transaction_time_fixed_price")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expiredTransactionTime;
+    private Date expiredTransactionTimeFixedPrice;
+	
+	@Column(name = "expired_transaction_time_prepaid_price")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiredTransactionTimePrepaidPrice;
     
 	@Size(max = 255)
     @Column(name = "receipt_path")
@@ -71,12 +81,20 @@ public class HomecareServiceTransaction implements Serializable {
     private String transactionDescription;
 	
 	@Size(max = 255)
-    @Column(name = "selected_service ")
-    private String selectedService ;
+    @Column(name = "selected_service")
+    private String selectedService;
 	
 	@Size(max = 255)
-    @Column(name = "full_address  ")
-    private String fullAddress  ;
+    @Column(name = "full_address")
+    private String fullAddress;
+	
+	
+	//@Id
+	//@GenericGenerator(name = "sequence_order_no", strategy = "com.servicetimedic.jwt.domain.december.DepartmentIdGenerator")
+	//@GeneratedValue(generator = "sequence_order_no")  
+	@Size(max = 50)
+	@Column(name = "order_number")
+    private String orderNumber;
     
 	@OneToMany(mappedBy = "idServiceTransaction", cascade= CascadeType.REMOVE)
     private List<HomecareTransactionCaregiverlist> homecareTransactionCaregiverlistList;
@@ -87,6 +105,14 @@ public class HomecareServiceTransaction implements Serializable {
 	@JoinColumn(name = "transaction_status_id", referencedColumnName = "id")
     @ManyToOne
     private SystemTransactionStatus transactionStatusId;
+	
+	@JoinColumn(name = "paymentPrepaidPrice_status_id", referencedColumnName = "id")
+    @ManyToOne
+    private SystemPaymentStatus paymentPrepaidPriceStatusId;
+	
+	@JoinColumn(name = "paymentFixedPrice_status_id", referencedColumnName = "id")
+    @ManyToOne
+    private SystemPaymentStatus paymentFixedPriceStatusId;
     
 	@JoinColumn(name = "homecare_patient_id", referencedColumnName = "id")
     @ManyToOne
@@ -143,15 +169,26 @@ public class HomecareServiceTransaction implements Serializable {
         this.prepaidPrice = prepaidPrice;
     }
 
-    public Date getExpiredTransactionTime() {
-        return expiredTransactionTime;
-    }
 
-    public void setExpiredTransactionTime(Date expiredTransactionTime) {
-        this.expiredTransactionTime = expiredTransactionTime;
-    }
+    public Date getExpiredTransactionTimeFixedPrice() {
+		return expiredTransactionTimeFixedPrice;
+	}
 
-    public String getReceiptPath() {
+	public void setExpiredTransactionTimeFixedPrice(
+			Date expiredTransactionTimeFixedPrice) {
+		this.expiredTransactionTimeFixedPrice = expiredTransactionTimeFixedPrice;
+	}
+
+	public Date getExpiredTransactionTimePrepaidPrice() {
+		return expiredTransactionTimePrepaidPrice;
+	}
+
+	public void setExpiredTransactionTimePrepaidPrice(
+			Date expiredTransactionTimePrepaidPrice) {
+		this.expiredTransactionTimePrepaidPrice = expiredTransactionTimePrepaidPrice;
+	}
+
+	public String getReceiptPath() {
         return receiptPath;
     }
 
@@ -182,8 +219,43 @@ public class HomecareServiceTransaction implements Serializable {
     public void setTransactionDescription(String transactionDescription) {
         this.transactionDescription = transactionDescription;
     }
+    
+    public String getOrderNumber() {
+		return orderNumber;
+	}
 
-    //@XmlTransient
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+	
+
+	public Date getDateOrderIn() {
+		return dateOrderIn;
+	}
+
+	public void setDateOrderIn(Date dateOrderIn) {
+		this.dateOrderIn = dateOrderIn;
+	}
+
+	public SystemPaymentStatus getPaymentPrepaidPriceStatusId() {
+		return paymentPrepaidPriceStatusId;
+	}
+
+	public void setPaymentPrepaidPriceStatusId(
+			SystemPaymentStatus paymentPrepaidPriceStatusId) {
+		this.paymentPrepaidPriceStatusId = paymentPrepaidPriceStatusId;
+	}
+
+	public SystemPaymentStatus getPaymentFixedPriceStatusId() {
+		return paymentFixedPriceStatusId;
+	}
+
+	public void setPaymentFixedPriceStatusId(
+			SystemPaymentStatus paymentFixedPriceStatusId) {
+		this.paymentFixedPriceStatusId = paymentFixedPriceStatusId;
+	}
+
+	//@XmlTransient
     //@JsonIgnore
     public List<HomecareTransactionCaregiverlist> getHomecareTransactionCaregiverlistList() {
         return homecareTransactionCaregiverlistList;

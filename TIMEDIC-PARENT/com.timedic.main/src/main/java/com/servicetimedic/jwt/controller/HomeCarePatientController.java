@@ -1,10 +1,15 @@
 package com.servicetimedic.jwt.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.AppUser;
+import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.domain.december.HomecarePatient;
 import com.servicetimedic.jwt.domain.december.HomecareService;
+import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.repository.HomeCarePatientDbRepository;
 
 @RestController
@@ -29,6 +37,13 @@ public class HomeCarePatientController {
 	
 	@Autowired
 	private HomeCarePatientDbRepository homeCarePatientDbRepository;
+	
+	private Pageable createPageRequest(int page, int size, String sort, String field) {
+		Direction direction;
+		if(sort.equals("ASC")){direction = Sort.Direction.ASC;}
+		else{direction = Sort.Direction.DESC;}
+		return new PageRequest(page, size, direction, field);
+	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/patients", method = RequestMethod.GET)
@@ -126,6 +141,52 @@ public class HomeCarePatientController {
 			homeCarePatientDbRepository.save(data);
 			return new ResponseEntity<String>("Succesfully Update patients with id "+id, HttpStatus.OK);
 		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'ROLE_CLINIC')")
+	@RequestMapping(value = "/patiensWithPagination", method = RequestMethod.GET)
+	public List<Object> getAllPatientsWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
+		List<HomecarePatient> data = homeCarePatientDbRepository.findHomecarePatientWithPagination(createPageRequest(page, size, sort, sortField));
+		logger.info("Fetching All Patient Details with pagination order by " + sortField + " " + sort);
+		
+		NumberOfRows rows = new NumberOfRows();
+		rows.setNumOfRows(homeCarePatientDbRepository.findAll().size());
+		List<Object> list = new ArrayList<Object>();
+		list.add(data);
+		list.add(rows);
+		
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'ROLE_CLINIC')")
+	@RequestMapping(value = "/patientsWithPaginationByField", method = RequestMethod.GET)
+	public List<Object> getAllPatientsWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
+		
+		List<HomecarePatient> data = new ArrayList<>();
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(searchField.equals("name")){
+			data = homeCarePatientDbRepository.findPatientByName(value, createPageRequest(page, size, sort, sortField));
+			rowCount = homeCarePatientDbRepository.findPatientByNameGetCount(value).size();
+		}
+		else if(searchField.equals("idUser")){
+			data = homeCarePatientDbRepository.findHomecarePatientByIdUser(Long.parseLong(value), createPageRequest(page, size, sort, sortField));
+			rowCount = homeCarePatientDbRepository.findHomecarePatientByIdUserGetCount(Long.parseLong(value)).size();
+		}
+		else if(searchField.equals("userCode")){
+			data = homeCarePatientDbRepository.findHomecarePatientByCodeUser(value, createPageRequest(page, size, sort, sortField));
+			rowCount = homeCarePatientDbRepository.findHomecarePatientByCodeUserGetCount(value).size();
+		}
+		
+		logger.info("Fetching patients with "+ searchField +" order by " + sortField + " " + sort);
+		
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
+		list.add(data);
+		list.add(rows);
+		
+		return list;
 	}
 	
 }

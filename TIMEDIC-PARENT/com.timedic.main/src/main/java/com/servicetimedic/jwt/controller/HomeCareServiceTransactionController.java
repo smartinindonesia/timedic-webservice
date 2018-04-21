@@ -3,6 +3,7 @@ package com.servicetimedic.jwt.controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,12 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.HomecareAssessmentRecord;
-import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
-import com.servicetimedic.jwt.domain.december.LaboratoryService;
 import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.domain.december.OrderRespons;
+import com.servicetimedic.jwt.domain.december.SystemPaymentStatus;
 import com.servicetimedic.jwt.repository.HomeCareAssessmentRecordDbRepository;
+import com.servicetimedic.jwt.repository.HomeCarePatientDbRepository;
 import com.servicetimedic.jwt.repository.HomeCareSeriveTransactionsDbRepository;
 
 @Controller
@@ -46,6 +47,9 @@ public class HomeCareServiceTransactionController {
 	
 	@Autowired
 	private HomeCareSeriveTransactionsDbRepository homecareSeriveTransactionsDbRepository;
+	
+	@Autowired
+	private HomeCarePatientDbRepository homeCarePatientDbRepository;
 	
 	@Autowired
 	private HomeCareAssessmentRecordDbRepository homeCareAssessmentRecordDbRepository;
@@ -91,7 +95,6 @@ public class HomeCareServiceTransactionController {
 	public List<Object> getAllTransactionWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) throws ParseException {
 		
 		List<HomecareServiceTransaction> data = new ArrayList<>();
-		HomecareServiceTransaction data2 = new HomecareServiceTransaction();
 		NumberOfRows rows = new NumberOfRows();
 		int rowCount = 0 ;
 		
@@ -104,16 +107,18 @@ public class HomeCareServiceTransactionController {
 			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPagination(id, createPageRequest(page, size, sort, sortField));
 			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPaginationGetCount(id).size();
 		}
+		else if(searchField.equals("userCode")){
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByCodeUserWithPagination(value, createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByCodeUserWithPaginationGetCount(value).size();
+		}
 		else if(searchField.equals("username")){
 			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByUsernameWithPagination(value, createPageRequest(page, size, sort, sortField));
 			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByUsernameWithPaginationGetCount(value).size();
 		}
-		/*
 		else if(searchField.equals("noOrder")){
-			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPagination(id, createPageRequest(page, size, sort, sortField));
-			data.add(data2);
-			rowCount = 0;
-		}*/
+			data = homecareSeriveTransactionsDbRepository.findByOrderNumber(value, createPageRequest(page, size, sort, sortField));
+			rowCount = 1;//homecareSeriveTransactionsDbRepository.OrderNumberWithPaginationGetCount(value).size();
+		}
 		
 		logger.info("Fetching HomecareServiceTransaction with "+ searchField +" order by " + sortField + " " + sort);
 		
@@ -159,6 +164,9 @@ public class HomeCareServiceTransactionController {
 	@RequestMapping(value = "/transactions/homecare/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<String> updateTransactionsHomecare(@PathVariable(value = "id") Long id,@RequestBody HomecareServiceTransaction homecareServiceTrx) 
 	{
+		Date date = new Date();
+		Date tomorrow = new Date(date.getTime() + (1000 * 60 * 60 * 24));
+		
 		HomecareServiceTransaction respon = homecareSeriveTransactionsDbRepository.getOne(id);
 		
 		if(respon == null) {
@@ -166,8 +174,16 @@ public class HomeCareServiceTransactionController {
 	    }
 		else{
 			if(homecareServiceTrx.getDate() != null){respon.setDate(homecareServiceTrx.getDate());}
-			if(homecareServiceTrx.getExpiredTransactionTime() !=null){respon.setExpiredTransactionTime(homecareServiceTrx.getExpiredTransactionTime());}
-			if(homecareServiceTrx.getFixedPrice() != null){respon.setFixedPrice(homecareServiceTrx.getFixedPrice());}
+			if(homecareServiceTrx.getDateOrderIn() != null){respon.setDateOrderIn(homecareServiceTrx.getDateOrderIn());}
+			if(homecareServiceTrx.getExpiredTransactionTimeFixedPrice() !=null){respon.setExpiredTransactionTimeFixedPrice(homecareServiceTrx.getExpiredTransactionTimeFixedPrice());}
+			if(homecareServiceTrx.getExpiredTransactionTimePrepaidPrice() !=null){respon.setExpiredTransactionTimePrepaidPrice(homecareServiceTrx.getExpiredTransactionTimePrepaidPrice());}
+			if(homecareServiceTrx.getFixedPrice() != null){
+				SystemPaymentStatus payment = new SystemPaymentStatus();
+				payment.setId(2);
+				respon.setFixedPrice(homecareServiceTrx.getFixedPrice());
+				respon.setExpiredTransactionTimeFixedPrice(tomorrow);
+				respon.setPaymentFixedPriceStatusId(payment);
+			}
 			if(homecareServiceTrx.getHomecareAssessmentRecordList() !=null){respon.setHomecareAssessmentRecordList(homecareServiceTrx.getHomecareAssessmentRecordList());}
 			if(homecareServiceTrx.getHomecarePatientId() != null){respon.setHomecarePatientId(homecareServiceTrx.getHomecarePatientId());}
 			if(homecareServiceTrx.getHomecareTransactionCaregiverlistList() != null){respon.setHomecareTransactionCaregiverlistList(homecareServiceTrx.getHomecareTransactionCaregiverlistList());}
@@ -179,7 +195,9 @@ public class HomeCareServiceTransactionController {
 			if(homecareServiceTrx.getReceiptPath() != null){respon.setReceiptPath(homecareServiceTrx.getReceiptPath());}
 			if(homecareServiceTrx.getTransactionDescription() != null){respon.setTransactionDescription(homecareServiceTrx.getTransactionDescription());}
 			if(homecareServiceTrx.getTransactionStatusId() != null){respon.setTransactionStatusId(homecareServiceTrx.getTransactionStatusId());}
-			
+			if(homecareServiceTrx.getOrderNumber() != null){respon.setOrderNumber(homecareServiceTrx.getOrderNumber());}
+			if(homecareServiceTrx.getPaymentPrepaidPriceStatusId() != null){respon.setPaymentPrepaidPriceStatusId(homecareServiceTrx.getPaymentPrepaidPriceStatusId());}
+			if(homecareServiceTrx.getPaymentFixedPriceStatusId() != null){respon.setPaymentFixedPriceStatusId(homecareServiceTrx.getPaymentFixedPriceStatusId());}
 			homecareSeriveTransactionsDbRepository.save(respon);
 			
 			return new ResponseEntity<String>("Succesfully update transaction homecare with id "+id, HttpStatus.OK);
@@ -201,10 +219,33 @@ public class HomeCareServiceTransactionController {
 		return date;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/transactions/homecare/", method = RequestMethod.POST)
 	public ResponseEntity<Object> createTransactionsHomecare(@RequestBody HomecareServiceTransaction homecareService) 
 	{
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
+		Date date = new Date();
+		Date tomorrow = new Date(date.getTime() + (1000 * 60 * 60 * 24));
+		
+		String generatedId = "TMDC-" + dateFormat2.format(date)+ homecareSeriveTransactionsDbRepository.getMaxId();
+		
+		SystemPaymentStatus payment = new SystemPaymentStatus();
+		payment.setId(2);
+		
+		homecareService.setOrderNumber(generatedId);
+		homecareService.setDateOrderIn(date);
+		
+		
+		if(homecareService.getSelectedService().equals("Homecare 24 Jam") || homecareService.getSelectedService().equals("Homecare 12 Jam") || homecareService.getSelectedService().equals("Homecare 7 Jam")){
+			homecareService.setExpiredTransactionTimePrepaidPrice(tomorrow);
+			homecareService.setPaymentPrepaidPriceStatusId(payment);
+		}
+		else{
+			homecareService.setExpiredTransactionTimeFixedPrice(tomorrow);
+			homecareService.setPaymentFixedPriceStatusId(payment);
+		}
+		
 		HomecareServiceTransaction process = homecareSeriveTransactionsDbRepository.save(homecareService);
 		
 		HomecareServiceTransaction newID = new HomecareServiceTransaction();
@@ -223,10 +264,7 @@ public class HomeCareServiceTransactionController {
 		
 		this.template.convertAndSend("/notification", process);
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = new Date();
 		String message = "Thank You, Your homecare order has been recorded in timedic system with id " + process.getId();
-		//System.out.println(dateFormat.format(date));
 		
 		OrderRespons respons = new OrderRespons();
 		

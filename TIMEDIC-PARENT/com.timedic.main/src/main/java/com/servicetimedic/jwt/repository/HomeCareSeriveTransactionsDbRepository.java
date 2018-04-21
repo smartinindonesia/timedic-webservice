@@ -11,6 +11,7 @@ import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
 
 import java.util.Date;
+import java.lang.String;
 public interface HomeCareSeriveTransactionsDbRepository extends JpaRepository<HomecareServiceTransaction, Long> {
 
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.status = 'Unpaid' OR u.transactionStatusId.status = 'Paid Down Payment' OR u.transactionStatusId.status = 'Paid'")
@@ -29,13 +30,24 @@ public interface HomeCareSeriveTransactionsDbRepository extends JpaRepository<Ho
 	
 	public List<HomecareServiceTransaction> findByDate(Date date);
 	
+	public List<HomecareServiceTransaction> findByOrderNumber(String ordernumber, Pageable pageable);
+	
+	//public List<HomecareServiceTransaction> OrderNumberWithPaginationGetCount(String ordernumber);
+	
+	@Query("SELECT coalesce(max(ch.id), 0) FROM HomecareServiceTransaction ch")
+	Long getMaxId();
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.userCode = :userCode")
+	public List<HomecareServiceTransaction> findHomecareTrxByCodeUserWithPagination(@Param("userCode") String userCode, Pageable pageable);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.userCode = :userCode")
+	public List<HomecareServiceTransaction> findHomecareTrxByCodeUserWithPaginationGetCount(@Param("userCode") String userCode);
 	
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser")
 	public List<HomecareServiceTransaction> findHomecareTrxByIdUserWithPagination(@Param("idUser") Long idUser, Pageable pageable);
 	
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser")
 	public List<HomecareServiceTransaction> findHomecareTrxByIdUserWithPaginationGetCount(@Param("idUser") Long idUser);
-	
 	
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.username = :username")
 	public List<HomecareServiceTransaction> findHomecareTrxByUsernameWithPagination(@Param("username") String username, Pageable pageable);

@@ -25,6 +25,8 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	
 	public HomecareCaregiver findByFirebaseIdGoogle(String idFirebase);
 	
+	public HomecareCaregiver findByCaregiverCode(String code);
+	
 	@Query( "select c from HomecareCaregiver c" )
 	public List<HomecareCaregiver> findAllCaregiver(Pageable pageable);
 	
@@ -45,5 +47,8 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	
 	@Query("select c from HomecareCaregiver c where LOWER (c.lastName) LIKE LOWER( CONCAT('%',:value,'%'))")
 	public List<HomecareCaregiver> findCaregiverBylastNameGetCount(@Param("value")String value);
+	
+	@Query("SELECT coalesce(max(ch.id), 0) FROM HomecareCaregiver ch")
+	Long getMaxId();
 	
 }

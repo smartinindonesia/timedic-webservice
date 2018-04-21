@@ -78,6 +78,10 @@ public class CaregiverController {
 			data = caregiversDbRepository.findByPhoneNumber(value);
 			// every nurse has only one phone number
 		}
+		else if(searchField.equals("caregiverCode")){
+			data = caregiversDbRepository.findByCaregiverCode(value);
+			// every nurse has only one phone number
+		}
 		return data;
 	}
 	
@@ -124,6 +128,11 @@ public class CaregiverController {
 		}
 		else if(searchField.equals("phoneNumber")){
 			data2  = caregiversDbRepository.findByPhoneNumber(value);
+			rowCount = 1;
+			data.add(data2);
+		}
+		else if(searchField.equals("caregiverCode")){
+			data2  = caregiversDbRepository.findByCaregiverCode(value);
 			rowCount = 1;
 			data.add(data2);
 		}

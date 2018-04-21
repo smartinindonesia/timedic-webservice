@@ -101,6 +101,10 @@ public class LoginCheckCaregiversRestController {
 		sts.setId(id);
 		homecareCaregiver.setIdCaregiverStatus(sts);
 		
+		String generatedId = "CTMC-"+caregiversDbRepository.getMaxId();
+		homecareCaregiver.setCaregiverCode(generatedId);
+		homecareCaregiver.setFirstRegistrationDate(new Date());
+
 		HomecareCaregiver data = caregiversDbRepository.save(homecareCaregiver);
 		insertSchedule(data);
 		return new ResponseEntity<Object>(data, HttpStatus.CREATED);

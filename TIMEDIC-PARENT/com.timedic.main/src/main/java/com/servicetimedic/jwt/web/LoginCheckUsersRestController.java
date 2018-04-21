@@ -84,7 +84,11 @@ public class LoginCheckUsersRestController {
 		List<String> roles = new ArrayList<>();
 		roles.add("ROLE_USER");
 		appUser.setRoles(roles);
-			
+		
+		
+		String generatedId = "UTMC-"+appUserRepository.getMaxId(); 
+		appUser.setUserCode(generatedId);
+		appUser.setFirstRegistrationDate(new Date());	
 		return new ResponseEntity<Object>(appUserRepository.save(appUser), HttpStatus.CREATED);
 		
 	}

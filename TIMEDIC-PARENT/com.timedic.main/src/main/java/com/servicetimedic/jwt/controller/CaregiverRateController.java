@@ -37,7 +37,7 @@ public class CaregiverRateController {
 	@Autowired
 	private CaregiversRateRepository caregiversRateRepository;
 	
-	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'USER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiverRate", method = RequestMethod.POST)
 	public ResponseEntity<Object> createCaregiverRate(@RequestBody HomecareCaregiverRate homecareCaregiverRate) 
 	{
