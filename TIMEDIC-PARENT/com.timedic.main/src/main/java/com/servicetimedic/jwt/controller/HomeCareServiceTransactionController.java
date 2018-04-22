@@ -3,7 +3,6 @@ package com.servicetimedic.jwt.controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,14 +97,23 @@ public class HomeCareServiceTransactionController {
 		NumberOfRows rows = new NumberOfRows();
 		int rowCount = 0 ;
 		
+		
 		if(searchField.equals("date")){
-			data = homecareSeriveTransactionsDbRepository.findWithPaginationByDate(convertStringTimeToDate(value), createPageRequest(page, size, sort, sortField));
-			rowCount = homecareSeriveTransactionsDbRepository.findByDate(convertStringTimeToDate(value)).size();
+			String tanggal [] = value.split("-");
+			int tg = Integer.parseInt(tanggal[2]); int bln = Integer.parseInt(tanggal[1]);int thn = Integer.parseInt(tanggal[0]);
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByDateInWithPagination(tg,bln,thn,createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByDateInWithPaginationGetCount(tg,bln,thn).size();
 		}
 		else if(searchField.equals("idUser")){
 			long id = Long.parseLong(value);
 			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPagination(id, createPageRequest(page, size, sort, sortField));
 			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByIdUserWithPaginationGetCount(id).size();
+		}
+		else if(searchField.equals("dateOrderIn")){
+			String tanggal [] = value.split("-");
+			int tg = Integer.parseInt(tanggal[2]); int bln = Integer.parseInt(tanggal[1]);int thn = Integer.parseInt(tanggal[0]);
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByDateOrderInWithPagination(tg,bln,thn, createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxByDateOrderInWithPaginationGetCount(tg,bln,thn).size();
 		}
 		else if(searchField.equals("userCode")){
 			data = homecareSeriveTransactionsDbRepository.findHomecareTrxByCodeUserWithPagination(value, createPageRequest(page, size, sort, sortField));
@@ -118,6 +126,10 @@ public class HomeCareServiceTransactionController {
 		else if(searchField.equals("noOrder")){
 			data = homecareSeriveTransactionsDbRepository.findByOrderNumber(value, createPageRequest(page, size, sort, sortField));
 			rowCount = 1;//homecareSeriveTransactionsDbRepository.OrderNumberWithPaginationGetCount(value).size();
+		}
+		else if(searchField.equals("statusTrx")){
+			data = homecareSeriveTransactionsDbRepository.findHomecareTrxBySistemTrxStatusWithPagination(Integer.parseInt(value), createPageRequest(page, size, sort, sortField));
+			rowCount = homecareSeriveTransactionsDbRepository.findHomecareTrxBySistemTrxStatusWithPaginationGetCount(Integer.parseInt(value)).size();
 		}
 		
 		logger.info("Fetching HomecareServiceTransaction with "+ searchField +" order by " + sortField + " " + sort);
@@ -198,6 +210,7 @@ public class HomeCareServiceTransactionController {
 			if(homecareServiceTrx.getOrderNumber() != null){respon.setOrderNumber(homecareServiceTrx.getOrderNumber());}
 			if(homecareServiceTrx.getPaymentPrepaidPriceStatusId() != null){respon.setPaymentPrepaidPriceStatusId(homecareServiceTrx.getPaymentPrepaidPriceStatusId());}
 			if(homecareServiceTrx.getPaymentFixedPriceStatusId() != null){respon.setPaymentFixedPriceStatusId(homecareServiceTrx.getPaymentFixedPriceStatusId());}
+			
 			homecareSeriveTransactionsDbRepository.save(respon);
 			
 			return new ResponseEntity<String>("Succesfully update transaction homecare with id "+id, HttpStatus.OK);
@@ -212,10 +225,12 @@ public class HomeCareServiceTransactionController {
 	
 	public Date convertStringTimeToDate(String time) throws ParseException{
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String dateInString = time;
-		Date date = formatter.parse(dateInString);
-		
+		Date date = formatter.parse(dateInString);		
+		//java.sql.Date ddd = new java.sql.Date(date.getTime());
+		//System.out.println(date);
+		//System.out.println(ddd);
 		return date;
 	}
 	
@@ -228,7 +243,7 @@ public class HomeCareServiceTransactionController {
 		Date date = new Date();
 		Date tomorrow = new Date(date.getTime() + (1000 * 60 * 60 * 24));
 		
-		String generatedId = "TMDC-" + dateFormat2.format(date)+ homecareSeriveTransactionsDbRepository.getMaxId();
+		String generatedId = "TMDC-" ;//+ dateFormat2.format(date)+ homecareSeriveTransactionsDbRepository.getMaxId();
 		
 		SystemPaymentStatus payment = new SystemPaymentStatus();
 		payment.setId(2);

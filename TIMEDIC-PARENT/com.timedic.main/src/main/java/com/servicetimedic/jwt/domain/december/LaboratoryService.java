@@ -52,6 +52,7 @@ public class LaboratoryService implements Serializable {
 	@Size(max = 255)
     @Column(name = "uri_service_icon")
     private String uriServiceIcon;
+	
     
 	@OneToMany(mappedBy = "idLaboratoryService")
     private Collection<LaboratoryServicePackage> laboratoryServicePackageCollection;
@@ -105,8 +106,8 @@ public class LaboratoryService implements Serializable {
     public void setPrice(Float price) {
         this.price = price;
     }
-
-    public String getUriServiceIcon() {
+    
+	public String getUriServiceIcon() {
         return uriServiceIcon;
     }
 

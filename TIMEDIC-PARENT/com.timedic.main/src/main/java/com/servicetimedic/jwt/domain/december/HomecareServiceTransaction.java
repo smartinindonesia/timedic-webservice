@@ -23,9 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.hibernate.annotations.GenericGenerator;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -52,8 +49,9 @@ public class HomecareServiceTransaction implements Serializable {
 	@Column(name = "fixed_price")
     private Float fixedPrice;
     
+	@Size(max = 75)
 	@Column(name = "prediction_price")
-    private Float predictionPrice;
+    private String predictionPrice;
     
 	@Column(name = "prepaid_price")
     private Float prepaidPrice;
@@ -87,11 +85,7 @@ public class HomecareServiceTransaction implements Serializable {
 	@Size(max = 255)
     @Column(name = "full_address")
     private String fullAddress;
-	
-	
-	//@Id
-	//@GenericGenerator(name = "sequence_order_no", strategy = "com.servicetimedic.jwt.domain.december.DepartmentIdGenerator")
-	//@GeneratedValue(generator = "sequence_order_no")  
+	 
 	@Size(max = 50)
 	@Column(name = "order_number")
     private String orderNumber;
@@ -153,11 +147,11 @@ public class HomecareServiceTransaction implements Serializable {
         this.fixedPrice = fixedPrice;
     }
 
-    public Float getPredictionPrice() {
+    public String getPredictionPrice() {
         return predictionPrice;
     }
 
-    public void setPredictionPrice(Float predictionPrice) {
+    public void setPredictionPrice(String predictionPrice) {
         this.predictionPrice = predictionPrice;
     }
 

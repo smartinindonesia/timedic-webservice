@@ -4,12 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
-import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
 
 public interface CaregiversSchedulle extends JpaRepository<HomecareCaregiverSchedule, Long> {
 	
@@ -25,7 +23,6 @@ public interface CaregiversSchedulle extends JpaRepository<HomecareCaregiverSche
 	@Query("select u from HomecareCaregiverSchedule u where u.idHomecareCaregiver.id = :idCaregiver")
 	public List<HomecareCaregiverSchedule> findByIdHomecareCaregiver(@Param("idCaregiver") Long id);
 	
-	//@Modifying 
 	@Query("update HomecareCaregiverSchedule u set u.status = :sts  where u.idHomecareCaregiver.id = :idCaregiver and u.day = :day")
 	public void updateCaregiverSchedule(@Param("sts") boolean sts , @Param("idCaregiver") Long idCaregiver , @Param("day") String day);
 	

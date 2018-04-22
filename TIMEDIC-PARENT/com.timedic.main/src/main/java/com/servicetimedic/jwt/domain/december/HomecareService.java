@@ -52,6 +52,10 @@ public class HomecareService implements Serializable {
 	
 	@Column(name = "visit_cost ")
     private Float visitCost ;
+	
+	@Size(max = 75)
+    @Column(name = "price_range")
+    private String priceRange;
     
     @OneToMany(mappedBy = "idService", cascade= CascadeType.REMOVE)
     private List<HomecareServiceAssessment> homecareServiceAssessmentList;
@@ -94,8 +98,16 @@ public class HomecareService implements Serializable {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+    
+    public String getPriceRange() {
+		return priceRange;
+	}
 
-    public String getServiceUrlIcon() {
+	public void setPriceRange(String priceRange) {
+		this.priceRange = priceRange;
+	}
+
+	public String getServiceUrlIcon() {
         return serviceUrlIcon;
     }
 
