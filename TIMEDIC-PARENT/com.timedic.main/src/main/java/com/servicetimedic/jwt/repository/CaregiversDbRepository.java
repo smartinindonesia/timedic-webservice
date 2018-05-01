@@ -51,4 +51,7 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	@Query("SELECT coalesce(max(ch.id), 0) FROM HomecareCaregiver ch")
 	Long getMaxId();
 	
+	@Query("select c.fcmToken from HomecareCaregiver c where c.id = :id")
+	public String findFcmTokenCaregiverById(@Param("id")Long id);
+	
 }

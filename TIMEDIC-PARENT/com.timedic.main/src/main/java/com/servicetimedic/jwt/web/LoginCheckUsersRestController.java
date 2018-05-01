@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
+import com.servicetimedic.jwt.domain.december.HomecarePatient;
+import com.servicetimedic.jwt.repository.HomeCarePatientDbRepository;
 import com.servicetimedic.jwt.repository.UserDbRepository;
 
 /**
@@ -41,6 +43,9 @@ public class LoginCheckUsersRestController {
 	
 	@Autowired
 	private UserDbRepository appUserRepository;
+	
+	@Autowired
+	private HomeCarePatientDbRepository homeCarePatientDbRepository;
 	
 	@Value("${jwt.expires_in}")
     private int EXPIRES_IN;
@@ -85,12 +90,45 @@ public class LoginCheckUsersRestController {
 		roles.add("ROLE_USER");
 		appUser.setRoles(roles);
 		
-		
 		String generatedId = "UTMC-"+appUserRepository.getMaxId(); 
+		String front = "", middle="", last="";
 		appUser.setUserCode(generatedId);
 		appUser.setFirstRegistrationDate(new Date());	
-		return new ResponseEntity<Object>(appUserRepository.save(appUser), HttpStatus.CREATED);
+		HomecarePatient patients = new HomecarePatient();
+		AppUser userRegistered = appUserRepository.save(appUser);
+		if(userRegistered.getFrontName()!=null){
+			front = userRegistered.getFrontName();
+			patients.setName(front+" (Your Self)");
+		}
+		else if(userRegistered.getMiddleName()!=null){
+			middle = userRegistered.getMiddleName();
+			patients.setName(middle+" (Your Self)");
+		}
+		else if(userRegistered.getLastName()!=null){
+			last = userRegistered.getLastName();
+			patients.setName(last+" (Your Self)");
+		}
+		else if(userRegistered.getFrontName()!=null && userRegistered.getLastName()!=null){
+			last = userRegistered.getLastName();
+			front = userRegistered.getFrontName();
+			patients.setName(front+" "+last+"(Your Self)");
+		}
+		else if(userRegistered.getFrontName()!=null && userRegistered.getMiddleName()!=null){
+			middle = userRegistered.getMiddleName();
+			front = userRegistered.getFrontName();
+			patients.setName(front+" "+last+"(Your Self)");
+		}
+		else if(userRegistered.getFrontName()!=null && userRegistered.getMiddleName()!=null && userRegistered.getLastName()!=null){
+			middle = userRegistered.getMiddleName();
+			front = userRegistered.getFrontName();
+			last = userRegistered.getLastName();
+			patients.setName(front+" "+middle+" "+last+"(Your Self)");
+		}
+		patients.setIdAppUser(userRegistered);
 		
+		homeCarePatientDbRepository.save(patients);
+		
+		return new ResponseEntity<Object>(userRegistered, HttpStatus.CREATED);
 	}
 
 	/**

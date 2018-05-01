@@ -81,9 +81,9 @@ public class CaregiverSchedulleController {
 	{
 		SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
 		String dateInString = time;
-		Date date = formatter.parse(dateInString);
+		Date dateParse = formatter.parse(dateInString);
 		
-		List<HomecareCaregiverSchedule> schedule = caregiversSchedulle.findByTime(date, day);
+		List<HomecareCaregiverSchedule> schedule = caregiversSchedulle.findByTime(dateParse, day);
 		
 		if (schedule == null){
 			logger.info("Homecare Caregiver Schedule is null");

@@ -16,6 +16,37 @@ public interface HomeCareSeriveTransactionsDbRepository extends JpaRepository<Ho
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.status = 'Unpaid' OR u.transactionStatusId.status = 'Paid Down Payment' OR u.transactionStatusId.status = 'Paid'")
 	public List<HomecareServiceTransaction> findOrderActiveHomecareByIdUser(@Param("idUser") Long idUser);
 	
+	
+	
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.id = 8")
+	public List<HomecareServiceTransaction> findOrderActiveHomecareByIdUserWithPagination(@Param("idUser") Long idUser, Pageable pageable);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.id = 8")
+	public List<HomecareServiceTransaction> findOrderActiveHomecareByIdUserWithPaginationGetCount(@Param("idUser") Long idUser);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.id != 8")
+	public List<HomecareServiceTransaction> findOrderHistoryHomecareByIdUserWithPagination(@Param("idUser") Long idUser, Pageable pageable);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser AND u.transactionStatusId.id != 8")
+	public List<HomecareServiceTransaction> findOrderHistoryHomecareByIdUserWithPaginationGetCount(@Param("idUser") Long idUser);
+	
+	
+	/*
+	@Query("select u from HomecareServiceTransaction u where u.homecareTransactionCaregiverlistList.idCaregiver = :idC AND u.transactionStatusId.id = 8")
+	public List<HomecareServiceTransaction> findOrderActiveHomecareByIdCaregiverWithPagination(@Param("idC") Long idCaregiver, Pageable pageable);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecareTransactionCaregiverlistList.idCaregiver = :idC AND u.transactionStatusId.id = 8")
+	public List<HomecareServiceTransaction> findOrderActiveHomecareByIdCaregiverWithPaginationGetCount(@Param("idC") Long idCaregiver);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecareTransactionCaregiverlistList.idCaregiver = :idC")
+	public List<HomecareServiceTransaction> findOrderHistoryHomecareByIdCaregiverWithPagination(@Param("idC") Long idCaregiver, Pageable pageable);
+	
+	@Query("select u from HomecareServiceTransaction u where u.homecareTransactionCaregiverlistList.idCaregiver = :idC")
+	public List<HomecareServiceTransaction> findOrderHistoryHomecareByIdCaregiverWithPaginationGetCount(@Param("idC") Long idCaregiver);
+	*/
+	
+	
 	@Query("select u from HomecareServiceTransaction u where u.homecarePatientId.idAppUser.id = :idUser")
 	public List<HomecareServiceTransaction> findHomecareTrxByIdUser(@Param("idUser") Long idUser);
 	
@@ -68,5 +99,8 @@ public interface HomeCareSeriveTransactionsDbRepository extends JpaRepository<Ho
 	
 	@Query("select u from HomecareServiceTransaction u where u.transactionStatusId.id = :id")
 	public List<HomecareServiceTransaction> findHomecareTrxBySistemTrxStatusWithPaginationGetCount(@Param("id") Integer id);
+	
+	@Query( "select u.orderNumber from HomecareServiceTransaction u where u.id = :id")
+	public String findOrderNoByIdTrx(@Param("id") Long id);
 	
 }

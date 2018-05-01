@@ -6,6 +6,7 @@
 package com.servicetimedic.jwt.domain.december;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -41,6 +44,18 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 	@Column(name = "register_nurse_number")
     private String registerNurseNumber;
 	
+	@Size(max = 20)
+	@Column(name = "day")
+    private String day;
+	
+	@Column(name = "time")
+    @Temporal(TemporalType.TIME)
+    private Date time;
+	
+	@Column(name = "date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
+	
 	@Column(name = "rate_status")
     private Boolean rateStatus;
 	
@@ -49,8 +64,32 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 	
 	@Column(name = "id_transaction")
     private Long idTransaction;
-    
-    @JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
+	
+    public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+		
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	@JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
     @ManyToOne
     private HomecareHomecareClinic idHomecareClinic;
     

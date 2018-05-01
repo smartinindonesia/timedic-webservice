@@ -5,7 +5,11 @@ import io.jsonwebtoken.Jwts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +37,7 @@ import com.servicetimedic.jwt.domain.december.HomecareCaregiver;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverStatus;
 import com.servicetimedic.jwt.domain.december.NumberOfRows;
+import com.servicetimedic.jwt.fcm.push.notification.AndroidPushNotificationsServiceForCaregiver;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
 import com.servicetimedic.jwt.repository.CaregiversSchedulle;
 
@@ -47,11 +53,45 @@ public class CaregiverController {
 	@Autowired
 	private CaregiversSchedulle caregiversSchedulle;
 	
+	@Autowired
+	AndroidPushNotificationsServiceForCaregiver androidPushNotificationsServiceForCaregiver;
+	
 	private Pageable createPageRequest(int page, int size, String sort, String field) {
 		Direction direction;
 		if(sort.equals("ASC")){direction = Sort.Direction.ASC;}
 		else{direction = Sort.Direction.DESC;}
 		return new PageRequest(page, size, direction, field);
+	}
+	
+public String sendNotifToCaregiver(String fcmTOken, String title ,String message) throws JSONException {
+		
+		String firebaseResponse = "";
+		JSONObject body = new JSONObject();
+		body.put("to", fcmTOken);
+		body.put("priority", "high");
+
+		JSONObject notification = new JSONObject();
+		notification.put("title", title);
+		notification.put("body", message);
+		notification.put("sound","default");
+		
+		body.put("notification", notification);
+		
+		HttpEntity<String> request = new HttpEntity<>(body.toString());
+
+		CompletableFuture<String> pushNotification = androidPushNotificationsServiceForCaregiver.send(request);
+		CompletableFuture.allOf(pushNotification).join();
+			
+		try {
+			firebaseResponse = pushNotification.get();
+		} 
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		} 
+		catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return firebaseResponse;
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
@@ -280,7 +320,7 @@ public class CaregiverController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.PUT )
-	public ResponseEntity<Object> updateCaregiver(@PathVariable(value = "id") Long id,@RequestBody HomecareCaregiver homecareCaregiver ,  @RequestHeader(value="Authorization") String token) 
+	public ResponseEntity<Object> updateCaregiver(@PathVariable(value = "id") Long id,@RequestBody HomecareCaregiver homecareCaregiver ,  @RequestHeader(value="Authorization") String token) throws JSONException 
 	{
 		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
 		//AppUser dataUsers = null;
@@ -318,7 +358,18 @@ public class CaregiverController {
 			if(homecareCaregiver.getRegisterNurseNumber() != null) findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());
 			if(homecareCaregiver.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());
 			if(homecareCaregiver.getEmployeeIdNumber() != null) findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());
-			if(homecareCaregiver.getIdCaregiverStatus() != null) findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());
+			if(homecareCaregiver.getIdCaregiverStatus() != null) {
+				findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());
+				if(homecareCaregiver.getIdCaregiverStatus().getId() == 1){
+					sendNotifToCaregiver(caregiversDbRepository.findFcmTokenCaregiverById(id), "Status Perawat" ,"Selamat Status Anda Telah Aktif");
+				}
+				else if(homecareCaregiver.getIdCaregiverStatus().getId() == 2){
+					sendNotifToCaregiver(caregiversDbRepository.findFcmTokenCaregiverById(id), "Status Perawat" ,"Maaf status anda masih pending");
+				}
+				else if(homecareCaregiver.getIdCaregiverStatus().getId() == 3){
+					sendNotifToCaregiver(caregiversDbRepository.findFcmTokenCaregiverById(id), "Status Perawat" ,"Maaf status anda telah disuspend");
+				}
+			}
 			if(homecareCaregiver.getFirebaseIdFacebook() != null) findFirst.setFirebaseIdFacebook(homecareCaregiver.getFirebaseIdFacebook());
 			if(homecareCaregiver.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(homecareCaregiver.getFirebaseIdGoogle());
 			if(homecareCaregiver.getFcmToken() != null) findFirst.setFcmToken(homecareCaregiver.getFcmToken());

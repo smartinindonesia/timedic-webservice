@@ -47,5 +47,8 @@ public interface UserDbRepository extends JpaRepository<AppUser, Long>{
 	@Query("SELECT coalesce(max(ch.id), 0) FROM AppUser ch")
 	Long getMaxId();
 	
+	@Query("select u.fcmToken from AppUser u where u.id = :id")
+	public String findFcmTokenUserById(@Param("id")Long id);
+	
 	
 }

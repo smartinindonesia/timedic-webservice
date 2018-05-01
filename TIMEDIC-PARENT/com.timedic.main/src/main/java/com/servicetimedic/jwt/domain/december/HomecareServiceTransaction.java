@@ -45,6 +45,14 @@ public class HomecareServiceTransaction implements Serializable {
 	@Column(name = "date_order_in")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOrderIn;
+	
+	@Column(name = "date_treatement_start")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateTreatementStart;
+	
+	@Column(name = "date_treatement_end")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateTreatementEnd;
     
 	@Column(name = "fixed_price")
     private Float fixedPrice;
@@ -55,7 +63,13 @@ public class HomecareServiceTransaction implements Serializable {
     
 	@Column(name = "prepaid_price")
     private Float prepaidPrice;
-    
+	
+	@Column(name = "refund_price")
+    private Float refundPrice;
+	
+	@Column(name = "sum_of_days")
+    private Integer sumOfDays;
+	
 	@Column(name = "expired_transaction_time_fixed_price")
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiredTransactionTimeFixedPrice;
@@ -95,6 +109,10 @@ public class HomecareServiceTransaction implements Serializable {
     
 	@OneToMany(mappedBy = "idServiceTransaction", cascade= CascadeType.REMOVE)
     private List<HomecareAssessmentRecord> homecareAssessmentRecordList;
+	
+	@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
+    @ManyToOne
+    private SystemTransactionType transactionTypeId;
     
 	@JoinColumn(name = "transaction_status_id", referencedColumnName = "id")
     @ManyToOne
@@ -306,6 +324,46 @@ public class HomecareServiceTransaction implements Serializable {
 
 	public void setFullAddress(String fullAddress) {
 		this.fullAddress = fullAddress;
+	}
+	
+	public Date getDateTreatementStart() {
+		return dateTreatementStart;
+	}
+
+	public void setDateTreatementStart(Date dateTreatementStart) {
+		this.dateTreatementStart = dateTreatementStart;
+	}
+
+	public Date getDateTreatementEnd() {
+		return dateTreatementEnd;
+	}
+
+	public void setDateTreatementEnd(Date dateTreatementEnd) {
+		this.dateTreatementEnd = dateTreatementEnd;
+	}
+
+	public Float getRefundPrice() {
+		return refundPrice;
+	}
+
+	public void setRefundPrice(Float refundPrice) {
+		this.refundPrice = refundPrice;
+	}
+
+	public Integer getSumOfDays() {
+		return sumOfDays;
+	}
+
+	public void setSumOfDays(Integer sumOfDays) {
+		this.sumOfDays = sumOfDays;
+	}
+
+	public SystemTransactionType getTransactionTypeId() {
+		return transactionTypeId;
+	}
+
+	public void setTransactionTypeId(SystemTransactionType transactionTypeId) {
+		this.transactionTypeId = transactionTypeId;
 	}
 
 	@Override
