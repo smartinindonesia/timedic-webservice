@@ -94,7 +94,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		return firebaseResponse;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiverByField", method = RequestMethod.GET)
 	public HomecareCaregiver getCaregiversByField(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		HomecareCaregiver data = null;
@@ -125,7 +125,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		return data;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationByField", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPaginationByField(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 		
@@ -187,7 +187,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationByFieldGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationByFieldGetCount(@RequestParam("searchField") String searchField, @RequestParam("value") String value) {
 	
@@ -207,7 +207,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		return rows;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiversWithPagination", method = RequestMethod.GET)
 	public List<Object> getAllCaregiversWithPagination(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField) {
 		List<HomecareCaregiver> data = caregiversDbRepository.findAllCaregiver(createPageRequest(page, size, sort, sortField));
@@ -222,7 +222,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		return list;
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiversWithPaginationGetCount", method = RequestMethod.GET)
 	public NumberOfRows getAllCaregiversWithPaginationGetCount() {
 	
@@ -233,7 +233,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
 	{
@@ -269,7 +269,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteCaregiver(@PathVariable Long id, @RequestHeader(value="Authorization") String token) {
 		
@@ -318,7 +318,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.PUT )
 	public ResponseEntity<Object> updateCaregiver(@PathVariable(value = "id") Long id,@RequestBody HomecareCaregiver homecareCaregiver ,  @RequestHeader(value="Authorization") String token) throws JSONException 
 	{
@@ -328,7 +328,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		int idCaregiverFromToken = (Integer) claims.get("id");
 		List<String> roleCaregiverFromToken = (List<String>) claims.get("roles");
 		
-		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN") || roleCaregiverFromToken.contains("ROLE_CLINIC")== true){
+		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN")== true || roleCaregiverFromToken.contains("ROLE_CLINIC")== true){
 					
 			HomecareCaregiver findFirst = caregiversDbRepository.getOne(id);
 			HomecareCaregiver cekUsername = caregiversDbRepository.findByUsername(homecareCaregiver.getUsername());
@@ -343,21 +343,21 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 				return new ResponseEntity<Object>(message, new HttpHeaders() ,HttpStatus.NOT_FOUND);
 		    }
 			
-			if(homecareCaregiver.getUsername() != null && cekUsername == null) findFirst.setUsername(homecareCaregiver.getUsername());
-			if(homecareCaregiver.getEmail() != null) findFirst.setEmail(homecareCaregiver.getEmail());
-			if(homecareCaregiver.getPassword() != null) findFirst.setPassword(homecareCaregiver.getPassword());
-			if(homecareCaregiver.getAddress() != null) findFirst.setAddress(homecareCaregiver.getAddress());
-			if(homecareCaregiver.getDateOfBirth() != null) findFirst.setDateOfBirth(homecareCaregiver.getDateOfBirth());
-			if(homecareCaregiver.getFrontName() != null) findFirst.setFrontName(homecareCaregiver.getFrontName());
-			if(homecareCaregiver.getMiddleName() != null) findFirst.setMiddleName(homecareCaregiver.getMiddleName());
-			if(homecareCaregiver.getLastName() != null) findFirst.setLastName(homecareCaregiver.getLastName());
-			if(homecareCaregiver.getPhoneNumber() != null) findFirst.setPhoneNumber(homecareCaregiver.getPhoneNumber());
-			if(homecareCaregiver.getPhotoPath() != null) findFirst.setPhotoPath(homecareCaregiver.getPhotoPath());
-			if(homecareCaregiver.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());
-			if(homecareCaregiver.getSipp() != null) findFirst.setSipp(homecareCaregiver.getSipp());
-			if(homecareCaregiver.getRegisterNurseNumber() != null) findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());
-			if(homecareCaregiver.getFirstRegistrationDate() != null) findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());
-			if(homecareCaregiver.getEmployeeIdNumber() != null) findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());
+			if(homecareCaregiver.getUsername() != null && cekUsername == null) {findFirst.setUsername(homecareCaregiver.getUsername());}
+			if(homecareCaregiver.getEmail() != null) {findFirst.setEmail(homecareCaregiver.getEmail());}
+			if(homecareCaregiver.getPassword() != null) {findFirst.setPassword(homecareCaregiver.getPassword());}
+			if(homecareCaregiver.getAddress() != null){ findFirst.setAddress(homecareCaregiver.getAddress());}
+			if(homecareCaregiver.getDateOfBirth() != null) {findFirst.setDateOfBirth(homecareCaregiver.getDateOfBirth());}
+			if(homecareCaregiver.getFrontName() != null) {findFirst.setFrontName(homecareCaregiver.getFrontName());}
+			if(homecareCaregiver.getMiddleName() != null) {findFirst.setMiddleName(homecareCaregiver.getMiddleName());}
+			if(homecareCaregiver.getLastName() != null) {findFirst.setLastName(homecareCaregiver.getLastName());}
+			if(homecareCaregiver.getPhoneNumber() != null){ findFirst.setPhoneNumber(homecareCaregiver.getPhoneNumber());}
+			if(homecareCaregiver.getPhotoPath() != null) {findFirst.setPhotoPath(homecareCaregiver.getPhotoPath());}
+			if(homecareCaregiver.getFirstRegistrationDate() != null){ findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());}
+			if(homecareCaregiver.getSipp() != null) {findFirst.setSipp(homecareCaregiver.getSipp());}
+			if(homecareCaregiver.getRegisterNurseNumber() != null) {findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());}
+			if(homecareCaregiver.getFirstRegistrationDate() != null) {findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());}
+			if(homecareCaregiver.getEmployeeIdNumber() != null) {findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());}
 			if(homecareCaregiver.getIdCaregiverStatus() != null) {
 				findFirst.setIdCaregiverStatus(homecareCaregiver.getIdCaregiverStatus());
 				if(homecareCaregiver.getIdCaregiverStatus().getId() == 1){
@@ -370,10 +370,11 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 					sendNotifToCaregiver(caregiversDbRepository.findFcmTokenCaregiverById(id), "Status Perawat" ,"Maaf status anda telah disuspend");
 				}
 			}
-			if(homecareCaregiver.getFirebaseIdFacebook() != null) findFirst.setFirebaseIdFacebook(homecareCaregiver.getFirebaseIdFacebook());
-			if(homecareCaregiver.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(homecareCaregiver.getFirebaseIdGoogle());
-			if(homecareCaregiver.getFcmToken() != null) findFirst.setFcmToken(homecareCaregiver.getFcmToken());
-			if(homecareCaregiver.getGender() != null) findFirst.setGender(homecareCaregiver.getGender());
+			if(homecareCaregiver.getReligion() != null) {findFirst.setReligion(homecareCaregiver.getReligion());}
+			if(homecareCaregiver.getFirebaseIdFacebook() != null){ findFirst.setFirebaseIdFacebook(homecareCaregiver.getFirebaseIdFacebook());}
+			if(homecareCaregiver.getFirebaseIdGoogle() != null){ findFirst.setFirebaseIdGoogle(homecareCaregiver.getFirebaseIdGoogle());}
+			if(homecareCaregiver.getFcmToken() != null){ findFirst.setFcmToken(homecareCaregiver.getFcmToken());}
+			if(homecareCaregiver.getGender() != null){findFirst.setGender(homecareCaregiver.getGender());}
 			if(cekUsername != null){
 				mes = "Succesfully Update caregiver with id "+ findFirst.getId() + ", but username '"+ homecareCaregiver.getUsername()  +"' that you input is already exist";
 			}
@@ -396,7 +397,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CLINIC')")
 	@RequestMapping(value = "/caregiver", method = RequestMethod.POST)
 	public ResponseEntity<Object> createCaregiver(@RequestBody HomecareCaregiver homecareCaregiver) 
 	{

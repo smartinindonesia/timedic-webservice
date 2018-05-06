@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.text.ParseException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.servicetimedic.jwt.domain.december.HomecareCaregiverSchedule;
 import com.servicetimedic.jwt.domain.december.HomecareServiceTransaction;
 import com.servicetimedic.jwt.domain.december.HomecareTransactionCaregiverlist;
+import com.servicetimedic.jwt.domain.december.HomecareTransactionCaregiverlistRespon;
 import com.servicetimedic.jwt.domain.december.NumberOfRows;
 import com.servicetimedic.jwt.fcm.push.notification.AndroidPushNotificationsServiceForCaregiver;
 import com.servicetimedic.jwt.repository.CaregiversDbRepository;
@@ -94,6 +96,7 @@ public class HomeCareCaregiverTransactionList {
 		tempData = homecareCaregiverTransactionList;
 		idTrx.setId(homecareCaregiverTransactionList.getIdTransaction());
 		tempData.setIdServiceTransaction(idTrx);
+		tempData.setAcceptanceStatus(true);
 		//System.out.println(homecareCaregiverTransactionList.getIdServiceTransaction());
 		
 	
@@ -145,7 +148,7 @@ public class HomeCareCaregiverTransactionList {
 		}
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'USER', 'ROLE_CLINIC', 'CAREGIVER')")
 	@RequestMapping(value = "/caregiverTrxList/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateCaregiverTrxListById(@PathVariable Long id, @RequestBody HomecareTransactionCaregiverlist homecareTransactionCaregiverlist) 
 	{
@@ -168,7 +171,8 @@ public class HomeCareCaregiverTransactionList {
 		if(homecareTransactionCaregiverlist.getDay() != null){trx.setDay(homecareTransactionCaregiverlist.getDay());}
 		if(homecareTransactionCaregiverlist.getTime() != null){trx.setTime(homecareTransactionCaregiverlist.getTime());}
 		if(homecareTransactionCaregiverlist.getDate() != null){trx.setDate(homecareTransactionCaregiverlist.getDate());}
-		
+		if(homecareTransactionCaregiverlist.getAcceptanceStatus() != null){trx.setAcceptanceStatus(homecareTransactionCaregiverlist.getAcceptanceStatus());}
+		if(homecareTransactionCaregiverlist.getReasonAcceptanceStatus() !=null){trx.setReasonAcceptanceStatus(homecareTransactionCaregiverlist.getReasonAcceptanceStatus());}
 		if(trx!=null){
 			homeCareCaregiverTrxListRepository.save(trx);
 			return new ResponseEntity<Object>("Succesfully update Caregiver trx List by id "+id, HttpStatus.OK);
@@ -230,4 +234,68 @@ public class HomeCareCaregiverTransactionList {
 		return list;
 	}
 	
+	//==============
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'CLINIC' , 'CAREGIVER' )")
+	@RequestMapping(value = "/transactionOrderActiveWithPaginationByFieldByGroupByIdIdCaregiver", method = RequestMethod.GET)
+	public List<Object> getAlltransactionOrderActiveWithPaginationByFieldByGroupByIdCaregiver(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("idCaregiver") String idCaregiver) throws ParseException {
+	
+		List<HomecareTransactionCaregiverlistRespon> data = new ArrayList<>();
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(idCaregiver!=null){
+			long id = Long.parseLong(idCaregiver);
+			data = homeCareCaregiverTrxListRepository.findOrderActiveHomecareByIdCaregiverWithPaginationGroupBy(id, createPageRequest(page, size, sort, sortField));
+			rowCount = homeCareCaregiverTrxListRepository.findOrderActiveHomecareByIdCaregiverWithPaginationGroupByGetCount(id).size();
+		}
+	
+		logger.info("Fetching Order Active HomecareServiceTransaction with id Caregiver "+ idCaregiver +" order by " + sortField + " " + sort);
+		
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
+		list.add(data);
+		list.add(rows);
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'CLINIC' , 'CAREGIVER' )")
+	@RequestMapping(value = "/transactionOrderHistoryWithPaginationByFieldByGroupByIdIdCaregiver", method = RequestMethod.GET)
+	public List<Object> getAlltransactionOrderHistoryWithPaginationByFieldByGroupByIdCaregiver(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("sortField") String sortField, @RequestParam("idCaregiver") String idCaregiver) throws ParseException {
+	
+		List<HomecareTransactionCaregiverlistRespon> data = new ArrayList<>();
+		NumberOfRows rows = new NumberOfRows();
+		int rowCount = 0 ;
+		
+		if(idCaregiver!=null){
+			long id = Long.parseLong(idCaregiver);
+			data = homeCareCaregiverTrxListRepository.findOrderHistoryHomecareByIdCaregiverWithPaginationGroupBy(id, createPageRequest(page, size, sort, sortField));
+			rowCount = homeCareCaregiverTrxListRepository.findOrderHistoryHomecareByIdCaregiverWithPaginationGroupByGetCount(id).size();
+		}
+	
+		logger.info("Fetching History HomecareServiceTransaction with id Caregiver "+ idCaregiver +" order by " + sortField + " " + sort);
+		
+		List<Object> list = new ArrayList<Object>();
+		rows.setNumOfRows(rowCount);
+		list.add(data);
+		list.add(rows);
+		return list;
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN' , 'SUPERADMIN' , 'CLINIC' , 'CAREGIVER' )")
+	@RequestMapping(value = "/getByIdCaregiverAndIdTrx", method = RequestMethod.GET)
+	public ResponseEntity<List<HomecareTransactionCaregiverlist>> getByIdCaregiverAndIdTrx(@RequestParam("idCaregiver") String idCaregiver, @RequestParam("idTrx") String idTrx) {
+	
+		List<HomecareTransactionCaregiverlist> data = homeCareCaregiverTrxListRepository.findByIdCaregiverAndIdTransaction(Long.parseLong(idCaregiver), Long.parseLong(idTrx));
+		
+		if (data == null){
+			logger.info("HomecareServiceTransaction with id Caregiver "+idCaregiver+" and id Trx "+idTrx+" is null");
+			return new ResponseEntity<List<HomecareTransactionCaregiverlist>>(HttpStatus.NO_CONTENT);
+		}
+		else{
+			logger.info("fetching HomecareServiceTransaction with id Caregiver "+idCaregiver+" and id Trx "+idTrx);
+			return new ResponseEntity<List<HomecareTransactionCaregiverlist>>(data, HttpStatus.OK);
+		}
+
+	}
 }

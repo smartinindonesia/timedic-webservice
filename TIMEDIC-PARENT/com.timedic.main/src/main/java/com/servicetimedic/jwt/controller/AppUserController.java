@@ -294,9 +294,9 @@ public class AppUserController {
 			if(appUser.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(appUser.getFirebaseIdGoogle());
 			if(appUser.getFcmToken() != null) findFirst.setFcmToken(appUser.getFcmToken());
 			if(appUser.getGender() != null) findFirst.setGender(appUser.getGender());
-			
+			if(appUser.getReligion() != null)findFirst.setReligion(appUser.getReligion());
 			if(cekUsername != null){
-				mes = "Succesfully Update use with id "+ findFirst.getId() + ", but username '"+ appUser.getUsername()  +"' that you input is already exist";
+				mes = "Succesfully Update user with id "+ findFirst.getId() + ", but username '"+ appUser.getUsername()  +"' that you input is already exist";
 			}
 			else{
 				mes = "Succesfully Update user with id "+ findFirst.getId();

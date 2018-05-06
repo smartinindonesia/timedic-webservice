@@ -14,7 +14,7 @@ public interface CaregiversSchedulle extends JpaRepository<HomecareCaregiverSche
 	@Query("select u.day, u.status, u.id from HomecareCaregiverSchedule u where u.idHomecareCaregiver.id = :idCaregiver")
 	public List<HomecareCaregiverSchedule> findByIdHomecareCaregiverStatusAndDay(@Param("idCaregiver") Long idCaregiver);
 	
-	@Query("select u from HomecareCaregiverSchedule u where u.status = true and u.day like LOWER( CONCAT('%',:day,'%')) and ((:time between u.startTime and u.endTime) or (:time between u.startTime2 and u.endTime2))")
+	@Query("select u from HomecareCaregiverSchedule u where u.status = true and u.idHomecareCaregiver.idCaregiverStatus.id = 1 and u.day like LOWER( CONCAT('%',:day,'%')) and ((:time between u.startTime and u.endTime) or (:time between u.startTime2 and u.endTime2))")
 	public List<HomecareCaregiverSchedule> findByTime(@Param("time") Date time, @Param("day") String day);
 	
 	@Query("select u from HomecareCaregiverSchedule u where u.idHomecareCaregiver.id = :idCaregiver and u.day = :day")

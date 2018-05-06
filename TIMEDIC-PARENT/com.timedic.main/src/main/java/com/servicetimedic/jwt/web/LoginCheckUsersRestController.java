@@ -96,32 +96,32 @@ public class LoginCheckUsersRestController {
 		appUser.setFirstRegistrationDate(new Date());	
 		HomecarePatient patients = new HomecarePatient();
 		AppUser userRegistered = appUserRepository.save(appUser);
-		if(userRegistered.getFrontName()!=null){
-			front = userRegistered.getFrontName();
+		if(appUser.getFrontName()!=null){
+			front = appUser.getFrontName();
 			patients.setName(front+" (Your Self)");
 		}
-		else if(userRegistered.getMiddleName()!=null){
-			middle = userRegistered.getMiddleName();
+		else if(appUser.getMiddleName()!=null){
+			middle = appUser.getMiddleName();
 			patients.setName(middle+" (Your Self)");
 		}
-		else if(userRegistered.getLastName()!=null){
-			last = userRegistered.getLastName();
+		else if(appUser.getLastName()!=null){
+			last = appUser.getLastName();
 			patients.setName(last+" (Your Self)");
 		}
-		else if(userRegistered.getFrontName()!=null && userRegistered.getLastName()!=null){
-			last = userRegistered.getLastName();
-			front = userRegistered.getFrontName();
+		else if(appUser.getFrontName()!=null && userRegistered.getLastName()!=null){
+			last = appUser.getLastName();
+			front = appUser.getFrontName();
 			patients.setName(front+" "+last+"(Your Self)");
 		}
-		else if(userRegistered.getFrontName()!=null && userRegistered.getMiddleName()!=null){
-			middle = userRegistered.getMiddleName();
-			front = userRegistered.getFrontName();
+		else if(appUser.getFrontName()!=null && appUser.getMiddleName()!=null){
+			middle = appUser.getMiddleName();
+			front = appUser.getFrontName();
 			patients.setName(front+" "+last+"(Your Self)");
 		}
-		else if(userRegistered.getFrontName()!=null && userRegistered.getMiddleName()!=null && userRegistered.getLastName()!=null){
-			middle = userRegistered.getMiddleName();
-			front = userRegistered.getFrontName();
-			last = userRegistered.getLastName();
+		else if(appUser.getFrontName()!=null && appUser.getMiddleName()!=null && appUser.getLastName()!=null){
+			middle = appUser.getMiddleName();
+			front = appUser.getFrontName();
+			last = appUser.getLastName();
 			patients.setName(front+" "+middle+" "+last+"(Your Self)");
 		}
 		patients.setIdAppUser(userRegistered);

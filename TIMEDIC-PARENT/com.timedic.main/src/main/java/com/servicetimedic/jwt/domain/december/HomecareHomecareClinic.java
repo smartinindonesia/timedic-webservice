@@ -25,31 +25,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "homecare_homecare_clinic")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HomecareHomecareClinic implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
+	private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Size(max = 255)
     @Column(name = "address")
     private String address;
+    
     @Size(max = 255)
     @Column(name = "certificate")
     private String certificate;
+    
     @Size(max = 255)
     @Column(name = "name")
     private String name;
+    
     @Size(max = 255)
     @Column(name = "sipp")
     private String sipp;
+    
     @Size(max = 255)
     @Column(name = "url_logo")
     private String urlLogo;
+    
     @OneToMany(mappedBy = "idHomecareClinic")
     private List<HomecareCaregiver> homecareCaregiverList;
+    
     @OneToMany(mappedBy = "idHomecareClinic")
     private List<HomecareTransactionCaregiverlist> homecareTransactionCaregiverlistList;
+    
     @OneToMany(mappedBy = "idHomecareClinic")
     private List<HomecareHomecareClinicAdmin> homecareHomecareClinicAdminList;
 

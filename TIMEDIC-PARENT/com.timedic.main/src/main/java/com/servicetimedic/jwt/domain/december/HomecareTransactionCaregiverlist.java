@@ -59,6 +59,13 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 	@Column(name = "rate_status")
     private Boolean rateStatus;
 	
+	@Column(name = "acceptance_status")
+    private Boolean acceptanceStatus;
+	
+	@Size(max = 100)
+	@Column(name = "reason_acceptance_status")
+    private String reasonAcceptanceStatus;
+	
 	@Column(name = "id_caregiver")
     private Long idCaregiver;
 	
@@ -87,6 +94,22 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	public Boolean getAcceptanceStatus() {
+		return acceptanceStatus;
+	}
+
+	public void setAcceptanceStatus(Boolean acceptanceStatus) {
+		this.acceptanceStatus = acceptanceStatus;
+	}
+
+	public String getReasonAcceptanceStatus() {
+		return reasonAcceptanceStatus;
+	}
+
+	public void setReasonAcceptanceStatus(String reasonAcceptanceStatus) {
+		this.reasonAcceptanceStatus = reasonAcceptanceStatus;
 	}
 
 	@JoinColumn(name = "id_homecare_clinic", referencedColumnName = "id")
@@ -152,7 +175,8 @@ public class HomecareTransactionCaregiverlist implements Serializable {
 		this.idTransaction = idTransaction;
 	}
 
-	//@JsonIgnore
+	@JsonIgnore
+    @XmlTransient
     public HomecareHomecareClinic getIdHomecareClinic() {
         return idHomecareClinic;
     }
@@ -191,9 +215,11 @@ public class HomecareTransactionCaregiverlist implements Serializable {
         return true;
     }
 
+    /*
     @Override
     public String toString() {
         return "trial.entity.HomecareTransactionCaregiverlist[ id=" + id + " ]";
     }
+    */
     
 }
