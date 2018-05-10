@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "timedic-ee4af",
+  "private_key_id": "58cb1eb440fd22c946c79a59d1ce6850383c4cb0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDPR3bDaDffykud\nfnnCeG2YSCdXhMZ4tA4xcSWyhX3+Fa/1+9TffjHyfvgQZ1nAtQKEFf0dRYnXi1R+\nd3Mgazt5aCMkII+6viIbmD/kXqWQQ+mj/bJT6CtKnWjWoivk7TeOkCDMptpynzDK\nPXv4cN2jE52yUh8LHOxgVJE+Y+Oa4rqL02ADuDF/fgYgiDvG5bVhrOelz1LLbOKw\nhtYVVtzFpV7Zb104zJeMr0ooLzBbp1nDREMgLkZFqyl1RDpnS/2JMPTeDQzAE1rI\nA0zDHxDlMYXJluVsPkoIVPTdjxfMJBo9Gcg65mQrFJI9423tdP99hv5TEfbMc6A0\ngaK1OxmXAgMBAAECggEAY1kB2+PSUAGCX5DUpDibcs82iBScGhNW8CymoFuqSUO0\nzGYxIBO4td1UYWxf0OUROSTe5g5D5Jsj2t++vu2WmnimyzSOHzftWiONkBQrL6vV\nSqQYum2/fipXKvScrENkiwCar+xTLHgPZwe0KR5TpMuMnIEO3wE0bHFsEibHWx7u\nGxXo790xwHIOMGGVVSb5cbPpHTAaupozLZ/tDi0noOHSaDRJTZNKfnsZLUZxfhLh\nZT/efrqoqMEEWglrxANFfpxNhnyRW+bMQvEg2shdTEP+4Ji+FyFwpvt1R7oea+DS\nMfJx1v2Mwszt26S8hkT7OFsXbn4lrpwcRarCskagpQKBgQD7Ocpj2nA97HTSpSUX\nhKT7LaYiR18VZP0fcPvOMKOhMJ/naeqYczSminqJhmvrKsLslMPLS7wMb3MC6DR4\n3crheNZKdkRKwtUPIJDvcXZbLQWT3PDVApt/e0kF7rTBV1bxMlaH8NggeeDDGrdd\nDuoVlvDiZZvGkLtYW8MTt/PuIwKBgQDTN9+0pub6qeK9n3wl1oRd07M6YD3qPbuJ\nuk/iu68jlqwPW3sGgHQHRqTZRipPpas9MKShlcGMtJuYNoDl+c0ekzPAwAGDyiJY\nG/ZgwkrspxMsGwyPQBI+G9gHVyTHDAESBUCS1wd5OMpYI+/82FH1VAQv7DGX8DzC\nCA/z2RHL/QKBgHHvQaSLen/67vhhQTMrSw9HIqNFLxAq3skVmn1mfa8quDphRK2j\nAevNvckFF4htuj1FMo7OaBhTqxtUaAewvsQG41idzlcBiVL0+AY/tOegwXjPqMFS\nD2d/aByyp3NPwvRcWfYI+luwKokRYrtnei4UaGakokMpfG2UICKfOJd1AoGADd1n\nE+a41s98ENJ9RcaVHcudwkE7DztKKjpOsCV906o6VS++Hakk9K1QeOrAMEZBvVyK\nEglQkTnx1MYPJAmHy3ACP67a6pnEM2Byhdt7K5m0CnskEes0x1rwjVrNETvafiJW\nIM14sh5mOe7x+/j/OElxlOu+PakJc/svgORI5MkCgYEAhl+SK9qs9g1W9yIVbA40\nEa9CauWCzfMfKWw84yZD7gwxiAawNVEEPWjt9NZEsU0GHDOJFTQ493YvRkHCB9wJ\nEVAqoDpOdzgCVuYO8YmeUFSoOoFOQB9dknsAGFlvEBq7MWeLboFIEbH0lM9vWrrb\nPIZK4vGfyrhiIgBcOLs3FhQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-e12xr@timedic-ee4af.iam.gserviceaccount.com",
+  "client_id": "108147823918810911082",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-e12xr%40timedic-ee4af.iam.gserviceaccount.com"
+}

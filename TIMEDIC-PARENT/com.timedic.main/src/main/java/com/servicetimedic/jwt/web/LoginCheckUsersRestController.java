@@ -3,7 +3,10 @@ package com.servicetimedic.jwt.web;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -11,11 +14,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +34,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.servicetimedic.jwt.domain.december.ApiError;
 import com.servicetimedic.jwt.domain.december.AppUser;
 import com.servicetimedic.jwt.domain.december.HomecarePatient;
@@ -55,6 +66,25 @@ public class LoginCheckUsersRestController {
     private static final int KEY_SIZE = 128;
     private static final int ITERATION_COUNT = 1000;
     private static final String PASSPHRASE = "timedictimedic18";
+    
+    FirebaseOptions options2;
+    ResourceLoader resourceLoader;
+    
+    public LoginCheckUsersRestController(ResourceLoader resourceLoader) throws IOException {
+		super();
+		//InputStream dataFile = this.getClass().getClassLoader().getResourceAsStream("TimedicApps-82b5c0f87b1a.json");
+		//FileInputStream serviceAccount2 = new FileInputStream(dataFile.toString());
+		this.resourceLoader = resourceLoader;
+		
+		Resource resource = resourceLoader.getResource("classpath:TimedicApps-82b5c0f87b1a.json");
+        File dbAsFile = resource.getFile();
+        FileInputStream serviceAccount2 = new FileInputStream(dbAsFile);
+		
+		options2 = new FirebaseOptions.Builder()
+	    .setCredentials(GoogleCredentials.fromStream(serviceAccount2))
+	    .build();
+		FirebaseApp.initializeApp(options2,"other");
+	}
 
 	/**
 	 * This method is used for user registration. Note: user registration is not
@@ -157,9 +187,49 @@ public class LoginCheckUsersRestController {
     }
 	
 	@RequestMapping(value = "/authenticateBySocial/user", method = RequestMethod.POST)
-	public ResponseEntity<Object> loginByGoogle(@RequestParam String firebaseId, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException {
+	public ResponseEntity<Object> loginBySocial(@RequestParam String firebaseId, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException {
 		String token = null;
 		AppUser appUser = new AppUser();
+		
+		if(type.equals("google")){
+			appUser = appUserRepository.findByFirebaseIdGoogle(firebaseId);
+		}
+		else if(type.equals("facebook")){
+			appUser = appUserRepository.findByFirebaseIdFacebook(firebaseId);
+		}
+			
+		Map<String, Object> tokenMap = new HashMap<String, Object>();
+			
+		if (appUser != null) {
+				Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
+				token = Jwts.builder()
+						.setSubject(appUser.getUsername())
+						.setExpiration(exp)
+						.claim("roles", appUser.getRoles())
+						.claim("id", appUser.getId())
+						.setIssuedAt(new Date())
+						.signWith(SignatureAlgorithm.HS256, "secretkey")
+						.compact();
+				tokenMap.put("token", token);
+				tokenMap.put("user", appUser);
+				return new ResponseEntity<Object>(tokenMap, HttpStatus.OK);
+		}
+		else{
+			ApiError message = new ApiError();
+			message.setMessage("Your Firebase Id is not exist");
+			message.setStatus(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Object>(message , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	@RequestMapping(value = "/authenticateBySocialToken/user", method = RequestMethod.POST)
+	public ResponseEntity<Object> loginBySocialToken(@RequestParam String firebaseToken, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException, InterruptedException, ExecutionException {
+		String token = null;
+		String firebaseId = null;
+		AppUser appUser = new AppUser();
+		
+		FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(firebaseToken).get();
+		firebaseId = decodedToken.getUid();
 		
 		if(type.equals("google")){
 			appUser = appUserRepository.findByFirebaseIdGoogle(firebaseId);
