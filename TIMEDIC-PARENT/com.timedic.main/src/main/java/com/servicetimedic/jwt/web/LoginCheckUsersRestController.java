@@ -18,6 +18,13 @@ import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -25,6 +32,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -69,6 +77,7 @@ public class LoginCheckUsersRestController {
     
     FirebaseOptions options2;
     ResourceLoader resourceLoader;
+    FirebaseApp otherApp;
     
     public LoginCheckUsersRestController(ResourceLoader resourceLoader) throws IOException {
 		super();
@@ -76,14 +85,14 @@ public class LoginCheckUsersRestController {
 		//FileInputStream serviceAccount2 = new FileInputStream(dataFile.toString());
 		this.resourceLoader = resourceLoader;
 		
-		Resource resource = resourceLoader.getResource("classpath:TimedicApps-82b5c0f87b1a.json");
+		Resource resource = resourceLoader.getResource("classpath:timedic_user-fe23e9588298.json");
         File dbAsFile = resource.getFile();
         FileInputStream serviceAccount2 = new FileInputStream(dbAsFile);
 		
 		options2 = new FirebaseOptions.Builder()
 	    .setCredentials(GoogleCredentials.fromStream(serviceAccount2))
 	    .build();
-		FirebaseApp.initializeApp(options2,"other");
+		otherApp = FirebaseApp.initializeApp(options2,"other");
 	}
 
 	/**
@@ -186,6 +195,23 @@ public class LoginCheckUsersRestController {
         return userName;
     }
 	
+	@RequestMapping(value = "/checkUserPasswordIsNullOrNot", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> checkUserPasswordIsNullOrNot(@RequestParam("email") String email)
+	{
+		String pswd = appUserRepository.checkPasswordIsNullOrNot(email);
+		boolean status;
+		
+		if(pswd == null || pswd.equals("")){
+			status = false;
+		}
+		else{
+			status = true;
+		}
+		
+		return new ResponseEntity<Boolean>(status , new HttpHeaders() ,HttpStatus.OK);
+	}
+	
+
 	@RequestMapping(value = "/authenticateBySocial/user", method = RequestMethod.POST)
 	public ResponseEntity<Object> loginBySocial(@RequestParam String firebaseId, @RequestParam String type ,HttpServletResponse response) throws GeneralSecurityException {
 		String token = null;
@@ -196,6 +222,9 @@ public class LoginCheckUsersRestController {
 		}
 		else if(type.equals("facebook")){
 			appUser = appUserRepository.findByFirebaseIdFacebook(firebaseId);
+		}
+		else if(type.equals("email")){
+			appUser = appUserRepository.findByFirebaseIdByEmail(firebaseId);
 		}
 			
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
@@ -228,7 +257,7 @@ public class LoginCheckUsersRestController {
 		String firebaseId = null;
 		AppUser appUser = new AppUser();
 		
-		FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(firebaseToken).get();
+		FirebaseToken decodedToken = FirebaseAuth.getInstance(otherApp).verifyIdTokenAsync(firebaseToken).get();
 		firebaseId = decodedToken.getUid();
 		
 		if(type.equals("google")){
@@ -236,6 +265,9 @@ public class LoginCheckUsersRestController {
 		}
 		else if(type.equals("facebook")){
 			appUser = appUserRepository.findByFirebaseIdFacebook(firebaseId);
+		}
+		else if(type.equals("email")){
+			appUser = appUserRepository.findByFirebaseIdByEmail(firebaseId);
 		}
 			
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
@@ -260,6 +292,41 @@ public class LoginCheckUsersRestController {
 			message.setStatus(HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<Object>(message , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
+	}
+	
+	@RequestMapping(value = "/passwordUser", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> resetPasswordUser(@RequestParam("mode") String mode, @RequestParam("oobCode") String oobCode, @RequestParam("apiKey") String apiKey, @RequestParam("type") String type, @RequestParam("newPassword") String newPassword) throws ClientProtocolException, IOException
+	{
+		Boolean status = false;
+		String url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/resetPassword?key="+apiKey;
+		
+		if(type.equals("fr")){
+			
+			String payload = "{" +
+	                "\"newPassword\": \"" + newPassword.trim() + "\", " +
+	                "\"oobCode\": \"" + oobCode + "\"" +
+	                "}";
+	        StringEntity entity = new StringEntity(payload,ContentType.APPLICATION_JSON);
+	        HttpClient httpClient = HttpClientBuilder.create().build();
+	        HttpPost request = new HttpPost(url);
+	        request.setEntity(entity);
+
+	        HttpResponse response = httpClient.execute(request);
+	        
+	        if(response.getStatusLine().getStatusCode()==200){
+	        	status = true;
+	        }
+	        else{
+	        	status = false;
+	        }
+	        //System.out.println(response.getStatusLine().getStatusCode());
+	        //System.out.println(payload);
+		}
+		else{
+			//another method here !
+		}
+		
+		return new ResponseEntity<Boolean>(status , new HttpHeaders() ,HttpStatus.OK);
 	}
 
 	/**

@@ -118,6 +118,9 @@ public class HomecareCaregiver implements UserDetails, Serializable {
     @Column(name = "firebase_id_facebook")
     private String firebaseIdFacebook ;
     
+    @Column(name = "firebase_id_by_email")
+    private String firebaseIdByEmail ;
+    
     @Column(name = "gender")
     private String gender ;
     
@@ -357,6 +360,14 @@ public class HomecareCaregiver implements UserDetails, Serializable {
 		this.firebaseIdFacebook = firebaseIdFacebook;
 	}
 		
+	public String getFirebaseIdByEmail() {
+		return firebaseIdByEmail;
+	}
+
+	public void setFirebaseIdByEmail(String firebaseIdByEmail) {
+		this.firebaseIdByEmail = firebaseIdByEmail;
+	}
+
 	public String getSippUrl() {
 		return sippUrl;
 	}

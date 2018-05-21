@@ -63,7 +63,7 @@ public class CaregiverController {
 		return new PageRequest(page, size, direction, field);
 	}
 	
-public String sendNotifToCaregiver(String fcmTOken, String title ,String message) throws JSONException {
+	public String sendNotifToCaregiver(String fcmTOken, String title ,String message) throws JSONException {
 		
 		String firebaseResponse = "";
 		JSONObject body = new JSONObject();
@@ -233,6 +233,8 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 	}
 	
 	
+	
+	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER', 'CLINIC')")
 	@RequestMapping(value = "/caregiver/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getCaregiverById(@PathVariable Long id, @RequestHeader(value="Authorization") String token)
@@ -243,7 +245,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		int idCaregiverFromToken = (Integer) claims.get("id");
 		List<String> roleUserFromToken = (List<String>) claims.get("roles");
 		
-		if(id == idCaregiverFromToken || roleUserFromToken.contains("ROLE_ADMIN") == true){
+		if(id == idCaregiverFromToken || roleUserFromToken.contains("ROLE_ADMIN") == true || roleUserFromToken.contains("ROLE_CLINIC") == true){
 			caregiver = caregiversDbRepository.getOne(id);	
 			
 			if (caregiver != null){
@@ -266,7 +268,49 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 
 			return new ResponseEntity<Object>(error , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN','CAREGIVER')")
+	@RequestMapping(value = "/getUrlByIdcaregiver", method = RequestMethod.POST)
+	public ResponseEntity<String> getUrlById(@RequestParam("idCaregiver") String idCaregiver, @RequestParam("type") String type , @RequestHeader(value="Authorization") String token)
+	{
+		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
+		String Urlcaregiver = "";
 		
+		int idCaregiverFromToken = (Integer) claims.get("id");
+		List<String> roleUserFromToken = (List<String>) claims.get("roles");
+		
+		Long id = Long.parseLong(idCaregiver);
+		
+		if(id == idCaregiverFromToken || roleUserFromToken.contains("ROLE_ADMIN") == true){
+			
+			if(type.equals("sipp")){
+				Urlcaregiver = caregiversDbRepository.findSippUrlById(id);
+			}	
+			else if(type.equals("str")){
+				Urlcaregiver = caregiversDbRepository.findStrUrlById(id);	
+			}
+			
+			if (Urlcaregiver != null){
+				logger.info("fetching url "+type+" with id caregiver = " + id);
+				return new ResponseEntity<String>(Urlcaregiver, new HttpHeaders() ,HttpStatus.OK);
+			}
+			else{
+				logger.info("fetching url "+type+" with id caregiver = " + id+" is not found");
+				ApiError error = new ApiError();
+				error.setStatus(HttpStatus.NOT_FOUND);
+				error.setMessage("url "+type +"caregiver NOT FOUND");
+				return new ResponseEntity<String>("url "+type +"caregiver with id "+id+" NOT FOUND",new HttpHeaders() , HttpStatus.NOT_FOUND);
+			}
+		}
+		else{
+			logger.info("caregiver UNAUTHORIZED");
+			ApiError error = new ApiError();
+			error.setStatus(HttpStatus.UNAUTHORIZED);
+			error.setMessage("url "+type +"caregiver with id "+id+" is UNAUTHORIZED");
+
+			return new ResponseEntity<String>("fetching url "+type +"caregiver with id "+id+" is UNAUTHORIZED" , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
+		}
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'CLINIC')")
@@ -279,7 +323,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 		int idCaregiverFromToken = (Integer) claims.get("id");
 		List<String> roleCaregiverFromToken = (List<String>) claims.get("roles");
 		
-		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN") == true){
+		if(id == idCaregiverFromToken || roleCaregiverFromToken.contains("ROLE_ADMIN") == true || roleCaregiverFromToken.contains("ROLE_CLINIC")== true){
 			caregiver = caregiversDbRepository.getOne(id);
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			String loggedUsername = auth.getName();
@@ -355,7 +399,9 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 			if(homecareCaregiver.getPhotoPath() != null) {findFirst.setPhotoPath(homecareCaregiver.getPhotoPath());}
 			if(homecareCaregiver.getFirstRegistrationDate() != null){ findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());}
 			if(homecareCaregiver.getSipp() != null) {findFirst.setSipp(homecareCaregiver.getSipp());}
+			if(homecareCaregiver.getSippUrl() != null) {findFirst.setSippUrl(homecareCaregiver.getSippUrl());}
 			if(homecareCaregiver.getRegisterNurseNumber() != null) {findFirst.setRegisterNurseNumber(homecareCaregiver.getRegisterNurseNumber());}
+			if(homecareCaregiver.getRegisterNurseNumberUrl() != null) {findFirst.setRegisterNurseNumberUrl(homecareCaregiver.getRegisterNurseNumberUrl());}
 			if(homecareCaregiver.getFirstRegistrationDate() != null) {findFirst.setFirstRegistrationDate(homecareCaregiver.getFirstRegistrationDate());}
 			if(homecareCaregiver.getEmployeeIdNumber() != null) {findFirst.setEmployeeIdNumber(homecareCaregiver.getEmployeeIdNumber());}
 			if(homecareCaregiver.getIdCaregiverStatus() != null) {
@@ -373,6 +419,7 @@ public String sendNotifToCaregiver(String fcmTOken, String title ,String message
 			if(homecareCaregiver.getReligion() != null) {findFirst.setReligion(homecareCaregiver.getReligion());}
 			if(homecareCaregiver.getFirebaseIdFacebook() != null){ findFirst.setFirebaseIdFacebook(homecareCaregiver.getFirebaseIdFacebook());}
 			if(homecareCaregiver.getFirebaseIdGoogle() != null){ findFirst.setFirebaseIdGoogle(homecareCaregiver.getFirebaseIdGoogle());}
+			if(homecareCaregiver.getFirebaseIdByEmail() != null){ findFirst.setFirebaseIdByEmail(homecareCaregiver.getFirebaseIdByEmail());}
 			if(homecareCaregiver.getFcmToken() != null){ findFirst.setFcmToken(homecareCaregiver.getFcmToken());}
 			if(homecareCaregiver.getGender() != null){findFirst.setGender(homecareCaregiver.getGender());}
 			if(cekUsername != null){

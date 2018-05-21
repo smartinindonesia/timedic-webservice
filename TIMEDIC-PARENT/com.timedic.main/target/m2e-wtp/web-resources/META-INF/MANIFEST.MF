@@ -3,7 +3,7 @@ Implementation-Title: com.timedic.main
 Implementation-Version: 0.0.1-SNAPSHOT
 Built-By: adipura
 Implementation-Vendor-Id: com.timedic.parent
-Build-Jdk: 1.8.0_77
+Build-Jdk: 1.8.0
 Implementation-URL: http://projects.spring.io/spring-boot/api-timedic-
  parent/com.timedic.main/
 Created-By: Maven Integration for Eclipse

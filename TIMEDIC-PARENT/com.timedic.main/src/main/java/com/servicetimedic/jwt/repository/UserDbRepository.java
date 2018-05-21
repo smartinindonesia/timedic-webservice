@@ -21,6 +21,8 @@ public interface UserDbRepository extends JpaRepository<AppUser, Long>{
 	
 	public AppUser findByFirebaseIdGoogle(String idFirebase);
 	
+	public AppUser findByFirebaseIdByEmail(String idFirebase);
+	
 	public AppUser findByUserCode (String code);
 	
 	@Query( "select u from AppUser u" )
@@ -49,6 +51,9 @@ public interface UserDbRepository extends JpaRepository<AppUser, Long>{
 	
 	@Query("select u.fcmToken from AppUser u where u.id = :id")
 	public String findFcmTokenUserById(@Param("id")Long id);
+	
+	@Query("select u.password from AppUser u where u.email = :email")
+	public String checkPasswordIsNullOrNot(@Param("email")String email);
 	
 	
 }

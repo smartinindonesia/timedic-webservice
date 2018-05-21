@@ -25,6 +25,8 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	
 	public HomecareCaregiver findByFirebaseIdGoogle(String idFirebase);
 	
+	public HomecareCaregiver findByFirebaseIdByEmail(String idFirebase);
+	
 	public HomecareCaregiver findByCaregiverCode(String code);
 	
 	@Query( "select c from HomecareCaregiver c" )
@@ -53,5 +55,14 @@ public interface CaregiversDbRepository extends JpaRepository <HomecareCaregiver
 	
 	@Query("select c.fcmToken from HomecareCaregiver c where c.id = :id")
 	public String findFcmTokenCaregiverById(@Param("id")Long id);
+	
+	@Query("select c.registerNurseNumberUrl from HomecareCaregiver c where c.id = :id")
+	public String findStrUrlById(@Param("id")Long id);
+	
+	@Query("select c.sippUrl from HomecareCaregiver c where c.id = :id")
+	public String findSippUrlById(@Param("id")Long id);
+	
+	@Query("select c.password from HomecareCaregiver c where c.email = :email")
+	public String checkPasswordIsNullOrNot(@Param("email")String email);
 	
 }

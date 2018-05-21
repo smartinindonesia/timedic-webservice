@@ -292,6 +292,7 @@ public class AppUserController {
 			if(appUser.getLongitude() != null) findFirst.setLongitude(appUser.getLongitude());
 			if(appUser.getFirebaseIdFacebook() != null) findFirst.setFirebaseIdFacebook(appUser.getFirebaseIdFacebook());
 			if(appUser.getFirebaseIdGoogle() != null) findFirst.setFirebaseIdGoogle(appUser.getFirebaseIdGoogle());
+			if(appUser.getFirebaseIdByEmail() != null){findFirst.setFirebaseIdByEmail(appUser.getFirebaseIdByEmail());}
 			if(appUser.getFcmToken() != null) findFirst.setFcmToken(appUser.getFcmToken());
 			if(appUser.getGender() != null) findFirst.setGender(appUser.getGender());
 			if(appUser.getReligion() != null)findFirst.setReligion(appUser.getReligion());

@@ -19,6 +19,13 @@ import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -196,6 +203,9 @@ public class LoginCheckCaregiversRestController {
 		else if(type.equals("facebook")){
 			homecareCaregiver = caregiversDbRepository.findByFirebaseIdFacebook(firebaseId);
 		}
+		else if(type.equals("email")){
+			homecareCaregiver = caregiversDbRepository.findByFirebaseIdByEmail(firebaseId);
+		}
 			
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 			
@@ -238,6 +248,9 @@ public class LoginCheckCaregiversRestController {
 		else if(type.equals("facebook")){
 			homecareCaregiver = caregiversDbRepository.findByFirebaseIdFacebook(firebaseId);
 		}
+		else if(type.equals("email")){
+			homecareCaregiver = caregiversDbRepository.findByFirebaseIdByEmail(firebaseId);
+		}
 			
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 			
@@ -262,6 +275,57 @@ public class LoginCheckCaregiversRestController {
 			return new ResponseEntity<Object>(message , new HttpHeaders() ,HttpStatus.UNAUTHORIZED);
 		}
 	}
+	
+	@RequestMapping(value = "/checkCaregiverPasswordIsNullOrNot", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> checkCaregiverPasswordIsNullOrNot(@RequestParam("email") String email)
+	{
+		String pswd = caregiversDbRepository.checkPasswordIsNullOrNot(email);
+		boolean status;
+		
+		if(pswd == null || pswd.equals("")){
+			status = false;
+		}
+		else{
+			status = true;
+		}
+		
+		return new ResponseEntity<Boolean>(status , new HttpHeaders() ,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/passwordNurse", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> resetPasswordCaregiver(@RequestParam("mode") String mode, @RequestParam("oobCode") String oobCode, @RequestParam("apiKey") String apiKey, @RequestParam("type") String type, @RequestParam("newPassword") String newPassword) throws ClientProtocolException, IOException
+	{
+		Boolean status = false;
+		String url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/resetPassword?key="+apiKey;
+		
+		if(type.equals("fr")){
+			
+			String payload = "{" +
+	                "\"newPassword\": \"" + newPassword.trim() + "\", " +
+	                "\"oobCode\": \"" + oobCode + "\"" +
+	                "}";
+	        StringEntity entity = new StringEntity(payload,ContentType.APPLICATION_JSON);
+	        HttpClient httpClient = HttpClientBuilder.create().build();
+	        HttpPost request = new HttpPost(url);
+	        request.setEntity(entity);
+
+	        HttpResponse response = httpClient.execute(request);
+	        
+	        if(response.getStatusLine().getStatusCode()==200){
+	        	status = true;
+	        }
+	        else{
+	        	status = false;
+	        }
+	        //System.out.println(response.getStatusLine().getStatusCode());
+	        //System.out.println(payload);
+		}
+		else{
+			//another method here !
+		}
+		
+		return new ResponseEntity<Boolean>(status , new HttpHeaders() ,HttpStatus.OK);
+	}
 
 	/**
 	 * @param username
@@ -274,16 +338,17 @@ public class LoginCheckCaregiversRestController {
 	
 	//@CrossOrigin
 	@RequestMapping(value = "/authenticate/caregiver", method = RequestMethod.POST)
-	public ResponseEntity<Object> login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws GeneralSecurityException {
+	public ResponseEntity<Object> login(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws GeneralSecurityException {
 		String token = "";
 		String userPasswordAPI = "";
 		String userPasswordDB = "";
 		HomecareCaregiver homecareCaregiver = null; 
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		
-		if( username != "" || password != "" ){
+		if( email != "" || password != "" ){
 			userPasswordAPI = Decrypt(password);
-			homecareCaregiver = caregiversDbRepository.findByUsername(username);
+			//homecareCaregiver = caregiversDbRepository.findByUsername(username);
+			homecareCaregiver = caregiversDbRepository.findByEmail(email);
 			if(homecareCaregiver != null){
 				userPasswordDB = Decrypt(homecareCaregiver.getPassword());
 			}
@@ -292,7 +357,7 @@ public class LoginCheckCaregiversRestController {
 		if (homecareCaregiver != null && userPasswordDB.equals(userPasswordAPI)) {	
 			Date exp = new Date(System.currentTimeMillis() + ( 10000 * EXPIRES_IN ));
 			token = Jwts.builder()
-					.setSubject(username)
+					.setSubject(email)
 					.setExpiration(exp)
 					.claim("roles", homecareCaregiver.getRoles())
 					.claim("id", homecareCaregiver.getId())
